@@ -1,0 +1,19 @@
+version: '3.8'
+
+volumes:
+  web-node_modules:
+  web-dot_next:
+
+services:
+  web:
+    build:
+      context: ./web
+    command: ['npm', 'run', 'dev']
+    volumes:
+      - ./:/treco/
+      - web-node_modules:/treco/web/projects/node_modules
+      - web-dot_next:/treco/web/projects/.next
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - 61005:3000
