@@ -21,7 +21,7 @@ const useMyTheme = (prop: UseThemeProp) => {
         },
         background: {
           dark: '#000000',
-          default: '#303030',
+          default: '#131313',
           paper: '#000000',
           contrastText: '#fff',
         },

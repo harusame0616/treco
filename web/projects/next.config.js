@@ -7,7 +7,7 @@ const nextConfig = {
     register: true,
     skipWaiting: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
 };
 

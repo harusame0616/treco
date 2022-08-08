@@ -2,7 +2,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import MainHeader from '../components/domain/main-header';
 import useMyTheme from '../hooks/useMyTheme';
 import '../styles/globals.css';
