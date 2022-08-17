@@ -22,6 +22,7 @@ const useMyTheme = (prop: UseThemeProp) => {
         background: {
           dark: '#000000',
           default: '#131313',
+          light: '#333',
           paper: '#000000',
           contrastText: '#fff',
         },

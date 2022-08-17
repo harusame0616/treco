@@ -1,15 +1,15 @@
 import { Button } from '@mui/material';
 import { MouseEventHandler, ReactNode } from 'react';
 
-interface PrimaryButtonProp {
+interface Prop {
   children: ReactNode;
   onClick: MouseEventHandler;
 }
 
-const PrimaryButton = (prop: PrimaryButtonProp) => {
+const SecondaryButton = (prop: Prop) => {
   return (
     <Button
-      variant="contained"
+      variant="outlined"
       sx={{ width: '100%' }}
       color="primary"
       onClick={prop.onClick}
@@ -19,4 +19,4 @@ const PrimaryButton = (prop: PrimaryButtonProp) => {
   );
 };
 
-export default PrimaryButton;
+export default SecondaryButton;

@@ -16,11 +16,12 @@ export interface Activity {
   index: number;
 }
 
-interface Record {
+export interface Record {
   load: number;
   value: number;
   note: string;
 }
+
 interface UseActivitiesReturnType {
   isError: boolean;
   isLoading: boolean;
