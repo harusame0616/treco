@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   web-node_modules:
   web-dot_next:
+  firebase-dot_cache:
 
 services:
   web:
@@ -18,3 +19,14 @@ services:
     ports:
       - 61005:3000
       - 61015:6006
+  firebase:
+    build:
+      context: ./firebase
+    volumes:
+      - ./:/treco
+      - firebase-dot_cache:/root/.cache/firebase/emulators/
+    command: ['--only', 'firestore,auth']
+    ports:
+      - 60000:60000 # Emulator Suite UI
+      - 8080:8080 # firestore
+      - 9099:9099 # auth
