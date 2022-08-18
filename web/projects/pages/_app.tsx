@@ -54,6 +54,21 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Box paddingTop="65px" flexGrow="1" flexShrink="0">
               {auth.isLoading ? undefined : <Component {...pageProps} />}
             </Box>
+            {auth.auth.isAnonymous == true ? (
+              <Box
+                sx={{ background: '#888800', opacity: '80%' }}
+                width="100vw"
+                fontSize="0.75rem"
+                textAlign="center"
+                fontWeight="bold"
+                flexGrow={0}
+                flexShrink={0}
+                marginTop="-20px"
+              >
+                一時アカウントでログインで利用中です。 <br />
+                データの損失を防ぐため、アカウントと連携してください。
+              </Box>
+            ) : undefined}
           </Box>
         </AuthContext.Provider>
       </ThemeProvider>

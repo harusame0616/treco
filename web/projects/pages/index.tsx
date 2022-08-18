@@ -2,6 +2,7 @@ import { Box, Link } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import PrimaryButton from '../components/case/primary-button';
 import PageContainer from '../components/container/page-container';
@@ -9,6 +10,12 @@ import { AuthContext } from './_app';
 
 const Home: NextPage = () => {
   const auth = useContext(AuthContext);
+  const router = useRouter();
+
+  const signInAnonymously = async () => {
+    await auth?.signInAnonymously();
+    await router.push('/home');
+  };
 
   return auth ? (
     <PageContainer>
@@ -50,7 +57,7 @@ const Home: NextPage = () => {
               </PrimaryButton>
             </Box>
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
-              <Link href="/home">登録せず開始する</Link>
+              <Link onClick={signInAnonymously}>登録せず開始する</Link>
             </Box>
           </Box>
         </Box>

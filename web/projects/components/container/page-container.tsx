@@ -15,6 +15,7 @@ const PageContainer = (prop: PageContainerProp) => {
       height="100%"
       display="flex"
       flexDirection="column"
+      position="relative"
       sx={{ background: background.default, color: background.contrastText }}
     >
       {prop.children}

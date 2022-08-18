@@ -83,7 +83,7 @@ const Home = () => {
               <ActivityListItem activity={activity} key={activity.activityId} />
             ))}
           </Box>
-          <Box position="absolute" right="20px" bottom="20px">
+          <Box position="absolute" right="20px" bottom="20px" zIndex="1">
             <AddButton
               onClick={() => {
                 router.push({

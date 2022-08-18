@@ -1,6 +1,7 @@
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInAnonymously as _signInAnonymously,
   signInWithRedirect,
 } from 'firebase/auth';
 import { useLayoutEffect, useState } from 'react';
@@ -17,6 +18,7 @@ const providerMappedProviderName = {
 
 interface Auth {
   authId?: string;
+  isAnonymous?: boolean;
 }
 
 const useAuth = () => {
@@ -33,10 +35,18 @@ const useAuth = () => {
     signInWithRedirect(fbAuth, providerMappedProviderName[providerName]);
   };
 
+  const signInAnonymously = async () => {
+    const credential = await _signInAnonymously(fbAuth);
+    setAuth({
+      authId: credential.user.uid,
+      isAnonymous: true,
+    });
+  };
+
   useLayoutEffect(() => {
     const unscribe = onAuthStateChanged(fbAuth, async (user) => {
       if (user) {
-        setAuth({ authId: user.uid });
+        setAuth({ authId: user.uid, isAnonymous: user.isAnonymous });
       }
 
       setIsLoading(false);
@@ -44,7 +54,14 @@ const useAuth = () => {
     });
   }, []);
 
-  return { isLoading, isError, auth, siginInWith, isAuthenticated };
+  return {
+    isLoading,
+    isError,
+    auth,
+    siginInWith,
+    isAuthenticated,
+    signInAnonymously,
+  };
 };
 
 export default useAuth;
