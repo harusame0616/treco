@@ -2,11 +2,15 @@ import { Box, Link } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useContext } from 'react';
 import PrimaryButton from '../components/case/primary-button';
 import PageContainer from '../components/container/page-container';
+import { AuthContext } from './_app';
 
 const Home: NextPage = () => {
-  return (
+  const auth = useContext(AuthContext);
+
+  return auth ? (
     <PageContainer>
       <Head>
         <title>Create Next App</title>
@@ -41,7 +45,9 @@ const Home: NextPage = () => {
         <Box display="flex" justifyContent="center">
           <Box sx={{ width: '250px' }}>
             <Box marginBottom="25px" display="flex" justifyContent="center">
-              <PrimaryButton>Google で開始する</PrimaryButton>
+              <PrimaryButton onClick={() => auth.siginInWith('google')}>
+                Google で開始する
+              </PrimaryButton>
             </Box>
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
               <Link href="/home">登録せず開始する</Link>
@@ -50,6 +56,8 @@ const Home: NextPage = () => {
         </Box>
       </main>
     </PageContainer>
+  ) : (
+    <div></div>
   );
 };
 

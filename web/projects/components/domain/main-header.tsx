@@ -1,6 +1,8 @@
 import { AppBar, Grid, useTheme } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useContext } from 'react';
+import { AuthContext } from '../../pages/_app';
 import MenuIconButton from '../case/menu-icon-button';
 
 interface MainHeaderProp {
@@ -10,6 +12,8 @@ interface MainHeaderProp {
 const MainHeader = (prop: MainHeaderProp) => {
   const theme = useTheme();
   const background: any = theme.palette.background;
+
+  const auth = useContext(AuthContext);
 
   return (
     <AppBar
@@ -24,7 +28,7 @@ const MainHeader = (prop: MainHeaderProp) => {
           justifyContent="flex-start"
           alignItems="center"
         >
-          <Link href="/" passHref={true}>
+          <Link href={auth?.isAuthenticated ? '/home' : '/'} passHref={true}>
             <Image src="/icon-512x512.png" width={45} height={45} />
           </Link>
         </Grid>
