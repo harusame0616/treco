@@ -1,5 +1,6 @@
 import {
   GoogleAuthProvider,
+  linkWithRedirect,
   onAuthStateChanged,
   signInAnonymously as _signInAnonymously,
   signInWithRedirect,
@@ -43,6 +44,25 @@ const useAuth = () => {
     });
   };
 
+  const linkWith = (providerName: OAuthProviderName) => {
+    if (!isProviderName(providerName)) {
+      throw new Error('providerName error: ', providerName);
+    }
+
+    if (fbAuth.currentUser == null) {
+      throw new Error('currentUser is null');
+    }
+
+    if (!fbAuth.currentUser.isAnonymous) {
+      throw new Error('currentUser is no anonymouse');
+    }
+
+    linkWithRedirect(
+      fbAuth.currentUser,
+      providerMappedProviderName[providerName]
+    );
+  };
+
   useLayoutEffect(() => {
     const unscribe = onAuthStateChanged(fbAuth, async (user) => {
       if (user) {
@@ -61,6 +81,7 @@ const useAuth = () => {
     siginInWith,
     isAuthenticated,
     signInAnonymously,
+    linkWith,
   };
 };
 

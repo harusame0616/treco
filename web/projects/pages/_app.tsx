@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, Link, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -66,7 +66,14 @@ function MyApp({ Component, pageProps }: AppProps) {
                 marginTop="-20px"
               >
                 一時アカウントでログインで利用中です。 <br />
-                データの損失を防ぐため、アカウントと連携してください。
+                データの損失を防ぐため、
+                <Link
+                  onClick={() => auth.linkWith('google')}
+                  sx={{ textShadow: '0 0 1px white', fontWeight: 'bold' }}
+                >
+                  Google アカウントと連携
+                </Link>
+                してください。
               </Box>
             ) : undefined}
           </Box>
