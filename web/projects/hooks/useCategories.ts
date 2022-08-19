@@ -1,58 +1,20 @@
-export interface Category {
-  index: number;
-  categoryId: number;
-  categoryName: string;
-  color: string;
-}
+import useSWR from 'swr';
+import { FSCategoryQuery } from '../contexts/record/infrastructure/query/fs-category-query';
+import { CategoryQueryUsecase } from '../contexts/record/usecases/category-query-usecase';
 
-interface UseActivitiesReturnType {
-  isError: boolean;
-  isLoading: boolean;
-  categories: Category[];
-}
+const categoryQueryUsecase = new CategoryQueryUsecase({
+  categoryQuery: new FSCategoryQuery(),
+});
 
-const useActivities = (): UseActivitiesReturnType => {
+const useCategories = ({ authId }: { authId: string | undefined }) => {
+  const { data, error } = useSWR(authId, (authId) =>
+    categoryQueryUsecase.queryList(authId)
+  );
+
   return {
-    isLoading: false,
-    isError: false,
-    categories: [
-      {
-        index: 0,
-        categoryId: 1,
-        categoryName: '胸',
-        color: 'red',
-      },
-      {
-        index: 2,
-        categoryId: 2,
-        categoryName: '背中',
-        color: 'green',
-      },
-      {
-        index: 3,
-        categoryId: 3,
-        categoryName: '脚',
-        color: 'blue',
-      },
-      {
-        index: 0,
-        categoryId: 4,
-        categoryName: '肩',
-        color: '#FFFF00',
-      },
-      {
-        index: 0,
-        categoryId: 5,
-        categoryName: '腕',
-        color: '#00FFFF',
-      },
-      {
-        index: 0,
-        categoryId: 5,
-        categoryName: '有酸素運動',
-        color: '#FF00FF',
-      },
-    ],
+    isLoading: authId == null || (!error && !data),
+    isError: authId != null && error,
+    categories: data ?? [],
   };
 };
-export default useActivities;
+export default useCategories;

@@ -1,6 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import {
+  connectFirestoreEmulator,
+  enableMultiTabIndexedDbPersistence,
+  getFirestore,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBx_Dzg_wXFZSWxiDDMBtRk8ctOP1mctTQ',
@@ -12,6 +16,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 const fbDb = getFirestore();
 const fbAuth = getAuth();
 
@@ -22,6 +27,12 @@ if (process.env.NODE_ENV === 'development' && typeof location == 'object') {
       disableWarnings: true,
     });
   }
+}
+
+// エラーが発生するため
+// connectFirestoreEmulatorの後でクライアントサイドでのみ設定
+if (typeof window == 'object') {
+  enableMultiTabIndexedDbPersistence(fbDb);
 }
 
 export { fbDb, fbAuth };

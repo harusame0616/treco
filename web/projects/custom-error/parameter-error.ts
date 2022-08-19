@@ -1,0 +1,1 @@
+class ParameterError extends CustomError {}
