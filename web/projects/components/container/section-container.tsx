@@ -5,7 +5,11 @@ interface Prop {
   children: ReactNode;
 }
 const SectionContainer = (prop: Prop) => {
-  return <Box marginBottom="30px">{prop.children}</Box>;
+  return (
+    <Box marginTop="5px" marginBottom="15px">
+      {prop.children}
+    </Box>
+  );
 };
 
 export default SectionContainer;

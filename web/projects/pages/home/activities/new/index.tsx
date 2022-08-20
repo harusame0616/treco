@@ -30,7 +30,7 @@ const ActivitiesNew = () => {
 
   const goToEventSelect = async (categoryId: string) => {
     await router.push({
-      pathname: '/home/activities/new/event',
+      pathname: '/home/activities/new/training-event',
       query: {
         ...router.query,
         categoryId,
@@ -40,9 +40,7 @@ const ActivitiesNew = () => {
 
   return (
     <PageContainer>
-      <SectionContainer>
-        記録する種目のカテゴリを選択してください。
-      </SectionContainer>
+      <SectionContainer>記録するカテゴリを選択してください。</SectionContainer>
       <SectionContainer>
         {isLoading ? (
           <Box display="flex" justifyContent="center">

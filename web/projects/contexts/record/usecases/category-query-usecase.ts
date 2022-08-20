@@ -2,6 +2,7 @@ import { CategoryDto } from '../domains/category/category';
 
 export interface CategoryQuery {
   queryList(userId: string): Promise<CategoryDto[]>;
+  queryDetail(userId: string, categoryId: string): Promise<CategoryDto | null>;
 }
 
 interface ConstructorProp {
@@ -17,5 +18,9 @@ export class CategoryQueryUsecase {
     }
 
     return await this.prop.categoryQuery.queryList(userId);
+  }
+
+  async queryDetail(userId: string, categoryId: string) {
+    return await this.prop.categoryQuery.queryDetail(userId, categoryId);
   }
 }

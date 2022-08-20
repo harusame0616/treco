@@ -4,5 +4,13 @@ service cloud.firestore {
     match /users/{authId}/categories/{document=**} {
       allow read: if request.auth != null && request.auth.uid ==  authId;
     }
+
+    match /users/{authId}/categories/{categoryId}/trainingEvents/{document=**} {
+      allow read: if request.auth != null && request.auth.uid ==  authId;
+    }
+
+    // match /users/{authId}/categories/{document=**} {
+    //   allow read: if true;
+    // }
   }
 }

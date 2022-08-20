@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import TextButton from '../../../../components/case/text-button';
@@ -8,17 +9,25 @@ import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
 import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
+import useCategory from '../../../../custom-error/useCategory';
 import useActivityEdit from '../../../../hooks/useActivityEdit';
+import { AuthContext } from '../../../_app';
 
 const NewRecord = () => {
+  const auth = useContext(AuthContext);
+  const router = useRouter();
+  const { isLoading, category } = useCategory({
+    userId: auth?.auth?.authId,
+    categoryId: router.query['categoryId'] as string,
+  });
+
   const { activity, setRecord, addNewRecord } = useActivityEdit({
     recordId: null,
   });
-  const router = useRouter();
 
   const discard = () => {
     router.push({
-      pathname: '/home/activities/new/event',
+      pathname: '/home/activities/new/training-event',
       query: {
         categoryId: activity.categoryId,
       },
@@ -26,7 +35,7 @@ const NewRecord = () => {
   };
   const save = () => {
     router.push({
-      pathname: '/home/activities/new/event',
+      pathname: '/home/activities/new/training-event',
       query: {
         categoryId: activity.categoryId,
       },
@@ -54,7 +63,11 @@ const NewRecord = () => {
             sx={{ scrollSnapAlign: 'start' }}
             alignItems="center"
           >
-            <CategoryLabel color="red">胸</CategoryLabel>
+            <CategoryLabel color={category?.color}>
+              {isLoading
+                ? '読み込み中'
+                : category?.categoryName ?? 'カテゴリ読み込みエラー'}
+            </CategoryLabel>
             <Box>&gt;</Box> <Box>ベンチプレス</Box>{' '}
           </Box>
         </SectionContainer>

@@ -6,7 +6,7 @@ const sizeList = ['small', 'medium', 'large'] as const;
 type Size = typeof sizeList[number];
 
 interface Prop {
-  color: string;
+  color?: string;
   children: ReactNode;
   size?: Size;
 }
@@ -40,13 +40,7 @@ const CategoryLabel = (prop: Prop) => {
     sizeSetMappedSize[prop.size ?? 'medium'];
 
   return (
-    <Box
-      fontSize={fontSize}
-      color="white"
-      display="flex"
-      alignItems="center"
-      gap={space}
-    >
+    <Box fontSize={fontSize} display="flex" alignItems="center" gap={space}>
       <TrainingMark color={prop.color} size={markSize} />
       {prop.children}
     </Box>

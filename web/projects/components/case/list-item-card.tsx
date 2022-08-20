@@ -10,7 +10,14 @@ interface Prop {
 const ListItemCard = (prop: Prop) => {
   return (
     <BaseCard onClick={prop.onClick}>
-      <Box fontSize="1.5rem">{prop.children}</Box>
+      <Box
+        fontSize="1.5rem"
+        sx={{ minHeight: '48px' }}
+        display="flex"
+        alignItems="center"
+      >
+        {prop.children}
+      </Box>
     </BaseCard>
   );
 };

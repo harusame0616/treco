@@ -8,7 +8,7 @@ const categoryQueryUsecase = new CategoryQueryUsecase({
 
 const useCategories = ({ authId }: { authId: string | undefined }) => {
   const { data, error } = useSWR(authId, (authId) =>
-    categoryQueryUsecase.queryList(authId)
+    authId ? categoryQueryUsecase.queryList(authId) : null
   );
 
   return {
