@@ -1,17 +1,19 @@
 import { Box, TextField } from '@mui/material';
 import { ChangeEventHandler, ReactNode } from 'react';
-import { Record } from '../../hooks/useActivities';
+import { ActivityRecordWork } from '../../hooks/useActivityCreate';
 import BaseCard from '../base/base-card';
 
 interface Prop {
-  record: Partial<Record>;
+  record: ActivityRecordWork;
   loadUnit: string;
   valueUnit: string;
   label: ReactNode;
   loadOnChange: ChangeEventHandler;
   valueOnChange: ChangeEventHandler;
   noteOnChange: ChangeEventHandler;
+  isError?: boolean;
 }
+
 const RecordCard = (prop: Prop) => {
   return (
     <BaseCard>
@@ -25,14 +27,17 @@ const RecordCard = (prop: Prop) => {
           value={prop.record.load}
           label={`負荷 ( ${prop.loadUnit} )`}
           onChange={prop.loadOnChange}
+          error={prop.isError && prop.record.load == ''}
         />
         <TextField
           variant="filled"
           size="small"
           label={`値 ( ${prop.valueUnit} )`}
           sx={{ background: '#ddd' }}
+          value={prop.record.value}
           type="number"
           onChange={prop.valueOnChange}
+          error={prop.isError && prop.record.value == ''}
         />
         <TextField
           variant="filled"
@@ -40,6 +45,7 @@ const RecordCard = (prop: Prop) => {
           label="備考"
           sx={{ background: '#ddd' }}
           onChange={prop.noteOnChange}
+          inputProps={{ maxLength: 1024 }}
         />
       </Box>
     </BaseCard>

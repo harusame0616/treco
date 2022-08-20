@@ -1,16 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{authId}/categories/{document=**} {
-      allow read: if request.auth != null && request.auth.uid ==  authId;
+    function isMyResource(userId){
+      return request.auth != null && request.auth.uid ==  userId;
     }
 
-    match /users/{authId}/categories/{categoryId}/trainingEvents/{document=**} {
-      allow read: if request.auth != null && request.auth.uid ==  authId;
+
+    // アクティビティ書き込み
+    match /users/{userId}/categories/{categoryId}/trainingEvents/{trainingEventId}/activities/{activityId} {
+      function isMatchedWithPath(userId, categoryId, trainingEventId, activityId){
+        return request.resource.data.categoryId == categoryId && request.resource.data.trainingEventId == trainingEventId && request.resource.data.activityId == activityId && request.resource.data.userId == userId;
+      }
+
+      // 新規作成
+      // - 認証済み && 自身のリソース
+      // - パスとデータが保持するID群が一致する
+      allow create: if isMyResource(userId) && isMatchedWithPath(userId, categoryId, trainingEventId, activityId)
+
+      // レコードの更新
+      // - レコード以外のデータが既存のデータと一致する
+      allow update: if isMyResource(userId) && request.resource.data.categoryId == resource.data.categoryId && request.resource.data.trainingEventId == resource.data.trainingEventId && request.resource.data.activityId == resource.data.activityId && request.resource.data.userId == resource.data.userId;
     }
 
-    // match /users/{authId}/categories/{document=**} {
-    //   allow read: if true;
-    // }
+    // 自分のデータは全て読み込み可能
+    match /users/{userId}/{document=**} {
+      allow read: if isMyResource(userId);
+    }
   }
 }

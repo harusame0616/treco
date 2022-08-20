@@ -17,7 +17,7 @@ const NewEvent = () => {
   const categoryId = router.query['categoryId'];
   const auth = useContext(AuthContext);
 
-  const { isLoading, trainingEvents, isError } = useTrainingEvents({
+  const { isLoading, trainingEvents } = useTrainingEvents({
     categoryId: categoryId as string,
     userId: auth?.auth?.authId,
   });
@@ -34,12 +34,12 @@ const NewEvent = () => {
     });
   };
 
-  const goToNext = async (eventId: string) => {
+  const goToNext = async (trainingEventId: string) => {
     await router.push({
       pathname: '/home/activities/new/record',
       query: {
         ...router.query,
-        eventId,
+        trainingEventId,
       },
     });
   };

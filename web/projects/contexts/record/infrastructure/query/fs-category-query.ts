@@ -19,7 +19,6 @@ export class FSCategoryQuery implements CategoryQuery {
       snapshot = await getDoc(categoryDocRef);
     }
 
-    console.log('queryDetail', snapshot.data());
     return snapshot.exists() ? (snapshot.data() as CategoryDto) : null;
   }
 
@@ -30,7 +29,6 @@ export class FSCategoryQuery implements CategoryQuery {
       userId,
       'categories'
     );
-    console.log('categoryList');
 
     let snapshot = await getDocsFromCache(categoriesCollectionRef);
     if (snapshot.empty) {

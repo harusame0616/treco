@@ -1,9 +1,12 @@
 import { Button } from '@mui/material';
 import { MouseEventHandler, ReactNode } from 'react';
+import BaseProgress from '../base/base-progress';
 
 interface PrimaryButtonProp {
   children: ReactNode;
   onClick: MouseEventHandler;
+  disabled?: boolean;
+  isLoading?: boolean;
 }
 
 const PrimaryButton = (prop: PrimaryButtonProp) => {
@@ -13,8 +16,13 @@ const PrimaryButton = (prop: PrimaryButtonProp) => {
       sx={{ width: '100%' }}
       color="primary"
       onClick={prop.onClick}
+      disabled={prop.disabled}
     >
-      {prop.children}
+      {prop.isLoading ? (
+        <BaseProgress size="1.5rem" color="white" />
+      ) : (
+        prop.children
+      )}
     </Button>
   );
 };

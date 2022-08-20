@@ -26,6 +26,10 @@ const useMyTheme = (prop: UseThemeProp) => {
           paper: '#000000',
           contrastText: '#fff',
         },
+        action: {
+          disabledBackground: 'rgba(255, 0 ,0 ,0.5)',
+          disabled: 'rgba(255,255,255,0.5)',
+        },
       },
     },
   };

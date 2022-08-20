@@ -4,6 +4,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 interface Prop {
   children: ReactNode;
   onClick: MouseEventHandler;
+  disabled?: boolean;
 }
 
 const SecondaryButton = (prop: Prop) => {
@@ -13,6 +14,7 @@ const SecondaryButton = (prop: Prop) => {
       sx={{ width: '100%' }}
       color="primary"
       onClick={prop.onClick}
+      disabled={prop.disabled}
     >
       {prop.children}
     </Button>

@@ -1,7 +1,12 @@
 import { CircularProgress } from '@mui/material';
 
-const BaseProgress = () => {
-  return <CircularProgress />;
+interface Prop {
+  size?: string;
+  color?: string;
+}
+
+const BaseProgress = (prop: Prop) => {
+  return <CircularProgress size={prop.size} sx={{ color: prop.color }} />;
 };
 
 export default BaseProgress;

@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocFromCache,
   getDocs,
   getDocsFromCache,
@@ -14,6 +15,42 @@ import {
 } from '../../usecases/training-event-query-usecase';
 
 export class FSTrainingEventQuery implements TrainingEventQuery {
+  async queryDetail(
+    userId: string,
+    categoryId: string,
+    trainingEventId: string
+  ) {
+    const trainingEventDocRef = doc(
+      fbDb,
+      'users',
+      userId,
+      'categories',
+      categoryId,
+      'trainingEvents',
+      trainingEventId
+    );
+
+    let trainingEventSnapshot = await getDocFromCache(trainingEventDocRef);
+    if (!trainingEventSnapshot.exists()) {
+      trainingEventSnapshot = await getDoc(trainingEventDocRef);
+    }
+
+    const categoryDocRef = doc(fbDb, 'users', userId, 'categories', categoryId);
+    let categorySnapshot = await getDocFromCache(categoryDocRef);
+    if (!categorySnapshot.exists()) {
+      categorySnapshot = await getDoc(categoryDocRef);
+    }
+
+    if (!categorySnapshot.exists() || !trainingEventSnapshot.exists()) {
+      return null;
+    }
+
+    return {
+      ...(categorySnapshot.data() as CategoryDto),
+      ...(trainingEventSnapshot.data() as TrainingEventDto),
+    };
+  }
+
   async queryListInCategory(
     userId: string,
     categoryId: string

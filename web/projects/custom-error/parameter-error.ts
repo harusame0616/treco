@@ -1,1 +1,3 @@
-class ParameterError extends CustomError {}
+import { CustomError } from './custom-error';
+
+export class ParameterError extends CustomError {}

@@ -9,35 +9,51 @@ import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
 import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
-import useCategory from '../../../../hooks/useCategory';
 import useActivityCreate from '../../../../hooks/useActivityCreate';
-import { AuthContext } from '../../../_app';
+import useProcessing from '../../../../hooks/useProcessing';
+import { AuthContext, PopMessageContext } from '../../../_app';
 
 const NewRecord = () => {
   const auth = useContext(AuthContext);
   const router = useRouter();
-  const { isLoading, category } = useCategory({
+  const popMessage = useContext(PopMessageContext);
+  const { isProcessing, startProcessing } = useProcessing();
+
+  const {
+    records,
+    trainingEvent,
+    setRecord,
+    addNewRecord,
+    isLoading,
+    register,
+    errorRecordIndex,
+    isError,
+  } = useActivityCreate({
     userId: auth?.auth?.authId,
     categoryId: router.query['categoryId'] as string,
-  });
-
-  const { activity, setRecord, addNewRecord } = useActivityCreate({
-    recordId: null,
+    trainingEventId: router.query['trainingEventId'] as string,
+    activityId: router.query['activityId'] as string,
   });
 
   const discard = () => {
     router.push({
       pathname: '/home/activities/new/training-event',
       query: {
-        categoryId: activity.categoryId,
+        categoryId: trainingEvent?.categoryId,
       },
     });
   };
-  const save = () => {
-    router.push({
+
+  const save = async () => {
+    try {
+      await startProcessing(register());
+    } catch (err: any) {
+      return popMessage!(err.message, { mode: 'error' });
+    }
+    await router.push({
       pathname: '/home/activities/new/training-event',
       query: {
-        categoryId: activity.categoryId,
+        categoryId: trainingEvent?.categoryId,
       },
     });
   };
@@ -63,37 +79,48 @@ const NewRecord = () => {
             sx={{ scrollSnapAlign: 'start' }}
             alignItems="center"
           >
-            <CategoryLabel color={category?.color}>
+            <CategoryLabel color={trainingEvent?.color}>
               {isLoading
                 ? '読み込み中'
-                : category?.categoryName ?? 'カテゴリ読み込みエラー'}
+                : trainingEvent?.categoryName ??
+                  'トレーニング種目読み込みエラー'}
             </CategoryLabel>
-            <Box>&gt;</Box> <Box>ベンチプレス</Box>{' '}
+            <Box>&gt;</Box> <Box>{trainingEvent?.trainingEventName}</Box>{' '}
           </Box>
         </SectionContainer>
         <SectionContainer>
           <ListContainer>
-            {activity.records.map((record, i) => (
+            {records.map((record, i) => (
               <Box sx={{ scrollSnapAlign: 'start' }} key={i}>
                 <RecordCard
                   record={record}
-                  loadUnit={activity.loadUnit}
-                  valueUnit={activity.valueUnit}
+                  loadUnit={trainingEvent?.loadUnit ?? ''}
+                  valueUnit={trainingEvent?.valueUnit ?? ''}
                   label={<div>{i + 1}セット目</div>}
+                  isError={errorRecordIndex == i}
                   loadOnChange={(e) => {
+                    const { value: input } = e.target as any;
                     setRecord(
-                      { ...record, load: parseFloat((e.target as any).value) },
+                      {
+                        ...record,
+                        load: input ? parseFloat(input) : '',
+                      },
                       i
                     );
                   }}
                   valueOnChange={(e) => {
+                    const { value: input } = e.target as any;
                     setRecord(
-                      { ...record, value: parseFloat((e.target as any).value) },
+                      {
+                        ...record,
+                        value: input ? parseFloat(input) : '',
+                      },
                       i
                     );
                   }}
                   noteOnChange={(e) => {
-                    setRecord({ ...record, note: (e.target as any).value }, i);
+                    const { value } = e.target as any;
+                    setRecord({ ...record, note: value }, i);
                   }}
                 />
               </Box>
@@ -103,8 +130,16 @@ const NewRecord = () => {
         <TextButton onClick={addNewRecord}>新しいセットを追加する</TextButton>
       </Box>
       <Box display="flex" padding="20px 0 0" gap="20px">
-        <SecondaryButton onClick={discard}>破棄する</SecondaryButton>
-        <PrimaryButton onClick={save}>保存する</PrimaryButton>
+        <SecondaryButton onClick={discard} disabled={isProcessing}>
+          破棄する
+        </SecondaryButton>
+        <PrimaryButton
+          onClick={save}
+          disabled={isLoading || isError || isProcessing}
+          isLoading={isProcessing}
+        >
+          登録する
+        </PrimaryButton>
       </Box>
     </PageContainer>
   );

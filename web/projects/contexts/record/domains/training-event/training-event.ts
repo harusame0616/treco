@@ -9,6 +9,8 @@ export interface TrainingEventDto {
   categoryId: string;
   trainingEventId: string;
   trainingEventName: string;
+  loadUnit: string;
+  valueUnit: string;
   index: number;
 }
 
