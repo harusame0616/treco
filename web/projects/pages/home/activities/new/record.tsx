@@ -9,7 +9,7 @@ import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
 import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
-import useCategory from '../../../../custom-error/useCategory';
+import useCategory from '../../../../hooks/useCategory';
 import useActivityCreate from '../../../../hooks/useActivityCreate';
 import { AuthContext } from '../../../_app';
 

@@ -8,7 +8,7 @@ import ListContainer from '../../../../components/container/list-container';
 import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
 import CategoryLabel from '../../../../components/domain/category-label';
-import useCategory from '../../../../custom-error/useCategory';
+import useCategory from '../../../../hooks/useCategory';
 import useTrainingEvents from '../../../../hooks/useTrainingEvents';
 import { AuthContext } from '../../../_app';
 
