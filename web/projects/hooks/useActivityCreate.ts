@@ -5,9 +5,9 @@ interface WorkActivity extends Omit<Activity, 'records'> {
   records: Partial<Record>[];
 }
 
-interface UseActivityEditProp {}
+interface UseActivityCreateProp {}
 
-const useActivityEdit = (prop: UseActivityEditProp) => {
+const useActivityCreate = (prop: UseActivityCreateProp) => {
   const [activity, setActivity] = useState<WorkActivity>({
     activityId: 1,
     categoryId: 1,
@@ -43,4 +43,4 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
   };
 };
 
-export default useActivityEdit;
+export default useActivityCreate;

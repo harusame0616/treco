@@ -10,7 +10,7 @@ import SectionContainer from '../../../../components/container/section-container
 import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
 import useCategory from '../../../../custom-error/useCategory';
-import useActivityEdit from '../../../../hooks/useActivityEdit';
+import useActivityCreate from '../../../../hooks/useActivityCreate';
 import { AuthContext } from '../../../_app';
 
 const NewRecord = () => {
@@ -21,7 +21,7 @@ const NewRecord = () => {
     categoryId: router.query['categoryId'] as string,
   });
 
-  const { activity, setRecord, addNewRecord } = useActivityEdit({
+  const { activity, setRecord, addNewRecord } = useActivityCreate({
     recordId: null,
   });
 
