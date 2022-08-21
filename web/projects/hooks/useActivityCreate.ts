@@ -13,6 +13,7 @@ interface UseActivityCreateProp {
   categoryId?: string;
   trainingEventId?: string;
   activityId?: string;
+  date: Date;
 }
 
 export interface ActivityRecordWork {
@@ -98,9 +99,10 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
     let activity;
     let activityId = prop.activityId;
     if (!activityId) {
-      activity = await activityCommandUsecase.createNewActivity(
-        activitySearchParam
-      );
+      activity = await activityCommandUsecase.createNewActivity({
+        ...activitySearchParam,
+        date: prop.date,
+      });
       activityId = activity.activityId;
     }
 

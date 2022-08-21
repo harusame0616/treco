@@ -22,17 +22,19 @@ export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
   constructor(private prop: ConstructorProp) {}
 
-  static create(
-    prop: { userId: string; categoryId: string; trainingEventId: string },
-    currentDate: Date = new Date()
-  ) {
+  static create(prop: {
+    userId: string;
+    categoryId: string;
+    trainingEventId: string;
+    date: Date;
+  }) {
     return new Activity({
       userId: prop.userId,
       categoryId: prop.categoryId,
       trainingEventId: prop.trainingEventId,
       activityId: generateId(),
       records: [],
-      date: currentDate,
+      date: prop.date,
     });
   }
 

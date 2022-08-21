@@ -27,11 +27,13 @@ export class ActivityCommandUsecase {
     userId: string;
     categoryId: string;
     trainingEventId: string;
+    date: Date;
   }): Promise<ActivityDto> {
     const activity = Activity.create({
       userId: prop.userId,
       categoryId: prop.categoryId,
       trainingEventId: prop.trainingEventId,
+      date: prop.date,
     });
 
     await this.prop.activityRepository.insert(activity);

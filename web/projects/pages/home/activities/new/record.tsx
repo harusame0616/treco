@@ -33,6 +33,7 @@ const NewRecord = () => {
     categoryId: router.query['categoryId'] as string,
     trainingEventId: router.query['trainingEventId'] as string,
     activityId: router.query['activityId'] as string,
+    date: new Date(router.query['date'] as string),
   });
 
   const discard = () => {
