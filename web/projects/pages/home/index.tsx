@@ -16,9 +16,15 @@ import { AuthContext } from '../_app';
 
 const Home = () => {
   const auth = useContext(AuthContext);
+  const router = useRouter();
+
   const [today] = useState(dayjs());
-  const [selectDate, setSelectDate] = useState(today);
-  const [month, setMonth] = useState(today);
+  const [selectDate, setSelectDate] = useState(
+    typeof router.query['date'] == 'string'
+      ? dayjs(router.query['date'])
+      : today
+  );
+  const [month, setMonth] = useState(selectDate);
 
   const selectDateMonth = selectDate.startOf('month').toDate();
   const viewCurrentMonth = month.startOf('month').toDate();
@@ -63,7 +69,6 @@ const Home = () => {
     ...(selectDateMonthActivities ?? []),
   ];
   const { isClient } = useIsClient();
-  const router = useRouter();
 
   const activitiesDateMap = activities.reduce((prev, activity) => {
     const key = dayjs(activity.date).format('YYYY-MM-DD');
