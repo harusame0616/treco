@@ -2,6 +2,7 @@ import { FSCategoryQuery } from '../contexts/record/infrastructure/query/fs-cate
 import { FSTrainingEventQuery } from '../contexts/record/infrastructure/query/fs-training-event-query';
 import { TrainingEventQueryUsecase } from '../contexts/record/usecases/training-event-query-usecase';
 import useSWR from 'swr';
+import { ParameterError } from '../custom-error/parameter-error';
 
 interface UseTrainingEventsProp {
   userId?: string | null;

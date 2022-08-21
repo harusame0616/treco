@@ -15,9 +15,9 @@ const BaseCard = (prop: Prop) => {
       onClick={prop.onClick}
       variant="outlined"
       sx={{
-        background: background.light,
+        background: (background as any).light,
         padding: '10px 20px',
-        color: background.contrastText,
+        color: (background as any).contrastText,
       }}
     >
       {prop.children}
