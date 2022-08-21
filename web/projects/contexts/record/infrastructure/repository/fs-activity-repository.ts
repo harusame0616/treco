@@ -17,10 +17,6 @@ export class FSActivityRepository implements ActivityRepository {
         fbDb,
         'users',
         activityDto.userId,
-        'categories',
-        activityDto.categoryId,
-        'trainingEvents',
-        activityDto.trainingEventId,
         'activities',
         activityDto.activityId
       ),
@@ -36,10 +32,6 @@ export class FSActivityRepository implements ActivityRepository {
         fbDb,
         'users',
         activityDto.userId,
-        'categories',
-        activityDto.categoryId,
-        'trainingEvents',
-        activityDto.trainingEventId,
         'activities',
         activityDto.activityId
       ),
@@ -57,10 +49,6 @@ export class FSActivityRepository implements ActivityRepository {
       fbDb,
       'users',
       prop.userId,
-      'categories',
-      prop.categoryId,
-      'trainingEvents',
-      prop.trainingEventId,
       'activities',
       prop.activityId
     );

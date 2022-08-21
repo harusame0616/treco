@@ -5,6 +5,8 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  query,
+  where,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
 import { CategoryDto } from '../../domains/category/category';
@@ -24,8 +26,6 @@ export class FSTrainingEventQuery implements TrainingEventQuery {
       fbDb,
       'users',
       userId,
-      'categories',
-      categoryId,
       'trainingEvents',
       trainingEventId
     );
@@ -59,15 +59,16 @@ export class FSTrainingEventQuery implements TrainingEventQuery {
       fbDb,
       'users',
       userId,
-      'categories',
-      categoryId,
       'trainingEvents'
     );
-    let trainingEventsSnapshot = await getDocsFromCache(
-      trainingEventsCollectionRef
+
+    const inCategoryQuery = query(
+      trainingEventsCollectionRef,
+      where('categoryId', '==', categoryId)
     );
+    let trainingEventsSnapshot = await getDocsFromCache(inCategoryQuery);
     if (trainingEventsSnapshot.empty) {
-      trainingEventsSnapshot = await getDocs(trainingEventsCollectionRef);
+      trainingEventsSnapshot = await getDocs(inCategoryQuery);
     }
 
     const categoryDocRef = doc(fbDb, 'users', userId, 'categories', categoryId);

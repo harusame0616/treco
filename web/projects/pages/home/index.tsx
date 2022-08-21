@@ -1,21 +1,67 @@
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
 import PageContainer from '../../components/container/page-container';
 import ActivityListItem from '../../components/domain/activity-list-item';
 import TrainingCalender, {
   ActivityColorsDateMap,
 } from '../../components/domain/training-calender/training-calender';
-import useActivities, { Activity } from '../../hooks/useActivities';
+import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
+import useActivities from '../../hooks/useActivities';
 import useIsClient from '../../hooks/useIsClient';
+import { AuthContext } from '../_app';
 
 const Home = () => {
-  const today = dayjs();
-  const [selectDate, setSelectDate] = useState(today.toDate());
-  const [month, setMonth] = useState(today.toDate());
-  const { activities } = useActivities(today.toDate());
+  const auth = useContext(AuthContext);
+  const [today] = useState(dayjs());
+  const [selectDate, setSelectDate] = useState(today);
+  const [month, setMonth] = useState(today);
+
+  const selectDateMonth = selectDate.startOf('month').toDate();
+  const viewCurrentMonth = month.startOf('month').toDate();
+  const viewPrevMonth = month.startOf('month').add(-1, 'month').toDate();
+  const viewNextMonth = month.startOf('month').add(1, 'month').toDate();
+
+  const {
+    activities: selectDateMonthActivities,
+    isLoading: selectDateMonthActivitiesIsLoading,
+  } = useActivities({
+    userId: auth?.auth.authId,
+    month: selectDateMonth,
+  });
+
+  const { activities: currentMonthActivities } = useActivities({
+    userId: auth?.auth.authId,
+    month: viewCurrentMonth,
+  });
+
+  const { activities: prevMonthActivities } = useActivities({
+    userId: auth?.auth.authId,
+    month: viewPrevMonth,
+  });
+
+  const { activities: nextMonthActivities } = useActivities({
+    userId: auth?.auth.authId,
+    month: viewNextMonth,
+  });
+
+  // selectDate の activities と重複しないように、
+  // selectDate と同じ月の activities は集計しない
+  const activities = [
+    ...(dayjs(selectDateMonth).isSame(viewPrevMonth, 'month')
+      ? []
+      : prevMonthActivities ?? []),
+    ...(dayjs(selectDateMonth).isSame(viewCurrentMonth, 'month')
+      ? []
+      : currentMonthActivities ?? []),
+    ...(dayjs(selectDateMonth).isSame(viewNextMonth, 'month')
+      ? []
+      : nextMonthActivities ?? []),
+    ...(selectDateMonthActivities ?? []),
+  ];
   const { isClient } = useIsClient();
   const router = useRouter();
 
@@ -27,7 +73,7 @@ const Home = () => {
     prev[key].push(activity);
 
     return prev;
-  }, {} as { [date: string]: Activity[] });
+  }, {} as { [date: string]: ActivityWithCategoryAndTrainingEventDto[] });
 
   const activityColorsDateMap: ActivityColorsDateMap = Object.fromEntries(
     Object.entries(activitiesDateMap).map(([key, activities]) => {
@@ -42,7 +88,7 @@ const Home = () => {
   );
 
   const selectDateActivities =
-    activitiesDateMap[dayjs(selectDate).format('YYYY-MM-DD')] ?? [];
+    activitiesDateMap[selectDate.format('YYYY-MM-DD')] ?? [];
 
   return (
     <PageContainer>
@@ -57,15 +103,15 @@ const Home = () => {
             sx={{ background: '#262626', margin: '-20px -20px 0' }}
           >
             <TrainingCalender
-              month={month}
+              month={month.toDate()}
               today={today.toDate()}
-              selectDate={selectDate}
+              selectDate={selectDate.toDate()}
               activityColorsDateMap={activityColorsDateMap}
               changeSelectDate={(date) => {
-                setSelectDate(date);
+                setSelectDate(dayjs(date));
               }}
               changeViewMonth={(date) => {
-                setMonth(date);
+                setMonth(dayjs(date));
               }}
             />
           </Box>
@@ -79,9 +125,24 @@ const Home = () => {
             flexDirection="column"
             gap="20px"
           >
-            {selectDateActivities.map((activity) => (
-              <ActivityListItem activity={activity} key={activity.activityId} />
-            ))}
+            {selectDateMonthActivitiesIsLoading ? (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                width="100%"
+                height="100%"
+              >
+                <BaseProgress />
+              </Box>
+            ) : (
+              selectDateActivities.map((activity) => (
+                <ActivityListItem
+                  activity={activity}
+                  key={activity.activityId}
+                />
+              ))
+            )}
           </Box>
           <Box position="absolute" right="20px" bottom="20px" zIndex="1">
             <AddButton
@@ -89,7 +150,7 @@ const Home = () => {
                 router.push({
                   pathname: '/home/activities/new',
                   query: {
-                    date: dayjs(selectDate).toDate().toUTCString(),
+                    date: selectDate.toDate().toUTCString(),
                   },
                 });
               }}

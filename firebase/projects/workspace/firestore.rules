@@ -5,20 +5,15 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid ==  userId;
     }
 
-
     // アクティビティ書き込み
-    match /users/{userId}/categories/{categoryId}/trainingEvents/{trainingEventId}/activities/{activityId} {
-      function isMatchedWithPath(userId, categoryId, trainingEventId, activityId){
-        return request.resource.data.categoryId == categoryId && request.resource.data.trainingEventId == trainingEventId && request.resource.data.activityId == activityId && request.resource.data.userId == userId;
-      }
-
+    match /users/{userId}/activities/{activityId} {
       // 新規作成
       // - 認証済み && 自身のリソース
-      // - パスとデータが保持するID群が一致する
-      allow create: if isMyResource(userId) && isMatchedWithPath(userId, categoryId, trainingEventId, activityId)
+      allow create: if isMyResource(userId);
 
       // レコードの更新
-      // - レコード以外のデータが既存のデータと一致する
+      // - 認証済み && 自身のリソース
+      // - レコード以外のデータが既存のデータと一致する(スキーマ更新時変更が必要)
       allow update: if isMyResource(userId) && request.resource.data.categoryId == resource.data.categoryId && request.resource.data.trainingEventId == resource.data.trainingEventId && request.resource.data.activityId == resource.data.activityId && request.resource.data.userId == resource.data.userId;
     }
 

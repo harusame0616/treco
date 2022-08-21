@@ -1,3 +1,4 @@
+import { ParameterError } from '../../../custom-error/parameter-error';
 import { CategoryDto } from '../domains/category/category';
 
 export interface CategoryQuery {

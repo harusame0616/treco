@@ -66,7 +66,7 @@ const TrainingCalender = (prop: TrainingCalenderProp) => {
         infinite={true}
         dots={false}
         arrows={false}
-        speed="50"
+        speed="200"
         afterChange={(index: number) => {
           let num;
           if (index == 0 && slideIndex == 2) {
