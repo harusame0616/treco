@@ -23,6 +23,12 @@ service cloud.firestore {
       allow create: if isMyResource(userId);
     }
 
+    match /users/{userId}/trainingEvents/{categoryId} {
+      // 新規作成
+      // - 認証済み && 自身のリソース
+      allow create: if isMyResource(userId);
+    }
+
     // 自分のデータは全て読み込み可能
     match /users/{userId}/{document=**} {
       allow read: if isMyResource(userId);

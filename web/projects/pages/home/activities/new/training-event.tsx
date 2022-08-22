@@ -1,21 +1,39 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
+import AddButton from '../../../../components/case/add-button';
 import ListItemCard from '../../../../components/case/list-item-card';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import ListContainer from '../../../../components/container/list-container';
 import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
 import CategoryLabel from '../../../../components/domain/category-label';
+import TrainingEventEditPopup, {
+  TrainingEventEditInfo,
+} from '../../../../components/domain/training-event/training-event-edit-popup';
+import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
+import { TrainingEventCommandUsecase } from '../../../../contexts/record/usecases/training-event-command-usecase';
+import { ParameterError } from '../../../../custom-error/parameter-error';
 import useCategory from '../../../../hooks/useCategory';
 import useTrainingEvents from '../../../../hooks/useTrainingEvents';
-import { AuthContext } from '../../../_app';
+import { AuthContext, PopMessageContext } from '../../../_app';
+
+const trainingEventCommandUsecase = new TrainingEventCommandUsecase({
+  trainingEventRepository: new FSTrainigEventRepository(),
+});
 
 const NewEvent = () => {
   const router = useRouter();
   const categoryId = router.query['categoryId'];
+  if (typeof categoryId != 'string') {
+    throw new ParameterError('カテゴリIDが不正です。');
+  }
+
   const auth = useContext(AuthContext);
+  const popMessage = useContext(PopMessageContext);
+
+  const [editPopup, setEditPopup] = useState(false);
 
   const { isLoading, trainingEvents } = useTrainingEvents({
     categoryId: categoryId as string,
@@ -44,40 +62,88 @@ const NewEvent = () => {
     });
   };
 
+  const popError = (error: Error) => {
+    popMessage?.(error.message, { mode: 'error' });
+  };
+
+  const createNewTrainingEvent = async (
+    data: TrainingEventEditInfo,
+    reset: () => void
+  ) => {
+    if (
+      trainingEvents
+        .map((trainingEvent) => trainingEvent.trainingEventName)
+        .includes(data.trainingEventName)
+    ) {
+      return popMessage?.('同じ名前のトレーニング種目が登録済みです。', {
+        mode: 'error',
+      });
+    }
+
+    trainingEventCommandUsecase.createNewTrainingEvent({
+      userId: auth!.auth!.authId as string,
+      categoryId,
+      ...data,
+    });
+
+    setEditPopup(false);
+    reset();
+  };
+
   return (
-    <PageContainer>
-      <SectionContainer>記録する種目を選択してください。</SectionContainer>
-      <CategoryLabel color={category?.color}>
-        {categoryIsLoading
-          ? '読み込み中'
-          : category?.categoryName ?? 'カテゴリ読み取りエラー'}
-      </CategoryLabel>
+    <>
+      <PageContainer>
+        <SectionContainer>記録する種目を選択してください。</SectionContainer>
+        <CategoryLabel color={category?.color}>
+          {categoryIsLoading
+            ? '読み込み中'
+            : category?.categoryName ?? 'カテゴリ読み取りエラー'}
+        </CategoryLabel>
 
-      <SectionContainer>
-        {isLoading ? (
-          <Box display="flex" justifyContent="center">
-            <BaseProgress />
-          </Box>
-        ) : (
-          <ListContainer>
-            {trainingEvents
-              ? trainingEvents.map((event) => (
-                  <ListItemCard
-                    onClick={() => goToNext(event.trainingEventId)}
-                    key={event.trainingEventId}
-                  >
-                    {event.trainingEventName}
-                  </ListItemCard>
-                ))
-              : 'トレーニング種目読み込みエラー'}
-          </ListContainer>
-        )}
-      </SectionContainer>
+        <SectionContainer>
+          {isLoading ? (
+            <Box display="flex" justifyContent="center">
+              <BaseProgress />
+            </Box>
+          ) : (
+            <ListContainer>
+              {trainingEvents
+                ? trainingEvents.map((event) => (
+                    <ListItemCard
+                      onClick={() => goToNext(event.trainingEventId)}
+                      key={event.trainingEventId}
+                    >
+                      {event.trainingEventName}
+                    </ListItemCard>
+                  ))
+                : 'トレーニング種目読み込みエラー'}
+            </ListContainer>
+          )}
+        </SectionContainer>
 
-      <SectionContainer>
-        <SecondaryButton onClick={goToBack}>カテゴリ選択に戻る</SecondaryButton>
-      </SectionContainer>
-    </PageContainer>
+        <SectionContainer>
+          <SecondaryButton onClick={goToBack}>
+            カテゴリ選択に戻る
+          </SecondaryButton>
+        </SectionContainer>
+      </PageContainer>
+      <TrainingEventEditPopup
+        open={editPopup}
+        onError={popError}
+        onPirmaryClick={createNewTrainingEvent}
+        onSecondaryClick={(_, reset) => {
+          setEditPopup(false);
+          reset();
+        }}
+      />
+      <Box position="fixed" right="20px" bottom="20px" zIndex="1">
+        <AddButton
+          onClick={() => {
+            setEditPopup(true);
+          }}
+        />
+      </Box>
+    </>
   );
 };
 

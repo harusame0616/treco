@@ -4,6 +4,8 @@ import { MouseEventHandler, ReactNode } from 'react';
 interface Prop {
   children: ReactNode;
   onClick?: MouseEventHandler;
+  width?: string;
+  maxWidth?: string;
 }
 
 const BaseCard = (prop: Prop) => {
@@ -18,6 +20,8 @@ const BaseCard = (prop: Prop) => {
         background: (background as any).light,
         padding: '10px 20px',
         color: (background as any).contrastText,
+        width: prop.width,
+        maxWidth: prop.maxWidth,
       }}
     >
       {prop.children}

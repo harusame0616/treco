@@ -23,14 +23,15 @@ const useTrainingEvents = (prop: UseTrainingEventsProp) => {
       }
 
       return trainingEventQueryUsecase.queryListInCategory(userId, categoryId);
-    }
+    },
+    { refreshInterval: 200 }
   );
 
   return {
     isLoading:
       prop.categoryId == null || prop.userId == null || (!error && !data),
     isError: prop.categoryId && prop.userId && error,
-    trainingEvents: data,
+    trainingEvents: data ?? [],
   };
 };
 export default useTrainingEvents;
