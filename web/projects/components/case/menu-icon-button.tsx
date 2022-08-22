@@ -1,12 +1,13 @@
-import { Icon, IconButton } from '@mui/material';
 import { MenuRounded } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 
 interface MenuButtonProp {
   color?: string;
+  onClick?: () => void;
 }
 const MenuButton = (prop: MenuButtonProp) => {
   return (
-    <IconButton>
+    <IconButton onClick={prop.onClick}>
       <MenuRounded sx={{ color: prop.color }} />
     </IconButton>
   );

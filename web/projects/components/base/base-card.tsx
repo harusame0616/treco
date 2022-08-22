@@ -6,6 +6,7 @@ interface Prop {
   onClick?: MouseEventHandler;
   width?: string;
   maxWidth?: string;
+  height?: string;
 }
 
 const BaseCard = (prop: Prop) => {
@@ -22,6 +23,7 @@ const BaseCard = (prop: Prop) => {
         color: (background as any).contrastText,
         width: prop.width,
         maxWidth: prop.maxWidth,
+        height: prop.height,
       }}
     >
       {prop.children}

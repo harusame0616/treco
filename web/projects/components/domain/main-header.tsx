@@ -2,11 +2,14 @@ import { AppBar, Grid, useTheme } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
+import { CriticalError } from '../../custom-error/critical-error';
 import { AuthContext } from '../../pages/_app';
 import MenuIconButton from '../case/menu-icon-button';
 
 interface MainHeaderProp {
   height: string;
+  onMenuClick: () => void;
+  isAuthenticated: boolean;
 }
 
 const MainHeader = (prop: MainHeaderProp) => {
@@ -14,6 +17,10 @@ const MainHeader = (prop: MainHeaderProp) => {
   const background: any = theme.palette.background;
 
   const auth = useContext(AuthContext);
+
+  if (!auth) {
+    throw new CriticalError('context error');
+  }
 
   return (
     <AppBar
@@ -28,8 +35,13 @@ const MainHeader = (prop: MainHeaderProp) => {
           justifyContent="flex-start"
           alignItems="center"
         >
-          <Link href={auth?.isAuthenticated ? '/home' : '/'} passHref={true}>
-            <Image src="/icon-512x512.png" width={45} height={45} />
+          <Link href={auth.isAuthenticated ? '/home' : '/'} passHref={true}>
+            <Image
+              src="/icon-512x512.png"
+              width={45}
+              height={45}
+              alt="Treco Service Icon"
+            />
           </Link>
         </Grid>
         <Grid
@@ -46,7 +58,12 @@ const MainHeader = (prop: MainHeaderProp) => {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <MenuIconButton color={background.contrastText} />
+          {auth.isAuthenticated ? (
+            <MenuIconButton
+              color={background.contrastText}
+              onClick={() => prop.onMenuClick()}
+            />
+          ) : null}
         </Grid>
       </Grid>
     </AppBar>

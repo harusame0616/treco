@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { createContext, useEffect, useState } from 'react';
 import MainHeader from '../components/domain/main-header';
+import UserMenu from '../components/domain/user/user-menu';
 import useAuth from '../hooks/useAuth';
 import useMyTheme from '../hooks/useMyTheme';
 import usePopMessage from '../hooks/usePopMessage';
@@ -42,6 +43,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   const theme = useMyTheme({ theme: 'dark' });
   const headerHeight = '65px';
 
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const openUserMenu = () => setUserMenuOpen(true);
+  const closeUserMenu = () => setUserMenuOpen(false);
+
   if (!auth.isLoading) {
     if (auth.isAuthenticated && router.pathname == '/') {
       router.push('/home');
@@ -62,7 +67,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthContext.Provider value={auth}>
           <PopMessageContext.Provider value={popMessage.popMessage}>
             <Box display="flex" flexDirection="column" sx={{ height: '100%' }}>
-              <MainHeader height={headerHeight} />
+              <MainHeader
+                height={headerHeight}
+                onMenuClick={openUserMenu}
+                isAuthenticated={auth.isAuthenticated}
+              />
               <Box paddingTop="65px" flexGrow="1" flexShrink="0">
                 {auth.isLoading ? undefined : <Component {...pageProps} />}
               </Box>
@@ -103,6 +112,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 {popMessage.message}
               </Alert>
             </Snackbar>
+            <UserMenu open={userMenuOpen} onClose={closeUserMenu} />
           </PopMessageContext.Provider>
         </AuthContext.Provider>
       </ThemeProvider>
