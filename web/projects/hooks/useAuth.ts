@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInAnonymously as _signInAnonymously,
   signInWithRedirect,
+  signOut,
 } from 'firebase/auth';
 import { useLayoutEffect, useState } from 'react';
 import { fbAuth } from '../utils/firebase';
@@ -82,6 +83,10 @@ const useAuth = () => {
     isAuthenticated,
     signInAnonymously,
     linkWith,
+    signOut: async () => {
+      await signOut(fbAuth);
+      setAuth({});
+    },
   };
 };
 

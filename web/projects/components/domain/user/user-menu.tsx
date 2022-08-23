@@ -1,6 +1,9 @@
 import { CloseRounded, LogoutRounded } from '@mui/icons-material';
 import { Box, Drawer, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { CriticalError } from '../../../custom-error/critical-error';
+import { AuthContext } from '../../../pages/_app';
 import BaseCard from '../../base/base-card';
 import TextButton from '../../case/text-button';
 
@@ -11,10 +14,18 @@ interface Prop {
 
 const UserMenu = (prop: Prop) => {
   const router = useRouter();
+  const auth = useContext(AuthContext);
+  if (!auth) {
+    throw new CriticalError('context error');
+  }
 
-  const logout = () => {
+  const signOut = () => {
+    if (auth.auth.isAnonymous) {
+      router.push('/auth/signout');
+    } else {
+      auth.signOut();
+    }
     prop.onClose();
-    router.push('/logout');
   };
 
   return (
@@ -27,7 +38,7 @@ const UserMenu = (prop: Prop) => {
             </IconButton>
           </Box>
           <Box>
-            <TextButton onClick={logout}>
+            <TextButton onClick={signOut}>
               <LogoutRounded />
               ログアウト
             </TextButton>
