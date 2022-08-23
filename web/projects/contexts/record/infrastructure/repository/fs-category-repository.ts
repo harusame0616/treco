@@ -1,8 +1,11 @@
 import {
   collection,
   doc,
+  getDoc,
+  getDocFromCache,
   getDocs,
   getDocsFromCache,
+  limit,
   query,
   setDoc,
   where,
@@ -12,7 +15,7 @@ import { Category } from '../../domains/category/category';
 import { CategoryRepository } from '../../usecases/category-command-usecase';
 
 export class FSCategoryRepository implements CategoryRepository {
-  async insert(category: Category) {
+  async save(category: Category) {
     const dto = category.toDto();
 
     await setDoc(
@@ -21,20 +24,37 @@ export class FSCategoryRepository implements CategoryRepository {
     );
   }
 
+  async findOneByCategoryId(prop: {
+    userId: string;
+    categoryId: string;
+  }): Promise<Category | null> {
+    const docRef = doc(
+      fbDb,
+      'users',
+      prop.userId,
+      'categories',
+      prop.categoryId
+    );
+
+    let categoryDto = await getDocFromCache(docRef);
+    if (!categoryDto.exists()) {
+      categoryDto = await getDoc(docRef);
+    }
+
+    return categoryDto.exists()
+      ? Category.fromDto(categoryDto.data() as any)
+      : null;
+  }
   async findOneByCategoryName(prop: {
     userId: string;
     categoryName: string;
   }): Promise<Category | null> {
-    const activityCollectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'categories'
-    );
+    const collectionRef = collection(fbDb, 'users', prop.userId, 'categories');
 
     const categoryNameQuery = query(
-      activityCollectionRef,
-      where('categoryName', '==', prop.categoryName)
+      collectionRef,
+      where('categoryName', '==', prop.categoryName),
+      limit(1)
     );
 
     let categories = await getDocsFromCache(categoryNameQuery);

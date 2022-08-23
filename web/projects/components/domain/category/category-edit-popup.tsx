@@ -1,6 +1,10 @@
 import { Box, Dialog, IconButton, Input, TextField } from '@mui/material';
-import { useRef, useState } from 'react';
-import { CategoryDto } from '../../../contexts/record/domains/category/category';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Category,
+  CategoryDto,
+} from '../../../contexts/record/domains/category/category';
+import { ParameterError } from '../../../custom-error/parameter-error';
 import BaseCard from '../../base/base-card';
 import PrimaryButton from '../../case/primary-button';
 import SecondaryButton from '../../case/secondary-button';
@@ -11,6 +15,7 @@ export type CategoryEditInfo = Omit<Omit<CategoryDto, 'categoryId'>, 'userId'>;
 
 interface Prop {
   open: boolean;
+  category?: CategoryDto;
   onPirmaryClick: (
     data: CategoryEditInfo,
     reset: () => void
@@ -19,21 +24,30 @@ interface Prop {
     data: CategoryEditInfo,
     reset: () => void
   ) => Promise<void> | void;
+  onError: (error: Error) => void;
 }
 
-const DEFAULT_COLOR = '#ffffff';
-const DEFAULT_CATEGORY_NAME = '';
+const DEFAULT_COLOR = '#FFFFFF';
+const DEFAULT_NAME = '';
+
 const CategoryEditPopup = (prop: Prop) => {
-  const [color, setColor] = useState(DEFAULT_COLOR);
-  const [categoryName, setCategoryName] = useState(DEFAULT_CATEGORY_NAME);
+  const [color, setColor] = useState(prop.category?.color ?? DEFAULT_COLOR);
+  const [categoryName, setCategoryName] = useState(
+    prop.category?.categoryName ?? DEFAULT_NAME
+  );
 
   const colorInputRef = useRef<HTMLInputElement>(null);
   const category = { categoryName, color };
 
   const reset = () => {
-    setCategoryName(DEFAULT_CATEGORY_NAME);
-    setColor(DEFAULT_COLOR);
+    setCategoryName(prop.category?.categoryName ?? DEFAULT_NAME);
+    setColor(prop.category?.color ?? DEFAULT_COLOR);
   };
+
+  useEffect(() => {
+    setColor(prop.category?.color ?? DEFAULT_COLOR);
+    setCategoryName(prop.category?.categoryName ?? DEFAULT_NAME);
+  }, [prop]);
 
   return (
     <Dialog open={prop.open}>
@@ -80,7 +94,35 @@ const CategoryEditPopup = (prop: Prop) => {
             >
               破棄する
             </SecondaryButton>
-            <PrimaryButton onClick={() => prop.onPirmaryClick(category, reset)}>
+            <PrimaryButton
+              onClick={() => {
+                if (!categoryName.length) {
+                  prop.onError(new ParameterError('カテゴリ名は必須です。'));
+                  return;
+                }
+                if (categoryName.length > Category.CATEGORY_NAME_MAX_LENGTH) {
+                  prop.onError?.(
+                    new ParameterError(
+                      `カテゴリ名は${Category.CATEGORY_NAME_MAX_LENGTH}文字以内で入力してください`
+                    )
+                  );
+                  return;
+                }
+
+                if (!color.length) {
+                  prop.onError(new ParameterError(`カラーは必須です。`));
+                  return;
+                }
+                if (!new RegExp(Category.COLOR_PATTERN).test(color)) {
+                  prop.onError(
+                    new ParameterError(`カラーのフォーマットが不正です。`)
+                  );
+                  return;
+                }
+
+                prop.onPirmaryClick(category, reset);
+              }}
+            >
               作成する
             </PrimaryButton>
           </Box>

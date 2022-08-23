@@ -36,12 +36,7 @@ export class FSCategoryQuery implements CategoryQuery {
     }
 
     return snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        categoryId: data.categoryId,
-        categoryName: data.categoryName,
-        color: data.color,
-      };
+      return { ...doc.data() } as CategoryDto;
     });
   }
 }

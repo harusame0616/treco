@@ -21,6 +21,10 @@ service cloud.firestore {
       // 新規作成
       // - 認証済み && 自身のリソース
       allow create: if isMyResource(userId);
+
+      // 更新
+      // - 認証済み && 自身のリソース
+      allow update: if isMyResource(userId);
     }
 
     match /users/{userId}/trainingEvents/{categoryId} {

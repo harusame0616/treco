@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+import { EditRounded } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
@@ -12,6 +13,7 @@ import CategoryLabel from '../../../../components/domain/category-label';
 import CategoryEditPopup, {
   CategoryEditInfo,
 } from '../../../../components/domain/category/category-edit-popup';
+import { CategoryDto } from '../../../../contexts/record/domains/category/category';
 import { FSCategoryRepository } from '../../../../contexts/record/infrastructure/repository/fs-category-repository';
 import { CategoryCommandUsecase } from '../../../../contexts/record/usecases/category-command-usecase';
 import useCategories from '../../../../hooks/useCategories';
@@ -27,10 +29,15 @@ const ActivitiesNew = () => {
 
   const [categoryEditPopup, setCategoryEditPopup] = useState(false);
 
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoryDto | undefined
+  >();
+
   const { categories, isLoading } = useCategories({
     authId: auth?.auth?.authId,
   });
   const router = useRouter();
+  console.log({ categories });
 
   const backToHome = () => {
     router.push({
@@ -51,10 +58,19 @@ const ActivitiesNew = () => {
     });
   };
 
-  const createNewCategory = async (
-    data: CategoryEditInfo,
-    reset: () => void
-  ) => {
+  const saveCategory = (data: CategoryEditInfo, reset: () => void) => {
+    console.log({ selectedCategory });
+    if (selectedCategory) {
+      editCategory({ ...selectedCategory, ...data });
+    } else {
+      createNewCategory(data);
+    }
+
+    setCategoryEditPopup(false);
+    reset();
+  };
+
+  const createNewCategory = async (data: CategoryEditInfo) => {
     if (
       categories
         .map((category) => category.categoryName)
@@ -69,9 +85,30 @@ const ActivitiesNew = () => {
       userId: auth!.auth!.authId as string,
       ...data,
     });
+  };
 
-    setCategoryEditPopup(false);
-    reset();
+  const editCategory = (category: CategoryDto) => {
+    if (
+      categories
+        .filter((category) => category.categoryId != category.categoryId)
+        .map((category) => category.categoryName)
+        .includes(category.categoryName)
+    ) {
+      return popMessage?.('同じ名前のカテゴリが登録済みです。', {
+        mode: 'error',
+      });
+    }
+
+    categoryCommandUsecase.editCategory(category);
+  };
+
+  const openCategoryEditPopup = (category?: CategoryDto) => {
+    setSelectedCategory(category);
+    setCategoryEditPopup(true);
+  };
+
+  const popupError = (e: Error) => {
+    popMessage?.(e.message, { mode: 'error' });
   };
 
   return (
@@ -92,9 +129,22 @@ const ActivitiesNew = () => {
                   key={category.categoryId}
                   onClick={() => goToEventSelect(category.categoryId)}
                 >
-                  <CategoryLabel color={category.color} size="large">
-                    {category.categoryName}
-                  </CategoryLabel>
+                  <Box flexGrow={1} flexShrink={0}>
+                    <CategoryLabel color={category.color} size="large">
+                      {category.categoryName}
+                    </CategoryLabel>
+                  </Box>
+                  <Box flexGrow={0} flexShrink={1}>
+                    <IconButton
+                      color="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openCategoryEditPopup(category);
+                      }}
+                    >
+                      <EditRounded />
+                    </IconButton>
+                  </Box>
                 </ListItemCard>
               ))}
             </ListContainer>
@@ -106,18 +156,16 @@ const ActivitiesNew = () => {
       </PageContainer>
       <CategoryEditPopup
         open={categoryEditPopup}
-        onPirmaryClick={createNewCategory}
+        category={selectedCategory}
+        onPirmaryClick={saveCategory}
         onSecondaryClick={(_, reset) => {
           setCategoryEditPopup(false);
           reset();
         }}
+        onError={popupError}
       />
       <Box position="fixed" right="20px" bottom="20px" zIndex="1">
-        <AddButton
-          onClick={() => {
-            setCategoryEditPopup(true);
-          }}
-        />
+        <AddButton onClick={() => openCategoryEditPopup()} />
       </Box>
     </>
   );
