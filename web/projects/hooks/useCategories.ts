@@ -10,7 +10,7 @@ const useCategories = ({ authId }: { authId: string | undefined }) => {
   const { data, error } = useSWR(
     ['category/queryList', authId],
     (_, authId) => (authId ? categoryQueryUsecase.queryList(authId) : null),
-    { refreshInterval: 200 }
+    { refreshInterval: 100 }
   );
 
   return {

@@ -24,7 +24,7 @@ const useTrainingEvents = (prop: UseTrainingEventsProp) => {
 
       return trainingEventQueryUsecase.queryListInCategory(userId, categoryId);
     },
-    { refreshInterval: 200 }
+    { refreshInterval: 100 }
   );
 
   return {

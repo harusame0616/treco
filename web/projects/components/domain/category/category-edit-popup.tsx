@@ -47,7 +47,7 @@ const CategoryEditPopup = (prop: Prop) => {
   useEffect(() => {
     setColor(prop.category?.color ?? DEFAULT_COLOR);
     setCategoryName(prop.category?.categoryName ?? DEFAULT_NAME);
-  }, [prop]);
+  }, [prop.category]);
 
   return (
     <Dialog open={prop.open}>

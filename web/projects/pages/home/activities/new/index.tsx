@@ -37,7 +37,6 @@ const ActivitiesNew = () => {
     authId: auth?.auth?.authId,
   });
   const router = useRouter();
-  console.log({ categories });
 
   const backToHome = () => {
     router.push({
