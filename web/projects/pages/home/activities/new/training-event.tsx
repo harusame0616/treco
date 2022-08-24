@@ -41,7 +41,6 @@ const NewEvent = () => {
     categoryId: categoryId as string,
     userId: auth?.auth?.authId,
   });
-  console.log({ trainingEvents });
 
   const { isLoading: categoryIsLoading, category } = useCategory({
     categoryId: categoryId as string,
@@ -64,7 +63,10 @@ const NewEvent = () => {
       pathname: '/home/activities/new/record',
       query: {
         ...router.query,
+        categoryId,
         trainingEventId,
+        returnTo: '/home/activities/new/training-event',
+        returnQuery: JSON.stringify({ categoryId }),
       },
     });
   };
@@ -93,7 +95,6 @@ const NewEvent = () => {
         });
       }
 
-      console.log({ selectedTrainingEvent, data });
       trainingEventCommandUsecase.editTrainingEvent({
         ...selectedTrainingEvent,
         ...data,

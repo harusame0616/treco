@@ -8,6 +8,13 @@ export type ActivityWithCategoryAndTrainingEventDto = CategoryDto &
   TrainingEventDto &
   ActivityDto;
 export interface ActivityQuery {
+  queryDetail(
+    userId: string,
+    categoryId: string,
+    trainingEventId: string,
+    activityId: string
+  ): Promise<ActivityWithCategoryAndTrainingEventDto | null>;
+
   queryListInMonth(
     userId: string,
     date: Date
@@ -20,6 +27,20 @@ interface ConstructorProp {
 
 export class ActivityQueryUsecase {
   constructor(private prop: ConstructorProp) {}
+
+  async queryDetail(
+    userId: string,
+    categoryId: string,
+    trainingEventId: string,
+    activityId: string
+  ) {
+    return await this.prop.activityQuery.queryDetail(
+      userId,
+      categoryId,
+      trainingEventId,
+      activityId
+    );
+  }
 
   async queryListInMonth(userId: string, month: Date) {
     return await this.prop.activityQuery.queryListInMonth(userId, month);

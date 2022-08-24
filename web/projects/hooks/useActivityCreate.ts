@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Activity,
   ActivityRecord,
@@ -6,6 +6,7 @@ import {
 import { FSActivityRepository } from '../contexts/record/infrastructure/repository/fs-activity-repository';
 import { ActivityCommandUsecase } from '../contexts/record/usecases/activity-command-usecase';
 import { ParameterError } from '../custom-error/parameter-error';
+import useActivity from './useActivity';
 import useTrainingEvent from './useTrainingEvent';
 
 interface UseActivityCreateProp {
@@ -30,11 +31,29 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
   const { isLoading, trainingEvent, isError } = useTrainingEvent(prop);
   const [errorRecordIndex, setErrorRecordIndex] = useState<null | number>(null);
 
-  const [records, setRecords] = useState<ActivityRecordWork[]>([
-    { load: '', value: '', note: '' },
-    { load: '', value: '', note: '' },
-    { load: '', value: '', note: '' },
-  ]);
+  const {
+    activity,
+    isError: activityIsError,
+    isLoading: activityIsLoading,
+  } = useActivity(prop);
+
+  const [records, setRecords] = useState<ActivityRecordWork[]>(
+    activity?.records ?? [
+      { load: '', value: '', note: '' },
+      { load: '', value: '', note: '' },
+      { load: '', value: '', note: '' },
+    ]
+  );
+
+  useEffect(() => {
+    setRecords(
+      activity?.records ?? [
+        { load: '', value: '', note: '' },
+        { load: '', value: '', note: '' },
+        { load: '', value: '', note: '' },
+      ]
+    );
+  }, [activity]);
 
   const addNewRecord = () => {
     setRecords([...records, { load: '', value: '', note: '' }]);
@@ -114,8 +133,8 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
   };
 
   return {
-    isLoading,
-    isError,
+    isLoading: isLoading || activityIsLoading,
+    isError: isError || (prop.activityId != null && activityIsError),
     trainingEvent,
     records,
     addNewRecord,

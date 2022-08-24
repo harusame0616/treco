@@ -9,6 +9,7 @@ import ActivityListItem from '../../components/domain/activity-list-item';
 import TrainingCalender, {
   ActivityColorsDateMap,
 } from '../../components/domain/training-calender/training-calender';
+import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
 import useActivities from '../../hooks/useActivities';
 import useIsClient from '../../hooks/useIsClient';
@@ -95,6 +96,21 @@ const Home = () => {
   const selectDateActivities =
     activitiesDateMap[selectDate.format('YYYY-MM-DD')] ?? [];
 
+  const goToActivityEdit = (activity: ActivityDto) => {
+    router.push({
+      pathname: '/home/activities/new/record',
+      query: {
+        categoryId: activity.categoryId,
+        trainingEventId: activity.trainingEventId,
+        activityId: activity.activityId,
+        returnTo: `/home`,
+        returnQuery: JSON.stringify({
+          date: selectDate.toDate().toUTCString(),
+        }),
+      },
+    });
+  };
+
   return (
     <PageContainer>
       {/* サーバーとクライアントでタイムゾーンが異なることにより、
@@ -145,6 +161,7 @@ const Home = () => {
                 <ActivityListItem
                   activity={activity}
                   key={activity.activityId}
+                  onClick={goToActivityEdit}
                 />
               ))
             )}

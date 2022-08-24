@@ -6,17 +6,18 @@ import CategoryLabel from './category-label';
 
 interface ActivityListItemProp {
   activity: ActivityWithCategoryAndTrainingEventDto;
+  onClick: (activity: ActivityWithCategoryAndTrainingEventDto) => void;
 }
 
-const ActivityListItem = ({ activity }: ActivityListItemProp) => {
+const ActivityListItem = (prop: ActivityListItemProp) => {
   return (
-    <Box>
+    <Box onClick={() => prop.onClick({ ...prop.activity })}>
       <Box display="flex" alignItems="center" marginBottom="5px">
-        <CategoryLabel color={activity.color} size="small">
-          {activity.categoryName}
+        <CategoryLabel color={prop.activity.color} size="small">
+          {prop.activity.categoryName}
         </CategoryLabel>
         &nbsp;-&nbsp;
-        <Box>{activity.trainingEventName}</Box>
+        <Box>{prop.activity.trainingEventName}</Box>
       </Box>
       <Box>
         <BaseCard>
@@ -39,7 +40,7 @@ const ActivityListItem = ({ activity }: ActivityListItemProp) => {
                   備考
                 </Grid>
               </Grid>
-              {activity.records.map((record, index) => (
+              {prop.activity.records.map((record, index) => (
                 <Grid container key={index}>
                   <Grid
                     item
@@ -69,7 +70,7 @@ const ActivityListItem = ({ activity }: ActivityListItemProp) => {
                       paddingBottom="3px"
                       marginLeft="2.5px"
                     >
-                      {activity.loadUnit}
+                      {prop.activity.loadUnit}
                     </Box>
                   </Grid>
                   <Grid
@@ -86,7 +87,7 @@ const ActivityListItem = ({ activity }: ActivityListItemProp) => {
                       paddingBottom="3px"
                       marginLeft="2.5px"
                     >
-                      {activity.valueUnit}
+                      {prop.activity.valueUnit}
                     </Box>
                   </Grid>
                   <Grid

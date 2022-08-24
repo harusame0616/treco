@@ -14,8 +14,9 @@ import useProcessing from '../../../../hooks/useProcessing';
 import { AuthContext, PopMessageContext } from '../../../_app';
 
 const NewRecord = () => {
-  const auth = useContext(AuthContext);
   const router = useRouter();
+
+  const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
   const { isProcessing, startProcessing } = useProcessing();
 
@@ -36,13 +37,18 @@ const NewRecord = () => {
     date: new Date(router.query['date'] as string),
   });
 
-  const discard = () => {
-    router.push({
-      pathname: '/home/activities/new/training-event',
-      query: {
-        categoryId: trainingEvent?.categoryId,
-      },
+  const goBack = async () => {
+    await router.push({
+      pathname: router.query.returnTo as string,
+      query:
+        typeof router.query.returnQuery === 'string'
+          ? JSON.parse(router.query.returnQuery)
+          : undefined,
     });
+  };
+
+  const discard = () => {
+    goBack();
   };
 
   const save = async () => {
@@ -51,12 +57,8 @@ const NewRecord = () => {
     } catch (err: any) {
       return popMessage!(err.message, { mode: 'error' });
     }
-    await router.push({
-      pathname: '/home/activities/new/training-event',
-      query: {
-        categoryId: trainingEvent?.categoryId,
-      },
-    });
+
+    goBack();
   };
 
   return (
