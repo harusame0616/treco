@@ -20,6 +20,8 @@ const NewRecord = () => {
   const popMessage = useContext(PopMessageContext);
   const { isProcessing, startProcessing } = useProcessing();
   const lastRecordRef = useRef<HTMLElement | null>(null);
+  const [selectedRecordIndex, setSelectedRecordIndex] = useState(0);
+  const selectedRecordRef = useRef<HTMLElement | null>(null);
 
   const {
     records,
@@ -47,13 +49,27 @@ const NewRecord = () => {
 
     lastRecordRef.current?.scrollIntoView({
       behavior: 'smooth',
-      block: 'start',
+      block: 'center',
     });
   }, [records.length]);
 
   useEffect(() => {
     setStopFollowRecordCard(false);
   }, []);
+
+  useEffect(() => {
+    if (selectedRecordIndex - 1 === records.length) {
+      lastRecordRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    } else {
+      selectedRecordRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [selectedRecordIndex]);
 
   const goBack = async () => {
     await router.push({
@@ -88,7 +104,7 @@ const NewRecord = () => {
           scrollSnapType: 'y mandatory',
           overflowY: 'auto',
           height: 'calc(100vh - 240px)',
-          paddingBottom: '20vh',
+          paddingBottom: '80vh',
         }}
         flexGrow="1"
         flexShrink="0"
@@ -115,7 +131,16 @@ const NewRecord = () => {
               <Box
                 sx={{ scrollSnapAlign: 'start' }}
                 key={i}
-                ref={records.length - 1 === i ? lastRecordRef : null}
+                ref={
+                  records.length - 1 === i
+                    ? lastRecordRef
+                    : selectedRecordIndex === i
+                    ? selectedRecordRef
+                    : null
+                }
+                onClick={() => {
+                  setSelectedRecordIndex(i);
+                }}
               >
                 <RecordCard
                   record={record}
