@@ -6,7 +6,7 @@ interface Prop {
 }
 const ListContainer = (prop: Prop) => {
   return (
-    <Box display="flex" flexDirection="column" gap="10px">
+    <Box display="flex" flexDirection="column" gap="5px">
       {prop.children}
     </Box>
   );

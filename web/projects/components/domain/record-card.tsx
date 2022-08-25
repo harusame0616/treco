@@ -17,7 +17,7 @@ interface Prop {
 const RecordCard = (prop: Prop) => {
   return (
     <BaseCard>
-      <Box display="flex" flexDirection="column" gap="10px">
+      <Box display="flex" flexDirection="column" gap="5px">
         {prop.label}
         <TextField
           variant="filled"

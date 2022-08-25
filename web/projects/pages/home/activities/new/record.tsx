@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
+import AddButton from '../../../../components/case/add-button';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
-import TextButton from '../../../../components/case/text-button';
 import ListContainer from '../../../../components/container/list-container';
 import PageContainer from '../../../../components/container/page-container';
 import SectionContainer from '../../../../components/container/section-container';
@@ -104,7 +104,6 @@ const NewRecord = () => {
           scrollSnapType: 'y mandatory',
           overflowY: 'auto',
           height: 'calc(100vh - 240px)',
-          paddingBottom: '80vh',
         }}
         flexGrow="1"
         flexShrink="0"
@@ -177,7 +176,6 @@ const NewRecord = () => {
             ))}
           </ListContainer>
         </SectionContainer>
-        <TextButton onClick={addNewRecord}>新しいセットを追加する</TextButton>
       </Box>
       <Box display="flex" padding="20px 0 0" gap="20px">
         <SecondaryButton onClick={discard} disabled={isProcessing}>
@@ -190,6 +188,9 @@ const NewRecord = () => {
         >
           登録する
         </PrimaryButton>
+      </Box>
+      <Box position="fixed" bottom="100px" right="30px">
+        <AddButton onClick={addNewRecord}></AddButton>
       </Box>
     </PageContainer>
   );
