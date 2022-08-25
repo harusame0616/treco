@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import TextButton from '../../../../components/case/text-button';
@@ -19,6 +19,7 @@ const NewRecord = () => {
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
   const { isProcessing, startProcessing } = useProcessing();
+  const lastRecordRef = useRef<HTMLElement | null>(null);
 
   const {
     records,
@@ -36,6 +37,23 @@ const NewRecord = () => {
     activityId: router.query['activityId'] as string,
     date: new Date(router.query['date'] as string),
   });
+
+  const [stopFollowRecordCard, setStopFollowRecordCard] = useState(true);
+
+  useEffect(() => {
+    if (isLoading || stopFollowRecordCard) {
+      return;
+    }
+
+    lastRecordRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, [records.length]);
+
+  useEffect(() => {
+    setStopFollowRecordCard(false);
+  }, []);
 
   const goBack = async () => {
     await router.push({
@@ -70,7 +88,7 @@ const NewRecord = () => {
           scrollSnapType: 'y mandatory',
           overflowY: 'auto',
           height: 'calc(100vh - 240px)',
-          paddingBottom: '50vh',
+          paddingBottom: '20vh',
         }}
         flexGrow="1"
         flexShrink="0"
@@ -93,8 +111,12 @@ const NewRecord = () => {
         </SectionContainer>
         <SectionContainer>
           <ListContainer>
-            {records.map((record, i) => (
-              <Box sx={{ scrollSnapAlign: 'start' }} key={i}>
+            {records.map((record, i, records) => (
+              <Box
+                sx={{ scrollSnapAlign: 'start' }}
+                key={i}
+                ref={records.length - 1 === i ? lastRecordRef : null}
+              >
                 <RecordCard
                   record={record}
                   loadUnit={trainingEvent?.loadUnit ?? ''}
