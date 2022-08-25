@@ -1,5 +1,6 @@
 import { ParameterError } from '../../../../custom-error/parameter-error';
-import { generateId, ID_LENGTH } from '../../../../utils/id';
+import { generateId } from '../../../../utils/id';
+import defaultCategories from './default-categories.json';
 
 export interface CategoryDto {
   userId: string;
@@ -14,6 +15,7 @@ export type CategoryCreateProp = Omit<ConstructorProp, 'categoryId'>;
 export class Category {
   static readonly CATEGORY_NAME_MAX_LENGTH = 20;
   static readonly COLOR_PATTERN = '(^#[0-9a-f]{6}$)|(^#[0-9a-f]{8}$)';
+  static readonly DEFAULT_CATEGORIES = defaultCategories.defaultCategories;
 
   private constructor(private prop: ConstructorProp) {
     if (!prop) {
@@ -76,12 +78,12 @@ export class Category {
     if (typeof newColor !== 'string') {
       throw new ParameterError('カラーの型が不正です');
     }
+    const lowerNewColor = newColor.toLowerCase();
 
-    if (!new RegExp(Category.COLOR_PATTERN).test(newColor)) {
-      console.log({ newColor });
+    if (!new RegExp(Category.COLOR_PATTERN).test(lowerNewColor)) {
       throw new ParameterError(`カラーのフォーマットが異常です。`);
     }
 
-    this.prop.color = newColor;
+    this.prop.color = lowerNewColor;
   }
 }

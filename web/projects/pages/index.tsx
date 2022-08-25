@@ -14,7 +14,6 @@ const Home: NextPage = () => {
 
   const signInAnonymously = async () => {
     await auth?.signInAnonymously();
-    await router.push('/home');
   };
 
   return auth ? (

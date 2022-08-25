@@ -1,0 +1,233 @@
+{
+  "defaultCategories": [
+    {
+      "categoryName": "胸",
+      "color": "#db4d6d",
+      "trainingEvents": [
+        {
+          "trainingEventName": "ベンチプレス",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ダンベルプレス",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ダンベルフライ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ケーブルクロスオーバー",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ケーブルフライ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "チェストプレスマシン",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "バタフライマシン",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "腕立てふせ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        }
+      ]
+    },
+    {
+      "categoryName": "背中",
+      "color": "#86c166",
+      "index": "2",
+      "trainingEvents": [
+        {
+          "trainingEventName": "デッドリフト",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ベントオーバーロー",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ラットプルダウン",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "シーテッドローイング",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "チンニング",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "バックエクステンション",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        }
+      ]
+    },
+    {
+      "categoryName": "脚",
+      "color": "#0089a7",
+      "index": "3",
+      "trainingEvents": [
+        {
+          "trainingEventName": "バーベルスクワット",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ブルガリアンスクワット",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ヒップスラスト",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "レッグプレス",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ハムストリングカール",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "レッグエクステンション",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "レッグレイズ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ランジ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        }
+      ]
+    },
+    {
+      "categoryName": "腹",
+      "color": "#f596aa",
+      "trainingEvents": [
+        {
+          "trainingEventName": "アブローラー",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "プランク",
+          "loadUnit": "kg",
+          "valueUnit": "分"
+        },
+        {
+          "trainingEventName": "シットアップ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "レッグレイズ",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        }
+      ]
+    },
+    {
+      "categoryName": "肩",
+      "color": "#caad5f",
+      "trainingEvents": [
+        {
+          "trainingEventName": "ショルダープレス",
+          "loadUnit": "kg",
+          "valueUnit": "回 "
+        },
+        {
+          "trainingEventName": "サイドレイズ",
+          "loadUnit": "kg",
+          "valueUnit": "回 "
+        },
+        {
+          "trainingEventName": "リアレイズ",
+          "loadUnit": "kg",
+          "valueUnit": "回 "
+        },
+        {
+          "trainingEventName": "フロントレイズ",
+          "loadUnit": "kg",
+          "valueUnit": "回 "
+        },
+        {
+          "trainingEventName": "アップライトロウ",
+          "loadUnit": "kg",
+          "valueUnit": "回 "
+        }
+      ]
+    },
+    {
+      "categoryName": "腕",
+      "color": "#b481bb",
+      "trainingEvents": [
+        {
+          "trainingEventName": "ダンベルカール",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "トライセプスキックバック",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "リストカール",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "リバースカール",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        },
+        {
+          "trainingEventName": "ダンベルカール",
+          "loadUnit": "kg",
+          "valueUnit": "回"
+        }
+      ]
+    },
+    {
+      "categoryName": "有酸素",
+      "color": "#fcfaf2",
+      "trainingEvents": [
+        {
+          "trainingEventName": "ジョギング",
+          "loadUnit": "km/h",
+          "valueUnit": "km"
+        }
+      ]
+    }
+  ]
+}

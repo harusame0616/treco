@@ -15,12 +15,14 @@ import CategoryEditPopup, {
 } from '../../../../components/domain/category/category-edit-popup';
 import { CategoryDto } from '../../../../contexts/record/domains/category/category';
 import { FSCategoryRepository } from '../../../../contexts/record/infrastructure/repository/fs-category-repository';
+import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
 import { CategoryCommandUsecase } from '../../../../contexts/record/usecases/category-command-usecase';
 import useCategories from '../../../../hooks/useCategories';
 import { AuthContext, PopMessageContext } from '../../../_app';
 
 const categoryCommandUsecase = new CategoryCommandUsecase({
   categoryRepository: new FSCategoryRepository(),
+  trainingEventRepository: new FSTrainigEventRepository(),
 });
 
 const ActivitiesNew = () => {

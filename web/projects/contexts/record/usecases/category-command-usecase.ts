@@ -6,8 +6,11 @@ import {
   CategoryCreateProp,
   CategoryDto,
 } from '../domains/category/category';
+import { CategoryDomainService } from '../domains/category/category-domain-service';
+import { TrainingEventRepository } from './training-event-command-usecase';
 
 export interface CategoryRepository {
+  listCategory(prop: { userId: string; limit?: number }): Promise<Category[]>;
   findOneByCategoryId(prop: {
     userId: string;
     categoryId: string;
@@ -21,10 +24,14 @@ export interface CategoryRepository {
 
 interface ConstructorProp {
   categoryRepository: CategoryRepository;
+  trainingEventRepository: TrainingEventRepository;
 }
 
 export class CategoryCommandUsecase {
-  constructor(private prop: ConstructorProp) {}
+  private categoryDomainService: CategoryDomainService;
+  constructor(private prop: ConstructorProp) {
+    this.categoryDomainService = new CategoryDomainService(prop);
+  }
 
   async createNewCategory(prop: CategoryCreateProp): Promise<CategoryDto> {
     const registeredCategory =
@@ -68,5 +75,9 @@ export class CategoryCommandUsecase {
 
     await this.prop.categoryRepository.save(registeredCategory);
     return registeredCategory.toDto();
+  }
+
+  async createDefaultCategories(userId: string): Promise<void> {
+    await this.categoryDomainService.createDefaultCategories(userId);
   }
 }

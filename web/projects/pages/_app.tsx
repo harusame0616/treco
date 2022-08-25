@@ -12,6 +12,9 @@ import { useRouter } from 'next/router';
 import { createContext, useEffect, useState } from 'react';
 import MainHeader from '../components/domain/main-header';
 import UserMenu from '../components/domain/user/user-menu';
+import { FSCategoryRepository } from '../contexts/record/infrastructure/repository/fs-category-repository';
+import { FSTrainigEventRepository } from '../contexts/record/infrastructure/repository/fs-training-event-repository';
+import { CategoryCommandUsecase } from '../contexts/record/usecases/category-command-usecase';
 import useAuth from '../hooks/useAuth';
 import useMyTheme from '../hooks/useMyTheme';
 import usePopMessage from '../hooks/usePopMessage';
@@ -24,6 +27,10 @@ export const PopMessageContext = createContext<
   ReturnType<typeof usePopMessage>['popMessage'] | null
 >(null);
 
+const categoryCommandUsecase = new CategoryCommandUsecase({
+  categoryRepository: new FSCategoryRepository(),
+  trainingEventRepository: new FSTrainigEventRepository(),
+});
 function MyApp({ Component, pageProps }: AppProps) {
   const auth = useAuth();
   const router = useRouter();
@@ -46,15 +53,26 @@ function MyApp({ Component, pageProps }: AppProps) {
   const openUserMenu = () => setUserMenuOpen(true);
   const closeUserMenu = () => setUserMenuOpen(false);
 
-  if (!auth.isLoading) {
-    if (auth.isAuthenticated && router.pathname == '/') {
+  useEffect(() => {
+    if (auth.isLoading) {
+      return;
+    }
+
+    if (auth.auth.authId && router.pathname == '/') {
+      categoryCommandUsecase
+        .createDefaultCategories(auth.auth.authId)
+        .catch((e) => {
+          console.log({ e });
+          // 既にカテゴリが作成済みの場合はエラーが返ってくるが何もしない
+          /* do nothing*/
+        });
       router.push('/home');
     } else if (!auth.isAuthenticated && router.pathname != '/') {
       router.push('/');
     } else {
       // do nothing
     }
-  }
+  }, [auth.isLoading, auth.isAuthenticated]);
 
   return (
     <>

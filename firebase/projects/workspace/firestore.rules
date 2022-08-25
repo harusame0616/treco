@@ -25,6 +25,9 @@ service cloud.firestore {
       // 更新
       // - 認証済み && 自身のリソース
       allow update: if isMyResource(userId);
+
+      // - 認証済み && 自身のリソース
+      allow get: if isMyResource(userId);
     }
 
     match /users/{userId}/trainingEvents/{categoryId} {

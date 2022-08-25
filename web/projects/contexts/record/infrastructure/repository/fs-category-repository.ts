@@ -11,7 +11,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
-import { Category } from '../../domains/category/category';
+import { Category, CategoryDto } from '../../domains/category/category';
 import { CategoryRepository } from '../../usecases/category-command-usecase';
 
 export class FSCategoryRepository implements CategoryRepository {
@@ -21,6 +21,23 @@ export class FSCategoryRepository implements CategoryRepository {
     await setDoc(
       doc(fbDb, 'users', dto.userId, 'categories', dto.categoryId),
       dto
+    );
+  }
+
+  async listCategory(prop: {
+    userId: string;
+    limit?: number;
+  }): Promise<Category[]> {
+    const collectionRef = collection(fbDb, 'users', prop.userId, 'categories');
+
+    const listQuery = query(collectionRef, limit(1));
+    let categories = await getDocsFromCache(listQuery);
+    if (!categories.empty) {
+      categories = await getDocs(listQuery);
+    }
+
+    return categories.docs.map((doc) =>
+      Category.fromDto(doc.data() as CategoryDto)
     );
   }
 
