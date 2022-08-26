@@ -24,7 +24,6 @@ const MainHeader = (prop: MainHeaderProp) => {
 
   return (
     <AppBar
-      position="fixed"
       sx={{ height: prop.height, background: background.dark, padding: '10px' }}
     >
       <Grid container height="100%">

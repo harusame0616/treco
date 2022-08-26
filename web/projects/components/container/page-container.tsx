@@ -10,13 +10,15 @@ const PageContainer = (prop: PageContainerProp) => {
 
   return (
     <Box
-      padding="20px"
+      marginTop="65px"
+      padding="20px 20px 20px"
       width="100%"
-      height="100%"
       display="flex"
       flexDirection="column"
       position="relative"
       sx={{ background: background.default, color: background.contrastText }}
+      overflow="auto"
+      flexGrow="1"
     >
       {prop.children}
     </Box>

@@ -106,7 +106,6 @@ const NewRecord = () => {
           height: 'calc(100vh - 240px)',
         }}
         flexGrow="1"
-        flexShrink="0"
       >
         <SectionContainer>
           <Box

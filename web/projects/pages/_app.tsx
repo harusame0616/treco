@@ -83,15 +83,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={auth}>
           <PopMessageContext.Provider value={popMessage.popMessage}>
-            <Box display="flex" flexDirection="column" sx={{ height: '100%' }}>
-              <MainHeader
-                height={headerHeight}
-                onMenuClick={openUserMenu}
-                isAuthenticated={auth.isAuthenticated}
-              />
-              <Box paddingTop="65px" flexGrow="1" flexShrink="0">
-                {auth.isLoading ? undefined : <Component {...pageProps} />}
-              </Box>
+            <MainHeader
+              height={headerHeight}
+              onMenuClick={openUserMenu}
+              isAuthenticated={auth.isAuthenticated}
+            />
+            <Box display="flex" flexDirection="column" height="100%">
+              {auth.isLoading ? undefined : <Component {...pageProps} />}
               {auth.auth.isAnonymous == true ? (
                 <Box
                   sx={{ background: '#888800', opacity: '80%' }}
@@ -99,9 +97,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                   fontSize="0.75rem"
                   textAlign="center"
                   fontWeight="bold"
-                  flexGrow={0}
-                  flexShrink={0}
-                  marginTop="-20px"
+                  flexShrink="0"
+                  flexGrow="0"
                 >
                   一時アカウントでログインで利用中です。 <br />
                   データの損失を防ぐため、
