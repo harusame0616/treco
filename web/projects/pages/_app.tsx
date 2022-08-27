@@ -18,6 +18,7 @@ import { CategoryCommandUsecase } from '../contexts/record/usecases/category-com
 import useAuth from '../hooks/useAuth';
 import useMyTheme from '../hooks/useMyTheme';
 import usePopMessage from '../hooks/usePopMessage';
+import useTitle from '../hooks/useTitle';
 import '../styles/globals.css';
 
 export const AuthContext = createContext<ReturnType<typeof useAuth> | null>(
@@ -27,6 +28,10 @@ export const PopMessageContext = createContext<
   ReturnType<typeof usePopMessage>['popMessage'] | null
 >(null);
 
+export const TitleContext = createContext<Partial<ReturnType<typeof useTitle>>>(
+  {}
+);
+
 const categoryCommandUsecase = new CategoryCommandUsecase({
   categoryRepository: new FSCategoryRepository(),
   trainingEventRepository: new FSTrainigEventRepository(),
@@ -34,6 +39,7 @@ const categoryCommandUsecase = new CategoryCommandUsecase({
 function MyApp({ Component, pageProps }: AppProps) {
   const auth = useAuth();
   const router = useRouter();
+  const title = useTitle();
   const popMessage = usePopMessage();
 
   useEffect(() => {
@@ -83,35 +89,37 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={auth}>
           <PopMessageContext.Provider value={popMessage.popMessage}>
-            <MainHeader
-              height={headerHeight}
-              onMenuClick={openUserMenu}
-              isAuthenticated={auth.isAuthenticated}
-            />
-            <Box display="flex" flexDirection="column" height="100%">
-              {auth.isLoading ? undefined : <Component {...pageProps} />}
-              {auth.auth.isAnonymous == true ? (
-                <Box
-                  sx={{ background: '#888800', opacity: '80%' }}
-                  width="100vw"
-                  fontSize="0.75rem"
-                  textAlign="center"
-                  fontWeight="bold"
-                  flexShrink="0"
-                  flexGrow="0"
-                >
-                  一時アカウントでログインで利用中です。 <br />
-                  データの損失を防ぐため、
-                  <Link
-                    onClick={() => auth.linkWith('google')}
-                    sx={{ textShadow: '0 0 1px white', fontWeight: 'bold' }}
+            <TitleContext.Provider value={title}>
+              <MainHeader
+                height={headerHeight}
+                onMenuClick={openUserMenu}
+                isAuthenticated={auth.isAuthenticated}
+              />
+              <Box display="flex" flexDirection="column" height="100%">
+                {auth.isLoading ? undefined : <Component {...pageProps} />}
+                {auth.auth.isAnonymous == true ? (
+                  <Box
+                    sx={{ background: '#888800', opacity: '80%' }}
+                    width="100vw"
+                    fontSize="0.75rem"
+                    textAlign="center"
+                    fontWeight="bold"
+                    flexShrink="0"
+                    flexGrow="0"
                   >
-                    Google アカウントと連携
-                  </Link>
-                  してください。
-                </Box>
-              ) : undefined}
-            </Box>
+                    一時アカウントでログインで利用中です。 <br />
+                    データの損失を防ぐため、
+                    <Link
+                      onClick={() => auth.linkWith('google')}
+                      sx={{ textShadow: '0 0 1px white', fontWeight: 'bold' }}
+                    >
+                      Google アカウントと連携
+                    </Link>
+                    してください。
+                  </Box>
+                ) : undefined}
+              </Box>
+            </TitleContext.Provider>
             <Snackbar
               open={popMessage.open}
               autoHideDuration={popMessage.option.duration}

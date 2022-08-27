@@ -1,7 +1,8 @@
 import { EditRounded } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
 import ListItemCard from '../../../../components/case/list-item-card';
@@ -18,7 +19,7 @@ import { FSCategoryRepository } from '../../../../contexts/record/infrastructure
 import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
 import { CategoryCommandUsecase } from '../../../../contexts/record/usecases/category-command-usecase';
 import useCategories from '../../../../hooks/useCategories';
-import { AuthContext, PopMessageContext } from '../../../_app';
+import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
 const categoryCommandUsecase = new CategoryCommandUsecase({
   categoryRepository: new FSCategoryRepository(),
@@ -28,6 +29,7 @@ const categoryCommandUsecase = new CategoryCommandUsecase({
 const ActivitiesNew = () => {
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
+  const { setTitle } = useContext(TitleContext);
 
   const [categoryEditPopup, setCategoryEditPopup] = useState(false);
 
@@ -111,6 +113,15 @@ const ActivitiesNew = () => {
   const popupError = (e: Error) => {
     popMessage?.(e.message, { mode: 'error' });
   };
+
+  useEffect(() => {
+    const dateQuery = router.query.date;
+    if (typeof dateQuery != 'string') {
+      return;
+    }
+
+    setTitle?.(dayjs(dateQuery).format('YYYY-MM-DD'));
+  }, [router.query.date]);
 
   return (
     <>

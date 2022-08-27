@@ -1,7 +1,7 @@
 import { Box } from '@mui/system';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import CenteredProgress from '../../components/case/centered-progress';
 import PrimaryButton from '../../components/case/primary-button';
 import SecondaryButton from '../../components/case/secondary-button';
@@ -9,12 +9,13 @@ import TextButton from '../../components/case/text-button';
 import PageContainer from '../../components/container/page-container';
 import SectionContainer from '../../components/container/section-container';
 import { CriticalError } from '../../custom-error/critical-error';
-import { AuthContext, PopMessageContext } from '../_app';
+import { AuthContext, PopMessageContext, TitleContext } from '../_app';
 
 const SignoutPage: NextPage = () => {
   const router = useRouter();
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
+  const { setTitle } = useContext(TitleContext);
 
   if (!popMessage || !auth) {
     throw new CriticalError('Context error');
@@ -29,6 +30,10 @@ const SignoutPage: NextPage = () => {
   const cancel = () => {
     router.push('/home');
   };
+
+  useEffect(() => {
+    setTitle?.('');
+  }, []);
 
   if (!auth.isAuthenticated) {
     router.push('/');

@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import AddButton from '../../../../components/case/add-button';
@@ -11,10 +12,11 @@ import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
 import useActivityCreate from '../../../../hooks/useActivityCreate';
 import useProcessing from '../../../../hooks/useProcessing';
-import { AuthContext, PopMessageContext } from '../../../_app';
+import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
 const NewRecord = () => {
   const router = useRouter();
+  const { setTitle } = useContext(TitleContext);
 
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
@@ -54,8 +56,17 @@ const NewRecord = () => {
   }, [records.length]);
 
   useEffect(() => {
+    // 初回のレンダリング時にスクロールしてしまうのを防ぐ
     setStopFollowRecordCard(false);
   }, []);
+
+  useEffect(() => {
+    if (typeof router.query.date !== 'string') {
+      return;
+    }
+
+    setTitle?.(dayjs(router.query.date).format('YYYY-MM-DD'));
+  }, [router.query.date]);
 
   useEffect(() => {
     if (selectedRecordIndex - 1 === records.length) {

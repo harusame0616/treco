@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
 import { CriticalError } from '../../custom-error/critical-error';
-import { AuthContext } from '../../pages/_app';
+import { AuthContext, TitleContext } from '../../pages/_app';
 import MenuIconButton from '../case/menu-icon-button';
 
 interface MainHeaderProp {
@@ -17,6 +17,7 @@ const MainHeader = (prop: MainHeaderProp) => {
   const background: any = theme.palette.background;
 
   const auth = useContext(AuthContext);
+  const { title } = useContext(TitleContext);
 
   if (!auth) {
     throw new CriticalError('context error');
@@ -49,7 +50,11 @@ const MainHeader = (prop: MainHeaderProp) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-        ></Grid>
+          color="white"
+          sx={{ fontSize: '1.5rem' }}
+        >
+          {title}
+        </Grid>
         <Grid
           item
           xs={2}

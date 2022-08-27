@@ -1,7 +1,8 @@
 import { EditRounded } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
 import ListItemCard from '../../../../components/case/list-item-card';
@@ -19,7 +20,7 @@ import { TrainingEventCommandUsecase } from '../../../../contexts/record/usecase
 import { ParameterError } from '../../../../custom-error/parameter-error';
 import useCategory from '../../../../hooks/useCategory';
 import useTrainingEvents from '../../../../hooks/useTrainingEvents';
-import { AuthContext, PopMessageContext } from '../../../_app';
+import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
 const trainingEventCommandUsecase = new TrainingEventCommandUsecase({
   trainingEventRepository: new FSTrainigEventRepository(),
@@ -34,6 +35,7 @@ const NewEvent = () => {
 
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
+  const { setTitle } = useContext(TitleContext);
 
   const [editPopup, setEditPopup] = useState(false);
 
@@ -125,6 +127,15 @@ const NewEvent = () => {
     setSelectedTrainingEvent(trainingEvent);
     setEditPopup(true);
   };
+
+  useEffect(() => {
+    const { date } = router.query;
+    if (!setTitle || typeof date !== 'string') {
+      return;
+    }
+
+    setTitle(dayjs(date).format('YYYY-MM-DD'));
+  }, [router.query, setTitle]);
 
   return (
     <>

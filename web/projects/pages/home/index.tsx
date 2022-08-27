@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
 import PageContainer from '../../components/container/page-container';
@@ -13,10 +13,11 @@ import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
 import useActivities from '../../hooks/useActivities';
 import useIsClient from '../../hooks/useIsClient';
-import { AuthContext } from '../_app';
+import { AuthContext, TitleContext } from '../_app';
 
 const Home = () => {
   const auth = useContext(AuthContext);
+  const { setTitle } = useContext(TitleContext);
   const router = useRouter();
 
   const [today] = useState(dayjs());
@@ -110,6 +111,14 @@ const Home = () => {
       },
     });
   };
+
+  useEffect(() => {
+    if (!setTitle) {
+      return;
+    }
+
+    setTitle(month.format('YYYY-MM'));
+  }, [month, setTitle]);
 
   return (
     <PageContainer>

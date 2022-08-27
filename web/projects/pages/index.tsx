@@ -3,18 +3,22 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import PrimaryButton from '../components/case/primary-button';
 import PageContainer from '../components/container/page-container';
-import { AuthContext } from './_app';
+import { AuthContext, TitleContext } from './_app';
 
 const Home: NextPage = () => {
   const auth = useContext(AuthContext);
-  const router = useRouter();
+  const { setTitle } = useContext(TitleContext);
 
   const signInAnonymously = async () => {
     await auth?.signInAnonymously();
   };
+
+  useEffect(() => {
+    setTitle?.('');
+  }, []);
 
   return auth ? (
     <PageContainer>
