@@ -8,6 +8,7 @@ export interface TrainingEventDto {
   trainingEventName: string;
   loadUnit: string;
   valueUnit: string;
+  order: number;
 }
 
 export type ConstructorProp = TrainingEventDto;
@@ -44,6 +45,10 @@ export class TrainingEvent {
 
   get trainingEventName() {
     return this.prop.trainingEventName;
+  }
+
+  get order() {
+    return this.prop.order;
   }
 
   changeTrainingEventName(newTrainingEventName: string) {

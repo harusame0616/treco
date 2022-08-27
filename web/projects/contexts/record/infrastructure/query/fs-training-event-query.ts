@@ -5,6 +5,7 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  orderBy,
   query,
   where,
 } from 'firebase/firestore';
@@ -64,7 +65,8 @@ export class FSTrainingEventQuery implements TrainingEventQuery {
 
     const inCategoryQuery = query(
       trainingEventsCollectionRef,
-      where('categoryId', '==', categoryId)
+      where('categoryId', '==', categoryId),
+      orderBy('order', 'asc')
     );
     let trainingEventsSnapshot = await getDocsFromCache(inCategoryQuery);
     if (trainingEventsSnapshot.empty) {

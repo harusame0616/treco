@@ -5,6 +5,8 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  limit,
+  orderBy,
   query,
   setDoc,
   where,
@@ -69,6 +71,29 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
     let trainingEvents = await getDocsFromCache(trainingEventNameQuery);
     if (!trainingEvents.empty) {
       trainingEvents = await getDocs(trainingEventNameQuery);
+    }
+
+    return trainingEvents.empty
+      ? null
+      : TrainingEvent.fromDto(trainingEvents.docs[0].data() as any);
+  }
+
+  async findOneByLastOrder(prop: {
+    userId: string;
+    categoryId: string;
+  }): Promise<TrainingEvent | null> {
+    const collectionRef = collection(
+      fbDb,
+      'users',
+      prop.userId,
+      'trainingEvents'
+    );
+
+    const orderQuery = query(collectionRef, orderBy('order', 'desc'), limit(1));
+
+    let trainingEvents = await getDocsFromCache(orderQuery);
+    if (!trainingEvents.empty) {
+      trainingEvents = await getDocs(orderQuery);
     }
 
     return trainingEvents.empty

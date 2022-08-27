@@ -30,9 +30,13 @@ export class CategoryDomainService {
 
           return [
             this.prop.categoryRepository.save(category),
-            ...trainingEvents.map((trainingEvent) => {
+            ...trainingEvents.map((trainingEvent, order) => {
               this.prop.trainingEventRepository.save(
-                TrainingEvent.create({ ...category.toDto(), ...trainingEvent })
+                TrainingEvent.create({
+                  ...category.toDto(),
+                  ...trainingEvent,
+                  order,
+                })
               );
             }),
           ];

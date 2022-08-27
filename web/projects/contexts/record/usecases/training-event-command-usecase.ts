@@ -5,6 +5,7 @@ import {
   TrainingEventCreateProp,
   TrainingEventDto,
 } from '../domains/training-event/training-event';
+import { TrainingEventDomainService } from '../domains/training-event/training-event-domain-service';
 
 export interface TrainingEventRepository {
   save(trainingEvent: TrainingEvent): Promise<void>;
@@ -18,6 +19,10 @@ export interface TrainingEventRepository {
     categoryId: string;
     trainingEventName: string;
   }): Promise<TrainingEvent | null>;
+  findOneByLastOrder(prop: {
+    userId: string;
+    categoryId: string;
+  }): Promise<TrainingEvent | null>;
 }
 
 interface ConstructorProp {
@@ -25,10 +30,14 @@ interface ConstructorProp {
 }
 
 export class TrainingEventCommandUsecase {
-  constructor(private prop: ConstructorProp) {}
+  private trainingEventDomainService: TrainingEventDomainService;
+
+  constructor(private prop: ConstructorProp) {
+    this.trainingEventDomainService = new TrainingEventDomainService(prop);
+  }
 
   async createNewTrainingEvent(
-    prop: TrainingEventCreateProp
+    prop: Omit<TrainingEventCreateProp, 'order'>
   ): Promise<TrainingEventDto> {
     const registeredTrainingEvent =
       await this.prop.trainingEventRepository.findOneByTrainingEventName({
@@ -43,7 +52,8 @@ export class TrainingEventCommandUsecase {
       });
     }
 
-    const trainingEvent = TrainingEvent.create(prop);
+    const trainingEvent =
+      await this.trainingEventDomainService.createNewTrainingEvent(prop);
 
     await this.prop.trainingEventRepository.save(trainingEvent);
     return trainingEvent.toDto();
