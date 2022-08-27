@@ -127,7 +127,7 @@ export class FSActivityQuery implements ActivityQuery {
     const trainingEventMappedTrainingEventId = Object.fromEntries(
       trainingEventsSnapshot.docs.map((doc) => {
         const trainingEvent = doc.data();
-        return [trainingEvent.trainigEventId, trainingEvent];
+        return [trainingEvent.trainingEventId, trainingEvent];
       })
     );
 
@@ -135,7 +135,7 @@ export class FSActivityQuery implements ActivityQuery {
       const activity = doc.data();
       return {
         ...(categoryMappedCategoryId[activity.categoryId] ?? {}),
-        ...(trainingEventMappedTrainingEventId[activity.trainigEventId] ?? {}),
+        ...(trainingEventMappedTrainingEventId[activity.trainingEventId] ?? {}),
         ...activity,
         date: activity.date?.toDate(),
       };
