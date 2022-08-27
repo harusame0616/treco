@@ -1,12 +1,12 @@
 import { AddRounded } from '@mui/icons-material';
 import { IconButton, makeStyles } from '@mui/material';
-import { MouseEventHandler } from 'react';
+import { memo, MouseEventHandler } from 'react';
 
 interface Prop {
   onClick: MouseEventHandler;
 }
 
-const AddButton = (prop: Prop) => {
+const AddButton = memo(function _AddButton(prop: Prop) {
   return (
     <IconButton
       sx={{
@@ -19,6 +19,6 @@ const AddButton = (prop: Prop) => {
       <AddRounded sx={{ color: 'red', fontWeight: 'bold' }} />
     </IconButton>
   );
-};
+});
 
 export default AddButton;

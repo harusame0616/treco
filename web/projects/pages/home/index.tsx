@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
 import PageContainer from '../../components/container/page-container';
@@ -72,6 +72,13 @@ const Home = () => {
   ];
   const { isClient } = useIsClient();
 
+  const changeSelectDate = useCallback(
+    (date: Dayjs) => {
+      setSelectDate(date);
+    },
+    [setSelectDate]
+  );
+
   const activitiesDateMap = activities.reduce((prev, activity) => {
     const key = dayjs(activity.date).format('YYYY-MM-DD');
     if (!prev[key]) {
@@ -133,13 +140,11 @@ const Home = () => {
             sx={{ background: '#262626', margin: '-20px -20px 0' }}
           >
             <TrainingCalender
-              month={month.toDate()}
-              today={today.toDate()}
-              selectDate={selectDate.toDate()}
+              month={month}
+              today={today}
+              selectDate={selectDate}
               activityColorsDateMap={activityColorsDateMap}
-              changeSelectDate={(date) => {
-                setSelectDate(dayjs(date));
-              }}
+              changeSelectDate={changeSelectDate}
               changeViewMonth={(date) => {
                 setMonth(dayjs(date));
               }}

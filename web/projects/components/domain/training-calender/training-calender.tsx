@@ -1,13 +1,13 @@
 import { Box } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Dayjs } from 'dayjs';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import TrainingCalenderMonth from './training-calender-month';
 
 type ChangeViewMonthHandler = (date: Date) => void | Promise<void>;
-type ChangeSelectDateHandler = (date: Date) => void | Promise<void>;
+type ChangeSelectDateHandler = (date: Dayjs) => void | Promise<void>;
 
 const createViewMonths = (month: Dayjs, startIndex: number) => {
   const monthOrders = [
@@ -28,20 +28,22 @@ export interface ActivityColorsDateMap {
 }
 
 interface TrainingCalenderProp {
-  month: Date;
-  selectDate: Date;
-  today: Date;
+  month: Dayjs;
+  selectDate: Dayjs;
+  today: Dayjs;
   changeSelectDate: ChangeSelectDateHandler;
   changeViewMonth: ChangeViewMonthHandler;
   activityColorsDateMap: ActivityColorsDateMap;
 }
 
 const TrainingCalender = (prop: TrainingCalenderProp) => {
-  const [selectDate, setSelectDate] = useState(prop.selectDate);
-  const [month, setMonth] = useState(dayjs(prop.month));
   const [slideIndex, setSlideIndex] = useState(0);
-  const [months, setMonths] = useState(createViewMonths(month, slideIndex));
   const sliderRef = useRef<null | Slider>(null);
+
+  const months = useMemo(
+    () => createViewMonths(prop.month, slideIndex),
+    [prop.month]
+  );
 
   const changeMonth = useCallback(
     (date: Dayjs) => {
@@ -50,23 +52,13 @@ const TrainingCalender = (prop: TrainingCalenderProp) => {
     [prop]
   );
 
-  useEffect(() => {
-    setSelectDate(prop.selectDate);
-  }, [prop.selectDate]);
-
-  useEffect(() => {
-    const month = dayjs(prop.month);
-    setMonth(month);
-    setMonths(createViewMonths(month, slideIndex));
-  }, [prop.month]);
-
   return (
     <Box width="100%">
       <Slider
         infinite={true}
         dots={false}
         arrows={false}
-        speed={ 200 }
+        speed={200}
         afterChange={(index: number) => {
           let num;
           if (index == 0 && slideIndex == 2) {
@@ -79,19 +71,17 @@ const TrainingCalender = (prop: TrainingCalenderProp) => {
             num = index < slideIndex ? -1 : 1;
           }
           setSlideIndex(index);
-          changeMonth(month.add(num, 'month'));
+          changeMonth(prop.month.add(num, 'month'));
         }}
         ref={sliderRef}
       >
         {months.map((month) => (
           <TrainingCalenderMonth
-            selectDate={selectDate}
-            month={month.toDate()}
-            today={new Date()}
+            selectDate={prop.selectDate}
+            month={month}
+            today={prop.today}
             activityColorsDateMap={prop.activityColorsDateMap}
-            changeSelectDate={(date) => {
-              prop.changeSelectDate(date);
-            }}
+            changeSelectDate={prop.changeSelectDate}
             key={month.toISOString()}
           />
         ))}

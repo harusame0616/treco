@@ -1,102 +1,60 @@
 import { Box, Grid } from '@mui/material';
-import dayjs from 'dayjs';
-import TrainingMark from '../training-mark';
+import dayjs, { Dayjs } from 'dayjs';
+import { memo, useMemo } from 'react';
 import { ActivityColorsDateMap } from './training-calender';
+import TrainingCalenderDay from './training-calender-day';
+import TrainingCalenderWeekday, { WEEKDAYS } from './training-calender-weekday';
 
-type ChangeSelectDateHandler = (date: Date) => void | Promise<void>;
+type ChangeSelectDateHandler = (date: Dayjs) => void | Promise<void>;
 
 interface TrainingCalenderProp {
-  month: Date;
-  selectDate: Date;
-  today: Date;
+  month: Dayjs;
+  selectDate: Dayjs;
+  today: Dayjs;
   changeSelectDate: ChangeSelectDateHandler;
   activityColorsDateMap: ActivityColorsDateMap;
 }
 
-const DOW_DEFAULT_COLOR = '#AAA';
-const TODAY_COLOR = '#EEFF00';
-const dayOfWeeks = [
-  { id: 0, label: '日', color: '#ff7070' },
-  { id: 1, label: '月', color: DOW_DEFAULT_COLOR },
-  { id: 2, label: '火', color: DOW_DEFAULT_COLOR },
-  { id: 3, label: '水', color: DOW_DEFAULT_COLOR },
-  { id: 4, label: '木', color: DOW_DEFAULT_COLOR },
-  { id: 5, label: '金', color: DOW_DEFAULT_COLOR },
-  { id: 6, label: '土', color: '#7070ff' },
-];
+const TrainingCalenderMonth = memo(function _TrainingCalenderDay(
+  prop: TrainingCalenderProp
+) {
+  const showDays = useMemo(() => {
+    const firstDate = prop.month.startOf('month');
+    const dayOfFirstDate = firstDate.day();
+    const calenderStart = firstDate.subtract(dayOfFirstDate, 'day');
+    return new Array(7 * 6)
+      .fill(0)
+      .map((_, index) => calenderStart.add(index, 'day'));
+  }, [prop.month]);
 
-const TrainingCalenderMonth = (prop: TrainingCalenderProp) => {
-  const month = dayjs(prop.month);
-  const firstDate = month.startOf('month');
-  const dayOfFirstDate = firstDate.day();
-  const calenderStart = firstDate.subtract(dayOfFirstDate, 'day');
-
-  const showDays = new Array(7 * 6)
-    .fill(0)
-    .map((_, index) => calenderStart.add(index, 'day'));
-
-  const today = dayjs(prop.today);
   const selectDate = dayjs(prop.selectDate);
 
   return (
     <Box width="100%" padding={'10px'}>
       <Grid container columns={14}>
-        {dayOfWeeks.map(({ id, label, color }) => (
-          <Grid item xs={2} key={id}>
-            <Box
-              display="flex"
-              justifyContent="center"
-              sx={{
-                color: id === today.day() ? TODAY_COLOR : color,
-                fontWeight: id === today.day() ? 'bold' : 'normal',
-                fontSize: '0.4rem',
-              }}
-            >
-              {label}
-            </Box>
-          </Grid>
+        {WEEKDAYS.map((weekday) => (
+          <TrainingCalenderWeekday
+            weekday={weekday}
+            isActive={prop.today.day() == weekday}
+            key={weekday}
+          />
         ))}
         {showDays.map((showDate) => (
-          <Grid
-            item
-            xs={2}
-            sx={{
-              opacity: showDate.isSame(prop.month, 'month') ? '100%' : '40%',
-              padding: '0 5px 5px',
-              background: selectDate.isSame(showDate, 'day') ? 'grey' : 'none',
-              borderRadius: '5px',
-            }}
-            onClick={() => prop.changeSelectDate(showDate.toDate())}
+          <TrainingCalenderDay
+            date={showDate}
+            isToday={showDate.isSame(prop.today, 'day')}
+            isInMonth={showDate.isSame(prop.month, 'month')}
+            categoryColors={
+              prop.activityColorsDateMap[showDate.format('YYYY-MM-DD')]
+            }
+            isSelected={selectDate.isSame(showDate, 'day')}
+            onClick={prop.changeSelectDate}
             key={showDate.format('YYYY-MM-DD')}
-          >
-            <Box
-              display="flex"
-              justifyContent="center"
-              sx={{
-                color: showDate.isSame(today, 'day') ? TODAY_COLOR : 'inherit',
-                fontWeight: showDate.isSame(today, 'day') ? 'bold' : 'normal',
-              }}
-            >
-              {showDate.format('D')}
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-              overflow="hidden"
-              sx={{ height: '0.5rem' }}
-            >
-              {prop.activityColorsDateMap[showDate.format('YYYY-MM-DD')]?.map(
-                (color) => (
-                  <TrainingMark color={color} size="0.5rem" key={color} />
-                )
-              )}
-            </Box>
-          </Grid>
+          />
         ))}
       </Grid>
     </Box>
   );
-};
+});
 
 export default TrainingCalenderMonth;
