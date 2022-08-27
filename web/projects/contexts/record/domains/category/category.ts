@@ -7,6 +7,7 @@ export interface CategoryDto {
   categoryId: string;
   categoryName: string;
   color: string;
+  order: number;
 }
 
 type ConstructorProp = CategoryDto;
@@ -50,6 +51,10 @@ export class Category {
 
   get categoryId() {
     return this.prop.categoryId;
+  }
+
+  get order() {
+    return this.prop.order;
   }
 
   changeCategoryName(newCategoryName: string) {

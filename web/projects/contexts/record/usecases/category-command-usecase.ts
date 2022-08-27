@@ -19,6 +19,7 @@ export interface CategoryRepository {
     userId: string;
     categoryName: string;
   }): Promise<Category | null>;
+  findOneByLastOrder(prop: { userId: string }): Promise<Category | null>;
   save(category: Category): Promise<void>;
 }
 
@@ -43,13 +44,13 @@ export class CategoryCommandUsecase {
       throw new ConflictError('同じ名前のカテゴリが存在します。', { prop });
     }
 
-    const category = Category.create(prop);
+    const category = await this.categoryDomainService.createNewCategory(prop);
 
     await this.prop.categoryRepository.save(category);
     return category.toDto();
   }
 
-  async editCategory(prop: CategoryDto): Promise<CategoryDto> {
+  async editCategory(prop: Omit<CategoryDto, 'order'>): Promise<CategoryDto> {
     if (!prop.categoryId || !prop.categoryName || !prop.color || !prop.userId) {
       throw new ParameterError('パラメーターが不足しています。', prop);
     }

@@ -62,7 +62,6 @@ const ActivitiesNew = () => {
   };
 
   const saveCategory = (data: CategoryEditInfo, reset: () => void) => {
-    console.log({ selectedCategory });
     if (selectedCategory) {
       editCategory({ ...selectedCategory, ...data });
     } else {

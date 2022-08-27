@@ -5,6 +5,8 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  orderBy,
+  query,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
 import { CategoryDto } from '../../domains/category/category';
@@ -30,9 +32,11 @@ export class FSCategoryQuery implements CategoryQuery {
       'categories'
     );
 
-    let snapshot = await getDocsFromCache(categoriesCollectionRef);
+    const orderQuery = query(categoriesCollectionRef, orderBy('order', 'asc'));
+
+    let snapshot = await getDocsFromCache(orderQuery);
     if (snapshot.empty) {
-      snapshot = await getDocs(categoriesCollectionRef);
+      snapshot = await getDocs(orderQuery);
     }
 
     return snapshot.docs.map((doc) => {

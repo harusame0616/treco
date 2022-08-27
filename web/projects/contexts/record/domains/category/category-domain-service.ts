@@ -2,7 +2,7 @@ import { ConflictError } from '../../../../custom-error/conflict-error';
 import { CategoryRepository } from '../../usecases/category-command-usecase';
 import { TrainingEventRepository } from '../../usecases/training-event-command-usecase';
 import { TrainingEvent } from '../training-event/training-event';
-import { Category } from './category';
+import { Category, CategoryCreateProp } from './category';
 
 export class CategoryDomainService {
   constructor(
@@ -25,8 +25,8 @@ export class CategoryDomainService {
 
     await Promise.all(
       Category.DEFAULT_CATEGORIES.flatMap(
-        ({ trainingEvents, ...categoryDto }) => {
-          const category = Category.create({ ...categoryDto, userId });
+        ({ trainingEvents, ...categoryDto }, order) => {
+          const category = Category.create({ ...categoryDto, userId, order });
 
           return [
             this.prop.categoryRepository.save(category),
@@ -39,5 +39,19 @@ export class CategoryDomainService {
         }
       )
     );
+  }
+
+  async createNewCategory(
+    prop: Omit<CategoryCreateProp, 'order'>
+  ): Promise<Category> {
+    const lastOrderCategory =
+      await this.prop.categoryRepository.findOneByLastOrder({
+        userId: prop.userId,
+      });
+
+    return Category.create({
+      ...prop,
+      order: (lastOrderCategory?.order ?? -1) + 1,
+    });
   }
 }

@@ -6,6 +6,7 @@ import {
   getDocs,
   getDocsFromCache,
   limit,
+  orderBy,
   query,
   setDoc,
   where,
@@ -82,5 +83,24 @@ export class FSCategoryRepository implements CategoryRepository {
     return categories.empty
       ? null
       : Category.fromDto(categories.docs[0].data() as any);
+  }
+
+  async findOneByLastOrder(prop: { userId: string }): Promise<Category | null> {
+    const collectionRef = collection(fbDb, 'users', prop.userId, 'categories');
+
+    const lastOrderQuery = query(
+      collectionRef,
+      orderBy('order', 'desc'),
+      limit(1)
+    );
+
+    let categoryDtoList = await getDocsFromCache(lastOrderQuery);
+    if (categoryDtoList.empty) {
+      categoryDtoList = await getDocs(lastOrderQuery);
+    }
+
+    return categoryDtoList.empty
+      ? null
+      : Category.fromDto(categoryDtoList.docs[0].data() as any);
   }
 }
