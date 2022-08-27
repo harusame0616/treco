@@ -36,7 +36,6 @@ const Home: NextPage = () => {
 
         <Box
           sx={{
-            FontFace: "font-family: 'Zen Maru Gothic', sans-serif;",
             fontSize: '1.5rem',
           }}
           display="flex"
