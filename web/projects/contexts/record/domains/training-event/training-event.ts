@@ -36,7 +36,15 @@ export class TrainingEvent {
   }
 
   toDto(): TrainingEventDto {
-    return { ...this.prop };
+    return {
+      userId: this.prop.userId,
+      categoryId: this.prop.categoryId,
+      trainingEventId: this.prop.trainingEventId,
+      trainingEventName: this.prop.trainingEventName,
+      loadUnit: this.prop.loadUnit,
+      valueUnit: this.prop.valueUnit,
+      order: this.prop.order,
+    };
   }
 
   static fromDto(dto: TrainingEventDto): TrainingEvent {
