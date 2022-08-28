@@ -49,7 +49,6 @@
     {
       "categoryName": "背中",
       "color": "#86c166",
-      "index": "2",
       "trainingEvents": [
         {
           "trainingEventName": "デッドリフト",
@@ -86,7 +85,6 @@
     {
       "categoryName": "脚",
       "color": "#0089a7",
-      "index": "3",
       "trainingEvents": [
         {
           "trainingEventName": "バーベルスクワット",
