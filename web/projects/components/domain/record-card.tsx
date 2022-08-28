@@ -43,6 +43,7 @@ const RecordCard = (prop: Prop) => {
           variant="filled"
           size="small"
           label="備考"
+          value={prop.record.note}
           sx={{ background: '#ddd' }}
           onChange={prop.noteOnChange}
           inputProps={{ maxLength: 1024 }}
