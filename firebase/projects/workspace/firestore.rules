@@ -5,39 +5,119 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid ==  userId;
     }
 
+    function isValidSize(data, sizeRule){
+      return  ( sizeRule == null || (
+      ('eq' in sizeRule && data.size() == sizeRule.eq)
+        || ('lt' in sizeRule && 'gt' in sizeRule && data.size() < sizeRule.lt && data.size() > sizeRule.gt)
+        || ('lt' in sizeRule && !('gt' in sizeRule) && data.size() < sizeRule.lt)
+        || ('gt' in sizeRule && !('lt' in sizeRule) && data.size() > sizeRule.gt)));
+    }
+
+    function hasKey(data, keyName, type){
+      return (keyName in data
+        && ((type == 'timestamp' && data[keyName] is timestamp)
+        || (type == 'string' && data[keyName] is string)
+        || (type == 'list' && data[keyName] is list)
+        || (type == 'int' && data[keyName] is int)
+      ));
+    }
+
+    function hasListKey(data, keyName, size){
+      return hasKey(data, keyName, 'list') && isValidSize(data[keyName], size);
+    }
+
+    function hasStringKey(data, keyName, size){
+      return hasKey(data, keyName, 'string') && isValidSize(data[keyName], size);
+    }
+
+    function hasIdKey(data, keyName){
+      return hasKey(data, keyName, 'string') && isValidSize(data[keyName], {'eq':36});
+    }
+
+    function hasUserIdKey(data){
+      return hasKey(data, 'userId', 'string') && isValidSize(data.userId, {'eq':28});
+    }
+
+    function isNoChange(key){
+      return request.resource.data[key] == resource.data[key];
+    }
+
     // アクティビティ書き込み
     match /users/{userId}/activities/{activityId} {
+      function isValidActivitySchema(activity){
+        return ( activity.keys().size() == 6
+          && hasIdKey(activity, 'activityId')
+          && hasIdKey(activity, 'categoryId')
+          && hasIdKey(activity, 'trainingEventId')
+          && hasUserIdKey(activity)
+          && hasKey(activity, 'date', 'timestamp')
+          && hasListKey(activity, 'records', {'lt': 30})
+        );
+      }
+
+      function activityWriteCommonRule(){
+        return isMyResource(userId) && isValidActivitySchema(request.resource.data);
+      }
+
       // 新規作成
       // - 認証済み && 自身のリソース
-      allow create: if isMyResource(userId);
+      allow create: if activityWriteCommonRule();
 
       // レコードの更新
       // - 認証済み && 自身のリソース
       // - レコード以外のデータが既存のデータと一致する(スキーマ更新時変更が必要)
-      allow update: if isMyResource(userId) && request.resource.data.categoryId == resource.data.categoryId && request.resource.data.trainingEventId == resource.data.trainingEventId && request.resource.data.activityId == resource.data.activityId && request.resource.data.userId == resource.data.userId;
+      allow update: if activityWriteCommonRule() && isNoChange('categoryId') && isNoChange('trainingEventId') && isNoChange('activityId') && isNoChange('userId') && isNoChange('date');
     }
 
     match /users/{userId}/categories/{categoryId} {
+      function isValidCategorySchema(category){
+        return ( category.keys().size() == 5
+          && hasIdKey(category, 'categoryId')
+          && hasStringKey(category, 'categoryName', {'gt':0, 'lt':21})
+          && hasStringKey(category, 'color', null)
+          && category.color.matches('(^#[a-f0-9]{6}$)|(^#[a-f0-9]{8})$')
+          && hasUserIdKey(category)
+          && hasKey(category, 'order', 'int')
+        );
+      }
+
+      function categoryWriteCommonRule(){
+        return isMyResource(userId) && isValidCategorySchema(request.resource.data);
+      }
+
       // 新規作成
       // - 認証済み && 自身のリソース
-      allow create: if isMyResource(userId);
+      allow create: if categoryWriteCommonRule();
 
       // 更新
       // - 認証済み && 自身のリソース
-      allow update: if isMyResource(userId);
-
-      // - 認証済み && 自身のリソース
-      allow get: if isMyResource(userId);
+      allow update: if categoryWriteCommonRule();
     }
 
     match /users/{userId}/trainingEvents/{categoryId} {
+      function isValidTrainingEventSchema(trainingEvent){
+        return ( trainingEvent.keys().size() == 7
+          && hasUserIdKey(trainingEvent)
+          && hasIdKey(trainingEvent, 'categoryId')
+          && hasIdKey(trainingEvent, 'trainingEventId')
+          && hasStringKey(trainingEvent, 'trainingEventName', {'gt': 0, 'lt': 25})
+          && hasStringKey(trainingEvent, 'loadUnit', {'gt': 0, 'lt': 8})
+          && hasStringKey(trainingEvent, 'valueUnit', {'gt': 0, 'lt': 8})
+          && hasKey(trainingEvent, 'order', 'int')
+        );
+      }
+
+      function trainingEventWriteCommonRule(){
+        return isMyResource(userId) && isValidTrainingEventSchema(request.resource.data);
+      }
+
       // 新規作成
       // - 認証済み && 自身のリソース
-      allow create: if isMyResource(userId);
+      allow create: if trainingEventWriteCommonRule();
 
       // 更新
       // - 認証済み && 自身のリソース
-      allow update: if isMyResource(userId);
+      allow update: if trainingEventWriteCommonRule();
     }
 
     // 自分のデータは全て読み込み可能
