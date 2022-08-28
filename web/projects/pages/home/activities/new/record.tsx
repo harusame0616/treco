@@ -33,6 +33,7 @@ const NewRecord = () => {
     isLoading,
     register,
     errorRecordIndex,
+    deleteRecord,
     isError,
   } = useActivityCreate({
     userId: auth?.auth?.authId,
@@ -157,6 +158,7 @@ const NewRecord = () => {
                   valueUnit={trainingEvent?.valueUnit ?? ''}
                   label={<div>{i + 1}セット目</div>}
                   isError={errorRecordIndex == i}
+                  onDeleteClick={() => deleteRecord(i)}
                   loadOnChange={(e) => {
                     const { value: input } = e.target as any;
                     setRecord(

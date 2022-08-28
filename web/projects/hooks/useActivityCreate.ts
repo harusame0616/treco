@@ -65,6 +65,12 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
     setRecords([...workRecords]);
   };
 
+  const deleteRecord = (index: number) => {
+    const workRecords = [...records];
+    workRecords.splice(index, 1);
+    setRecords([...workRecords]);
+  };
+
   const register = async () => {
     setErrorRecordIndex(null);
     if (!prop.userId || !prop.categoryId || !prop.trainingEventId) {
@@ -139,6 +145,7 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
     records,
     addNewRecord,
     setRecord,
+    deleteRecord,
     register,
     errorRecordIndex,
   };
