@@ -1,4 +1,5 @@
 import { Box, Grid } from '@mui/material';
+import { ReactNode } from 'react';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
 import BaseCard from '../base/base-card';
 import ListContainer from '../container/list-container';
@@ -6,19 +7,22 @@ import CategoryLabel from './category-label';
 
 interface ActivityListItemProp {
   activity: ActivityWithCategoryAndTrainingEventDto;
-  onClick: (activity: ActivityWithCategoryAndTrainingEventDto) => void;
+  label?: ReactNode;
+  onClick?: (activity: ActivityWithCategoryAndTrainingEventDto) => void;
 }
 
 const ActivityListItem = (prop: ActivityListItemProp) => {
   return (
-    <Box onClick={() => prop.onClick({ ...prop.activity })}>
-      <Box display="flex" alignItems="center" marginBottom="5px">
-        <CategoryLabel color={prop.activity.color} size="small">
-          {prop.activity.categoryName}
-        </CategoryLabel>
-        &nbsp;-&nbsp;
-        <Box>{prop.activity.trainingEventName}</Box>
-      </Box>
+    <Box onClick={() => prop.onClick?.({ ...prop.activity })}>
+      {prop.label ?? (
+        <Box display="flex" alignItems="center" marginBottom="5px">
+          <CategoryLabel color={prop.activity.color} size="small">
+            {prop.activity.categoryName}
+          </CategoryLabel>
+          &nbsp;-&nbsp;
+          <Box>{prop.activity.trainingEventName}</Box>
+        </Box>
+      )}
       <Box>
         <BaseCard>
           <ListContainer>

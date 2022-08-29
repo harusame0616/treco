@@ -6,11 +6,13 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  limit,
+  orderBy,
   query,
   where,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
-import { ActivityDto } from '../../domains/activity/activity';
+import { ActivityDto, ActivityFullId } from '../../domains/activity/activity';
 import { CategoryDto } from '../../domains/category/category';
 import { TrainingEventDto } from '../../domains/training-event/training-event';
 import {
@@ -19,13 +21,78 @@ import {
 } from '../../usecases/activity-query-usecase';
 
 export class FSActivityQuery implements ActivityQuery {
+  async queryDetailOfLastTrainingEvent(prop: {
+    userId: string;
+    categoryId: string;
+    trainingEventId: string;
+  }): Promise<ActivityWithCategoryAndTrainingEventDto | null> {
+    const categoryDocRef = doc(
+      fbDb,
+      'users',
+      prop.userId,
+      'categories',
+      prop.categoryId
+    );
+    const trainingEventDocRef = doc(
+      fbDb,
+      'users',
+      prop.userId,
+      'trainingEvents',
+      prop.trainingEventId
+    );
+    const activitiesCollectionRef = collection(
+      fbDb,
+      'users',
+      prop.userId,
+      'activities'
+    );
+
+    const queryActivityOfLastInTrainingEvent = query(
+      activitiesCollectionRef,
+      where('trainingEventId', '==', prop.trainingEventId),
+      orderBy('date', 'desc'),
+      limit(1)
+    );
+
+    let activitySnapshot = await getDocsFromCache(
+      queryActivityOfLastInTrainingEvent
+    );
+    if (activitySnapshot.empty) {
+      activitySnapshot = await getDocs(queryActivityOfLastInTrainingEvent);
+    }
+
+    let categorySnapshot = await getDocFromCache(categoryDocRef);
+    if (!categorySnapshot.exists()) {
+      categorySnapshot = await getDoc(categoryDocRef);
+    }
+
+    let trainingEventSnapshot = await getDocFromCache(trainingEventDocRef);
+    if (trainingEventSnapshot.exists()) {
+      trainingEventSnapshot = await getDoc(trainingEventDocRef);
+    }
+
+    if (activitySnapshot.empty) {
+      return null;
+    }
+
+    const activity = activitySnapshot.docs[0].data() as any;
+    return {
+      ...categorySnapshot.data(),
+      ...trainingEventSnapshot.data(),
+      ...activity,
+      date: activity.date.toDate(),
+    };
+  }
   async queryDetail(
-    userId: string,
-    categoryId: string,
-    trainingEventId: string,
-    activityId: string
+    prop: ActivityFullId
   ): Promise<ActivityWithCategoryAndTrainingEventDto | null> {
-    const activityDocRef = doc(fbDb, 'users', userId, 'activities', activityId);
+    const activityDocRef = doc(
+      fbDb,
+      'users',
+      prop.userId,
+      'activities',
+      prop.activityId
+    );
     let activitySnapshot = await getDocFromCache(activityDocRef);
     if (activitySnapshot.exists()) {
       activitySnapshot = await getDoc(activityDocRef);
@@ -39,14 +106,14 @@ export class FSActivityQuery implements ActivityQuery {
     const categoryDocRef = doc(
       fbDb,
       'users',
-      userId,
+      prop.userId,
       'categories',
       activityDto.categoryId
     );
     const trainingEventDocRef = doc(
       fbDb,
       'users',
-      userId,
+      prop.userId,
       'trainingEvents',
       activityDto.trainingEventId
     );
@@ -71,33 +138,34 @@ export class FSActivityQuery implements ActivityQuery {
       ...activityDto,
     };
   }
-  async queryListInMonth(
-    userId: string,
-    month: Date
-  ): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
+
+  async queryListInMonth(prop: {
+    userId: string;
+    month: Date;
+  }): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
     const activitiesCollectionRef = collection(
       fbDb,
       'users',
-      userId,
+      prop.userId,
       'activities'
     );
     const categoriesCollectionRef = collection(
       fbDb,
       'users',
-      userId,
+      prop.userId,
       'categories'
     );
     const trainingEventsCollectionRef = collection(
       fbDb,
       'users',
-      userId,
+      prop.userId,
       'trainingEvents'
     );
 
     const activityOwnedUserInMonthQuery = query(
       activitiesCollectionRef,
-      where('date', '>=', dayjs(month).startOf('month').toDate()),
-      where('date', '<=', dayjs(month).endOf('month').toDate())
+      where('date', '>=', dayjs(prop.month).startOf('month').toDate()),
+      where('date', '<=', dayjs(prop.month).endOf('month').toDate())
     );
 
     let snapshot = await getDocsFromCache(activityOwnedUserInMonthQuery);

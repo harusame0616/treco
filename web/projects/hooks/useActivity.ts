@@ -42,12 +42,12 @@ const useActivity = (prop: {
           'ユーザーID、カテゴリID、アクティビティIDは必須です。'
         );
       }
-      return activityQueryUsecase.queryDetail(
+      return activityQueryUsecase.queryDetail({
         userId,
         categoryId,
         trainingEventId,
-        activityId
-      );
+        activityId,
+      });
     }
   );
 

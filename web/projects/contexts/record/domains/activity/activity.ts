@@ -16,11 +16,18 @@ interface ConstructorProp {
   date: Date;
 }
 
+export interface ActivityFullId {
+  userId: string;
+  categoryId: string;
+  trainingEventId: string;
+  activityId: string;
+}
+
 export type ActivityDto = ReturnType<Activity['toDto']>;
 
 export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
-  static readonly RECORDS_MAC_LENGTH = 30;
+  static readonly RECORDS_MAX_LENGTH = 30;
 
   constructor(private prop: ConstructorProp) {
     this.updateRecords(prop.records);

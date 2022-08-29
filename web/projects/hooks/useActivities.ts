@@ -26,7 +26,7 @@ const useActivities = (prop: {
       if (!userId || !month) {
         throw new ParameterError('userId and month is required.');
       }
-      return activityQueryUsecase.queryListInMonth(userId, month);
+      return activityQueryUsecase.queryListInMonth({ userId, month });
     }
   );
 
