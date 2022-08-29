@@ -202,7 +202,10 @@ const NewRecord = () => {
         </PrimaryButton>
       </Box>
       <Box position="fixed" bottom="100px" right="30px">
-        <AddButton onClick={addNewRecord}></AddButton>
+        <AddButton
+          onClick={addNewRecord}
+          disabled={records.length >= Activity.RECORDS_MAX_LENGTH}
+        />
       </Box>
     </PageContainer>
   );

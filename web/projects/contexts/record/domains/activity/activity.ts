@@ -20,7 +20,11 @@ export type ActivityDto = ReturnType<Activity['toDto']>;
 
 export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
-  constructor(private prop: ConstructorProp) {}
+  static readonly RECORDS_MAC_LENGTH = 30;
+
+  constructor(private prop: ConstructorProp) {
+    this.updateRecords(prop.records);
+  }
 
   static create(prop: {
     userId: string;
@@ -39,6 +43,12 @@ export class Activity {
   }
 
   updateRecords(records: ActivityRecord[]) {
+    if (records.length > Activity.RECORDS_MAX_LENGTH) {
+      throw new ParameterError(
+        `レコード数は最大${Activity.RECORDS_MAX_LENGTH}レコードまでです。`
+      );
+    }
+
     records.forEach((record) => {
       if (
         typeof record.load != 'number' ||
