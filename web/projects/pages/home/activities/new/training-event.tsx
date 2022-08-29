@@ -68,7 +68,7 @@ const NewEvent = () => {
         categoryId,
         trainingEventId,
         returnTo: '/home/activities/new/training-event',
-        returnQuery: JSON.stringify({ categoryId }),
+        returnQuery: JSON.stringify(router.query),
       },
     });
   };
