@@ -4,7 +4,7 @@ import { memo, MouseEventHandler } from 'react';
 
 interface Prop {
   onClick: MouseEventHandler;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const AddButton = memo(function _AddButton(prop: Prop) {
