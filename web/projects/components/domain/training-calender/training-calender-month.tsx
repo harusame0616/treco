@@ -9,7 +9,7 @@ type ChangeSelectDateHandler = (date: Dayjs) => void | Promise<void>;
 
 interface TrainingCalenderProp {
   month: Dayjs;
-  selectDate: Dayjs;
+  selectDate?: Dayjs;
   today: Dayjs;
   changeSelectDate: ChangeSelectDateHandler;
   activityColorsDateMap: ActivityColorsDateMap;
@@ -26,8 +26,6 @@ const TrainingCalenderMonth = memo(function _TrainingCalenderDay(
       .fill(0)
       .map((_, index) => calenderStart.add(index, 'day'));
   }, [prop.month]);
-
-  const selectDate = dayjs(prop.selectDate);
 
   return (
     <Box width="100%" padding={'10px'}>
@@ -47,7 +45,9 @@ const TrainingCalenderMonth = memo(function _TrainingCalenderDay(
             categoryColors={
               prop.activityColorsDateMap[showDate.format('YYYY-MM-DD')]
             }
-            isSelected={selectDate.isSame(showDate, 'day')}
+            isSelected={
+              prop.selectDate ? prop.selectDate.isSame(showDate, 'day') : false
+            }
             onClick={prop.changeSelectDate}
             key={showDate.format('YYYY-MM-DD')}
           />

@@ -77,7 +77,11 @@ const TrainingCalender = (prop: TrainingCalenderProp) => {
       >
         {months.map((month) => (
           <TrainingCalenderMonth
-            selectDate={prop.selectDate}
+            selectDate={
+              prop.selectDate.isSame(month, 'month')
+                ? prop.selectDate
+                : undefined
+            }
             month={month}
             today={prop.today}
             activityColorsDateMap={prop.activityColorsDateMap}

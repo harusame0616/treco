@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, ClickAwayListener } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ import { AuthContext, TitleContext } from '../_app';
 
 const Home = () => {
   const auth = useContext(AuthContext);
-  const { setTitle } = useContext(TitleContext);
+  const { setTitle, setClickListener } = useContext(TitleContext);
   const router = useRouter();
 
   const [today] = useState(dayjs());
@@ -126,6 +126,13 @@ const Home = () => {
 
     setTitle(month.format('YYYY-MM'));
   }, [month, setTitle]);
+
+  useEffect(() => {
+    setClickListener?.(() => {
+      setMonth(dayjs().startOf('month'));
+      changeSelectDate(dayjs());
+    });
+  }, [setClickListener]);
 
   return (
     <PageContainer>

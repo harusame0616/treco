@@ -1,4 +1,4 @@
-import { AppBar, Grid, useTheme } from '@mui/material';
+import { AppBar, Box, Grid, useTheme } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -17,7 +17,7 @@ const MainHeader = (prop: MainHeaderProp) => {
   const background: any = theme.palette.background;
 
   const auth = useContext(AuthContext);
-  const { title } = useContext(TitleContext);
+  const { title, clickListener } = useContext(TitleContext);
 
   if (!auth) {
     throw new CriticalError('context error');
@@ -53,7 +53,7 @@ const MainHeader = (prop: MainHeaderProp) => {
           color="white"
           sx={{ fontSize: '1.5rem' }}
         >
-          {title}
+          <Box onClick={clickListener}>{title}</Box>
         </Grid>
         <Grid
           item
