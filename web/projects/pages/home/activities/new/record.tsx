@@ -152,10 +152,20 @@ const NewRecord = () => {
             <ActivityListItem
               activity={lastActivity}
               label={
-                <Box fontSize="0.75rem" marginLeft="4px" marginBottom="2px">
-                  最終レコード：
-                  {dayjs(lastActivity.date).format('YYYY/MM/DD')} (
-                  {dayjs(lastActivity.date).diff(new Date(), 'days')}日前)
+                <Box
+                  fontSize="1rem"
+                  marginLeft="4px"
+                  marginBottom="2px"
+                  display="flex"
+                  alignItems="flex-end"
+                >
+                  <Box fontSize="0.8rem" marginRight="10px">
+                    {dayjs(lastActivity.date).format('YYYY/MM/DD')}
+                  </Box>
+                  <Box fontSize="0.8rem">
+                    ({dayjs(new Date()).diff(lastActivity.date, 'days')}
+                    日前)
+                  </Box>
                 </Box>
               }
             />
