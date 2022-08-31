@@ -34,7 +34,9 @@ export class CategoryCommandUsecase {
     this.categoryDomainService = new CategoryDomainService(prop);
   }
 
-  async createNewCategory(prop: CategoryCreateProp): Promise<CategoryDto> {
+  async createNewCategory(
+    prop: Omit<CategoryCreateProp, 'order'>
+  ): Promise<CategoryDto> {
     const registeredCategory =
       await this.prop.categoryRepository.findOneByCategoryName({
         userId: prop.userId,
