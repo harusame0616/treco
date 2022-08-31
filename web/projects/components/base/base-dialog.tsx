@@ -23,8 +23,16 @@ const BaseDialog = (prop: Prop) => {
   return (
     <Dialog open={prop.open ?? false} onClose={prop.onClose} fullWidth>
       <BaseCard>
-        <Box marginY="20px">{prop.children}</Box>
-        <Box marginY="10px" display="flex" flexDirection="column" gap="10px">
+        <Box marginY="20px" width="100%">
+          {prop.children}
+        </Box>
+        <Box
+          marginY="10px"
+          display="flex"
+          flexDirection="column"
+          gap="10px"
+          width="100%"
+        >
           <SecondaryButton onClick={prop.onSecondaryClick}>
             {prop.secondaryLabel ?? 'キャンセル'}
           </SecondaryButton>

@@ -1,17 +1,18 @@
-import { Box, Dialog, IconButton, Input, TextField } from '@mui/material';
+import { Box, IconButton, Input, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import {
   Category,
-  CategoryDto,
+  CategoryDto
 } from '../../../contexts/record/domains/category/category';
 import { ParameterError } from '../../../custom-error/parameter-error';
-import BaseCard from '../../base/base-card';
-import PrimaryButton from '../../case/primary-button';
-import SecondaryButton from '../../case/secondary-button';
-import SectionContainer from '../../container/section-container';
+import BaseDialog from '../../base/base-dialog';
+import BaseDialogTitle from '../../base/base-dialog-title';
 import TrainingMark from '../training-mark';
 
-export type CategoryEditInfo = Omit<Omit<CategoryDto, 'categoryId'>, 'userId'>;
+export type CategoryEditInfo = Omit<
+  CategoryDto,
+  'categoryId' | 'userId' | 'order'
+>;
 
 interface Prop {
   open: boolean;
@@ -49,86 +50,73 @@ const CategoryEditPopup = (prop: Prop) => {
     setCategoryName(prop.category?.categoryName ?? DEFAULT_NAME);
   }, [prop.category]);
 
+  const createCategory = () => {
+    if (!categoryName.length) {
+      prop.onError(new ParameterError('カテゴリ名は必須です。'));
+      return;
+    }
+    if (categoryName.length > Category.CATEGORY_NAME_MAX_LENGTH) {
+      prop.onError?.(
+        new ParameterError(
+          `カテゴリ名は${Category.CATEGORY_NAME_MAX_LENGTH}文字以内で入力してください`
+        )
+      );
+      return;
+    }
+
+    if (!color.length) {
+      prop.onError(new ParameterError(`カラーは必須です。`));
+      return;
+    }
+    if (!new RegExp(Category.COLOR_PATTERN).test(color)) {
+      prop.onError(new ParameterError(`カラーのフォーマットが不正です。`));
+      return;
+    }
+
+    prop.onPirmaryClick(category, reset);
+  };
+
   return (
-    <Dialog open={prop.open}>
-      <BaseCard>
-        <SectionContainer>
-          <Box>カテゴリ作成</Box>
-          <Box></Box>
-          <Box display="flex" alignItems="center">
-            <IconButton
-              onClick={() => {
-                // PCだとclick、スマホだとfocusでカラーピッカーが表示される
-                colorInputRef.current?.click();
-                colorInputRef.current?.focus();
-              }}
-            >
-              <TrainingMark color={color} size="3rem" />
-            </IconButton>
-            <Input
-              inputRef={colorInputRef}
-              type="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              sx={{
-                width: '0px',
-                height: '0px',
-                opacity: '0',
-              }}
-            />
-            <TextField
-              autoFocus
-              variant="filled"
-              size="small"
-              sx={{ background: '#ddd' }}
-              value={categoryName}
-              label="カテゴリ名"
-              onChange={(e) => setCategoryName(e.target.value)}
-            />
-          </Box>
-        </SectionContainer>
-        <SectionContainer>
-          <Box display="flex" flexDirection="column" gap="10px">
-            <SecondaryButton
-              onClick={() => prop.onSecondaryClick(category, reset)}
-            >
-              破棄する
-            </SecondaryButton>
-            <PrimaryButton
-              onClick={() => {
-                if (!categoryName.length) {
-                  prop.onError(new ParameterError('カテゴリ名は必須です。'));
-                  return;
-                }
-                if (categoryName.length > Category.CATEGORY_NAME_MAX_LENGTH) {
-                  prop.onError?.(
-                    new ParameterError(
-                      `カテゴリ名は${Category.CATEGORY_NAME_MAX_LENGTH}文字以内で入力してください`
-                    )
-                  );
-                  return;
-                }
-
-                if (!color.length) {
-                  prop.onError(new ParameterError(`カラーは必須です。`));
-                  return;
-                }
-                if (!new RegExp(Category.COLOR_PATTERN).test(color)) {
-                  prop.onError(
-                    new ParameterError(`カラーのフォーマットが不正です。`)
-                  );
-                  return;
-                }
-
-                prop.onPirmaryClick(category, reset);
-              }}
-            >
-              作成する
-            </PrimaryButton>
-          </Box>
-        </SectionContainer>
-      </BaseCard>
-    </Dialog>
+    <BaseDialog
+      open={prop.open}
+      onSecondaryClick={() => prop.onSecondaryClick(category, reset)}
+      onPrimaryClick={createCategory}
+      primaryLabel="作成する"
+    >
+      <BaseDialogTitle>カテゴリ作成</BaseDialogTitle>
+      <Box display="flex" alignItems="center">
+        <IconButton
+          onClick={() => {
+            // PCだとclick、スマホだとfocusでカラーピッカーが表示される
+            colorInputRef.current?.click();
+            colorInputRef.current?.focus();
+          }}
+        >
+          <TrainingMark color={color} size="3rem" />
+        </IconButton>
+        <Input
+          inputRef={colorInputRef}
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          sx={{
+            width: '0px',
+            height: '0px',
+            opacity: '0',
+          }}
+        />
+        <TextField
+          autoFocus
+          variant="filled"
+          size="small"
+          sx={{ background: '#ddd' }}
+          value={categoryName}
+          label="カテゴリ名"
+          onChange={(e) => setCategoryName(e.target.value)}
+          fullWidth
+        />
+      </Box>
+    </BaseDialog>
   );
 };
 
