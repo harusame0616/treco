@@ -2,7 +2,7 @@ import { Box, IconButton, Input, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import {
   Category,
-  CategoryDto
+  CategoryDto,
 } from '../../../contexts/record/domains/category/category';
 import { ParameterError } from '../../../custom-error/parameter-error';
 import BaseDialog from '../../base/base-dialog';

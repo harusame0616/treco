@@ -13,7 +13,7 @@ import SectionContainer from '../../../../components/container/section-container
 import CategoryLabel from '../../../../components/domain/category-label';
 import CategoryEditPopup, {
   CategoryEditInfo,
-} from '../../../../components/domain/category/category-edit-popup';
+} from '../../../../components/domain/category/category-edit-dialog';
 import { CategoryDto } from '../../../../contexts/record/domains/category/category';
 import { FSCategoryRepository } from '../../../../contexts/record/infrastructure/repository/fs-category-repository';
 import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
