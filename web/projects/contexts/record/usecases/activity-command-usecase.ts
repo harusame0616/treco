@@ -2,6 +2,7 @@ import { NotFoundError } from '../../../custom-error/not-found-error';
 import {
   Activity,
   ActivityDto,
+  ActivityFullId,
   ActivityRecord,
 } from '../domains/activity/activity';
 
@@ -14,6 +15,7 @@ export interface ActivityRepository {
     trainingEventId: string;
     activityId: string;
   }): Promise<Activity | null>;
+  delete(activity: Activity): Promise<void>;
 }
 
 interface ConstructorProp {
@@ -55,5 +57,13 @@ export class ActivityCommandUsecase {
     activity.updateRecords(prop.records);
     await this.prop.activityRepository.save(activity);
     return activity.toDto();
+  }
+
+  async deleteActivity(prop: ActivityFullId) {
+    const activity = await this.prop.activityRepository.findOne(prop);
+
+    if (activity) {
+      await this.prop.activityRepository.delete(activity);
+    }
   }
 }

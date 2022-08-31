@@ -3,7 +3,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 interface Prop {
   children: ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   disabled?: boolean;
 }
 

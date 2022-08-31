@@ -1,7 +1,20 @@
-import { Box } from '@mui/material';
+import {
+  ArrowForwardIosRounded,
+  DeleteForeverRounded,
+} from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import BaseDialog from '../../../../components/base/base-dialog';
+import BaseDialogTitle from '../../../../components/base/base-dialog-title';
 import AddButton from '../../../../components/case/add-button';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
@@ -13,7 +26,9 @@ import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
 import { Activity } from '../../../../contexts/record/domains/activity/activity';
 import useActivityCreate from '../../../../hooks/useActivityCreate';
+import useActivityDelete from '../../../../hooks/useActivityDelete';
 import useActivityOfLastTrainingEvent from '../../../../hooks/useActivityOfLastTrainingEvent';
+import useDialog from '../../../../hooks/useDialog';
 import useProcessing from '../../../../hooks/useProcessing';
 import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
@@ -22,6 +37,8 @@ const NewRecord = () => {
   const { setTitle } = useContext(TitleContext);
 
   const router = useRouter();
+
+  const { isOpen, open, close } = useDialog();
 
   const apiProp = useMemo(
     () => ({
@@ -54,6 +71,7 @@ const NewRecord = () => {
     ...apiProp,
     date: new Date(router.query['date'] as string),
   });
+  const activityDelete = useActivityDelete();
 
   const [stopFollowRecordCard, setStopFollowRecordCard] = useState(true);
 
@@ -95,13 +113,15 @@ const NewRecord = () => {
     }
   }, [selectedRecordIndex]);
 
-  const goBack = async () => {
+  const goBack = async (param?: { query: object }) => {
     await router.push({
       pathname: router.query.returnTo as string,
-      query:
-        typeof router.query.returnQuery === 'string'
+      query: {
+        ...param?.query,
+        ...(typeof router.query.returnQuery === 'string'
           ? JSON.parse(router.query.returnQuery)
-          : undefined,
+          : {}),
+      },
     });
   };
 
@@ -118,6 +138,16 @@ const NewRecord = () => {
 
     goBack();
   };
+
+  const deleteActivity = useCallback(() => {
+    activityDelete.deleteActivity({
+      ...(router.query as any),
+      userId: auth?.auth?.authId,
+    });
+    close();
+    popMessage!('アクティビティを削除しました。');
+    goBack({ query: { deleteActivityId: apiProp.activityId } });
+  }, []);
 
   return (
     <PageContainer>
@@ -139,12 +169,32 @@ const NewRecord = () => {
             alignItems="center"
           >
             <CategoryLabel color={trainingEvent?.color}>
-              {isLoading
-                ? '読み込み中'
-                : trainingEvent?.categoryName ??
-                  'トレーニング種目読み込みエラー'}
+              {isLoading ? (
+                '読み込み中'
+              ) : trainingEvent?.categoryName ? (
+                <Box display="flex" width="100%">
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap="5px"
+                    flexGrow="1"
+                  >
+                    {trainingEvent.categoryName}{' '}
+                    <ArrowForwardIosRounded sx={{ fontSize: '0.8rem' }} />
+                    {trainingEvent?.trainingEventName}{' '}
+                  </Box>
+                  <Box flexGrow="0">
+                    {router.query.activityId ? (
+                      <IconButton color="primary" onClick={open}>
+                        <DeleteForeverRounded />
+                      </IconButton>
+                    ) : undefined}
+                  </Box>
+                </Box>
+              ) : (
+                'トレーニング種目読み込みエラー'
+              )}
             </CategoryLabel>
-            <Box>&gt;</Box> <Box>{trainingEvent?.trainingEventName}</Box>{' '}
           </Box>
         </SectionContainer>
         <SectionContainer>
@@ -225,6 +275,15 @@ const NewRecord = () => {
           </ListContainer>
         </SectionContainer>
       </Box>
+      <BaseDialog
+        open={isOpen}
+        primaryLabel="削除する"
+        onPrimaryClick={deleteActivity}
+        onSecondaryClick={close}
+      >
+        <BaseDialogTitle alert>削除しますか？</BaseDialogTitle>
+      </BaseDialog>
+
       <Box display="flex" padding="20px 0 0" gap="20px">
         <SecondaryButton onClick={discard} disabled={isProcessing}>
           破棄する

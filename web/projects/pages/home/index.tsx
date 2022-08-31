@@ -69,7 +69,10 @@ const Home = () => {
       ? []
       : nextMonthActivities ?? []),
     ...(selectDateMonthActivities ?? []),
-  ];
+  ].filter(
+    // 他ページでアクティビティを削除後、遷移してきた時に削除される前に一覧を取得してしまうため、削除したアクティビティは除外
+    (activity) => activity.activityId != router.query.deleteActivityId
+  );
   const { isClient } = useIsClient();
 
   const changeSelectDate = useCallback(

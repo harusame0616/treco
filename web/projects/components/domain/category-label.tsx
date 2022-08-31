@@ -47,6 +47,7 @@ const CategoryLabel = (prop: Prop) => {
       display="flex"
       alignItems="center"
       gap={space}
+      width="100%"
     >
       <TrainingMark color={prop.color} size={markSize} />
       {prop.children}

@@ -4,7 +4,7 @@ import BaseProgress from '../base/base-progress';
 
 interface PrimaryButtonProp {
   children: ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   disabled?: boolean;
   isLoading?: boolean;
 }

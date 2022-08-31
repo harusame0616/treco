@@ -7,6 +7,7 @@ interface Prop {
   width?: string;
   maxWidth?: string;
   height?: string;
+  minHeight?: string;
 }
 
 const BaseCard = (prop: Prop) => {
@@ -24,6 +25,7 @@ const BaseCard = (prop: Prop) => {
         width: prop.width,
         maxWidth: prop.maxWidth,
         height: prop.height,
+        minHeight: prop.minHeight,
       }}
     >
       {prop.children}

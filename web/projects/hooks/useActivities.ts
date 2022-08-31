@@ -1,25 +1,13 @@
 import useSWR from 'swr';
 import { FSActivityQuery } from '../contexts/record/infrastructure/query/fs-activity-query';
-import {
-  ActivityQueryUsecase,
-  ActivityWithCategoryAndTrainingEventDto,
-} from '../contexts/record/usecases/activity-query-usecase';
+import { ActivityQueryUsecase } from '../contexts/record/usecases/activity-query-usecase';
 import { ParameterError } from '../custom-error/parameter-error';
-
-interface UseActivitiesReturnType {
-  isError: boolean;
-  isLoading: boolean;
-  activities: ActivityWithCategoryAndTrainingEventDto[];
-}
 
 const activityQueryUsecase = new ActivityQueryUsecase({
   activityQuery: new FSActivityQuery(),
 });
 
-const useActivities = (prop: {
-  userId?: string;
-  month?: Date;
-}): UseActivitiesReturnType => {
+const useActivities = (prop: { userId?: string; month?: Date }) => {
   const { data, error } = useSWR(
     ['activity/queryListInMonth', prop.userId, prop.month],
     (_: string, userId: string, month: Date) => {

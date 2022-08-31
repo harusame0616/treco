@@ -67,6 +67,8 @@ service cloud.firestore {
       // - 認証済み && 自身のリソース
       // - レコード以外のデータが既存のデータと一致する(スキーマ更新時変更が必要)
       allow update: if activityWriteCommonRule() && isNoChange('categoryId') && isNoChange('trainingEventId') && isNoChange('activityId') && isNoChange('userId') && isNoChange('date');
+
+      allow delete: if isMyResource(userId);
     }
 
     match /users/{userId}/categories/{categoryId} {

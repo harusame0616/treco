@@ -18,9 +18,9 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
         <Box display="flex" alignItems="center" marginBottom="5px">
           <CategoryLabel color={prop.activity.color} size="small">
             {prop.activity.categoryName}
+            &nbsp;-&nbsp;
+            {prop.activity.trainingEventName}
           </CategoryLabel>
-          &nbsp;-&nbsp;
-          <Box>{prop.activity.trainingEventName}</Box>
         </Box>
       )}
       <Box>

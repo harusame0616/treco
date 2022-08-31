@@ -1,4 +1,5 @@
 import {
+  deleteDoc,
   doc,
   getDoc,
   getDocFromCache,
@@ -10,6 +11,19 @@ import { Activity } from '../../domains/activity/activity';
 import { ActivityRepository } from '../../usecases/activity-command-usecase';
 
 export class FSActivityRepository implements ActivityRepository {
+  async delete(activity: Activity): Promise<void> {
+    const activityDto = activity.toDto();
+    const activityDocRef = doc(
+      fbDb,
+      'users',
+      activityDto.userId,
+      'activities',
+      activityDto.activityId
+    );
+
+    return deleteDoc(activityDocRef);
+  }
+
   async insert(activity: Activity) {
     const activityDto = activity.toDto();
     await setDoc(
@@ -45,6 +59,7 @@ export class FSActivityRepository implements ActivityRepository {
     trainingEventId: string;
     activityId: string;
   }): Promise<Activity | null> {
+    console.log('findone', { prop });
     const activityDocRef = doc(
       fbDb,
       'users',
