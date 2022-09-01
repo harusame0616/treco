@@ -1,20 +1,9 @@
-import {
-  ArrowForwardIosRounded,
-  DeleteForeverRounded
-} from '@mui/icons-material';
-import { Box, IconButton } from '@mui/material';
+import { ArrowForwardIosRounded } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import AddButton from '../../../../components/case/add-button';
-import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import ListContainer from '../../../../components/container/list-container';
@@ -25,9 +14,7 @@ import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
 import { Activity } from '../../../../contexts/record/domains/activity/activity';
 import useActivityCreate from '../../../../hooks/useActivityCreate';
-import useActivityDelete from '../../../../hooks/useActivityDelete';
 import useActivityOfLastTrainingEvent from '../../../../hooks/useActivityOfLastTrainingEvent';
-import useDialog from '../../../../hooks/useDialog';
 import useProcessing from '../../../../hooks/useProcessing';
 import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
@@ -36,8 +23,6 @@ const NewRecord = () => {
   const { setTitle } = useContext(TitleContext);
 
   const router = useRouter();
-
-  const { isOpen, open, close } = useDialog();
 
   const apiProp = useMemo(
     () => ({
@@ -70,7 +55,6 @@ const NewRecord = () => {
     ...apiProp,
     date: new Date(router.query['date'] as string),
   });
-  const activityDelete = useActivityDelete();
 
   const [stopFollowRecordCard, setStopFollowRecordCard] = useState(true);
 
@@ -138,16 +122,6 @@ const NewRecord = () => {
     goBack();
   };
 
-  const deleteActivity = useCallback(() => {
-    activityDelete.deleteActivity({
-      ...(router.query as any),
-      userId: auth?.auth?.authId,
-    });
-    close();
-    popMessage!('アクティビティを削除しました。');
-    goBack({ query: { deleteActivityId: apiProp.activityId } });
-  }, []);
-
   return (
     <PageContainer>
       <Box
@@ -171,24 +145,10 @@ const NewRecord = () => {
               {isLoading ? (
                 '読み込み中'
               ) : trainingEvent?.categoryName ? (
-                <Box display="flex" width="100%">
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap="5px"
-                    flexGrow="1"
-                  >
-                    {trainingEvent.categoryName}{' '}
-                    <ArrowForwardIosRounded sx={{ fontSize: '0.8rem' }} />
-                    {trainingEvent?.trainingEventName}{' '}
-                  </Box>
-                  <Box flexGrow="0">
-                    {router.query.activityId ? (
-                      <IconButton color="primary" onClick={open}>
-                        <DeleteForeverRounded />
-                      </IconButton>
-                    ) : undefined}
-                  </Box>
+                <Box display="flex" alignItems="center" gap="5px" flexGrow="1">
+                  {trainingEvent.categoryName}{' '}
+                  <ArrowForwardIosRounded sx={{ fontSize: '0.8rem' }} />
+                  {trainingEvent?.trainingEventName}{' '}
                 </Box>
               ) : (
                 'トレーニング種目読み込みエラー'
@@ -274,12 +234,6 @@ const NewRecord = () => {
           </ListContainer>
         </SectionContainer>
       </Box>
-      <DeleteConfirmDialog
-        open={isOpen}
-        onPrimaryClick={deleteActivity}
-        onSecondaryClick={close}
-      />
-
       <Box display="flex" padding="20px 0 0" gap="20px">
         <SecondaryButton onClick={discard} disabled={isProcessing}>
           破棄する

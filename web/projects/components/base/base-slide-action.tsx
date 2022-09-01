@@ -18,7 +18,7 @@ const BaseSlideAction = (prop: Prop) => {
           height: 0,
           width: 0,
           display: 'none',
-          '-webkit-appearance': 'none',
+          WebkitAppearance: 'none',
         },
       }}
       gap="10px"

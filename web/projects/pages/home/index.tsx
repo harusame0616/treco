@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
+import DeleteConfirmDialog from '../../components/case/delete-confirm-dialog';
+import DeleteSlideAction from '../../components/case/delete-slide-action';
 import PageContainer from '../../components/container/page-container';
 import ActivityListItem from '../../components/domain/activity-list-item';
 import TrainingCalender, {
@@ -12,6 +14,8 @@ import TrainingCalender, {
 import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
 import useActivities from '../../hooks/useActivities';
+import useActivityDelete from '../../hooks/useActivityDelete';
+import useDialog from '../../hooks/useDialog';
 import useIsClient from '../../hooks/useIsClient';
 import { AuthContext, TitleContext } from '../_app';
 
@@ -19,6 +23,7 @@ const Home = () => {
   const auth = useContext(AuthContext);
   const { setTitle, setClickListener } = useContext(TitleContext);
   const router = useRouter();
+  const activityDelete = useActivityDelete();
 
   const [today] = useState(dayjs());
   const [selectDate, setSelectDate] = useState(
@@ -41,10 +46,14 @@ const Home = () => {
     month: selectDateMonth,
   });
 
+  const [exceptActivities, setExceptActivities] = useState<ActivityDto[]>([]);
   const { activities: currentMonthActivities } = useActivities({
     userId: auth?.auth.authId,
     month: viewCurrentMonth,
   });
+  const [selectedActivity, setSelectedActivity] = useState<ActivityDto | null>(
+    null
+  );
 
   const { activities: prevMonthActivities } = useActivities({
     userId: auth?.auth.authId,
@@ -70,8 +79,10 @@ const Home = () => {
       : nextMonthActivities ?? []),
     ...(selectDateMonthActivities ?? []),
   ].filter(
-    // 他ページでアクティビティを削除後、遷移してきた時に削除される前に一覧を取得してしまうため、削除したアクティビティは除外
-    (activity) => activity.activityId != router.query.deleteActivityId
+    (activity) =>
+      !exceptActivities
+        .map((activity) => activity.activityId)
+        .includes(activity.activityId)
   );
   const { isClient } = useIsClient();
 
@@ -81,6 +92,7 @@ const Home = () => {
     },
     [setSelectDate]
   );
+  const { isOpen, open, close } = useDialog();
 
   const activitiesDateMap = activities.reduce((prev, activity) => {
     const key = dayjs(activity.date).format('YYYY-MM-DD');
@@ -137,6 +149,21 @@ const Home = () => {
     });
   }, [setClickListener]);
 
+  const deleteActivity = () => {
+    if (!selectedActivity) {
+      throw new Error('アクティビティが選択されていません。');
+    }
+
+    activityDelete.deleteActivity(selectedActivity);
+    setExceptActivities([...exceptActivities, selectedActivity]);
+    close();
+  };
+
+  const openDeleteConfirm = (activity: ActivityDto) => {
+    setSelectedActivity(activity);
+    open();
+  };
+
   return (
     <PageContainer>
       {/* サーバーとクライアントでタイムゾーンが異なることにより、
@@ -165,9 +192,6 @@ const Home = () => {
             flexShrink="1"
             paddingY="20px"
             overflow="auto"
-            height="0px"
-            display="flex"
-            flexDirection="column"
             gap="20px"
           >
             {selectDateMonthActivitiesIsLoading ? (
@@ -182,28 +206,46 @@ const Home = () => {
               </Box>
             ) : (
               selectDateActivities.map((activity) => (
-                <ActivityListItem
-                  activity={activity}
-                  key={activity.activityId}
-                  onClick={goToActivityEdit}
-                />
+                <Box key={activity.activityId} marginBottom="20px">
+                  <DeleteSlideAction
+                    onDeleteClick={() => openDeleteConfirm(activity)}
+                  >
+                    <ActivityListItem
+                      activity={activity}
+                      onClick={goToActivityEdit}
+                    />
+                  </DeleteSlideAction>
+                </Box>
               ))
             )}
+
+            {selectDateActivities.length ? (
+              <Box
+                fontSize="0.75rem"
+                sx={{ fontStyle: 'italic' }}
+                marginTop="-15px"
+              >
+                ※ 項目を左にスワイプすると削除ボタンが表示されます
+              </Box>
+            ) : undefined}
           </Box>
           <Box position="absolute" right="20px" bottom="20px" zIndex="1">
             <AddButton
               onClick={() => {
                 router.push({
                   pathname: '/home/activities/new',
-                  query: {
-                    date: selectDate.toDate().toUTCString(),
-                  },
+                  query: { date: selectDate.toDate().toUTCString() },
                 });
               }}
             />
           </Box>
         </>
       ) : undefined}
+      <DeleteConfirmDialog
+        open={isOpen}
+        onPrimaryClick={deleteActivity}
+        onSecondaryClick={close}
+      />
     </PageContainer>
   );
 };
