@@ -14,6 +14,12 @@ const BaseSlideAction = (prop: Prop) => {
         overflowX: 'scroll',
         width: '100%',
         overflowWrap: 'nowrap',
+        '&::-webkit-scrollbar': {
+          height: 0,
+          width: 0,
+          display: 'none',
+          '-webkit-appearance': 'none',
+        },
       }}
       gap="10px"
       display="flex"
