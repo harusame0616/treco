@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocFromCache,
@@ -102,5 +103,18 @@ export class FSCategoryRepository implements CategoryRepository {
     return categoryDtoList.empty
       ? null
       : Category.fromDto(categoryDtoList.docs[0].data() as any);
+  }
+
+  async delete(category: Category): Promise<void> {
+    const categoryDto = category.toDto();
+    const categoryDocRef = doc(
+      fbDb,
+      'users',
+      categoryDto.userId,
+      'categories',
+      categoryDto.categoryId
+    );
+
+    return deleteDoc(categoryDocRef);
   }
 }

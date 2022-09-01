@@ -94,6 +94,8 @@ service cloud.firestore {
       // 更新
       // - 認証済み && 自身のリソース
       allow update: if categoryWriteCommonRule();
+
+      allow delete: if isMyResource(userId);
     }
 
     match /users/{userId}/trainingEvents/{categoryId} {

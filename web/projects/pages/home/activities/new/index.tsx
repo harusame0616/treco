@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
+import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
+import DeleteSlideAction from '../../../../components/case/delete-slide-action';
 import ListItemCard from '../../../../components/case/list-item-card';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import ListContainer from '../../../../components/container/list-container';
@@ -19,6 +21,7 @@ import { FSCategoryRepository } from '../../../../contexts/record/infrastructure
 import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
 import { CategoryCommandUsecase } from '../../../../contexts/record/usecases/category-command-usecase';
 import useCategories from '../../../../hooks/useCategories';
+import useDialog from '../../../../hooks/useDialog';
 import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
 const categoryCommandUsecase = new CategoryCommandUsecase({
@@ -31,6 +34,7 @@ const ActivitiesNew = () => {
   const popMessage = useContext(PopMessageContext);
   const { setTitle } = useContext(TitleContext);
 
+  const { close, open, isOpen } = useDialog();
   const [categoryEditPopup, setCategoryEditPopup] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState<
@@ -108,6 +112,10 @@ const ActivitiesNew = () => {
     setSelectedCategory(category);
     setCategoryEditPopup(true);
   };
+  const openDeleteConfirm = (category: CategoryDto) => {
+    setSelectedCategory(category);
+    open();
+  };
 
   const popupError = (e: Error) => {
     popMessage?.(e.message, { mode: 'error' });
@@ -121,6 +129,14 @@ const ActivitiesNew = () => {
 
     setTitle?.(dayjs(dateQuery).format('YYYY-MM-DD'));
   }, [router.query.date]);
+
+  const deleteCategory = () => {
+    if (!selectedCategory) {
+      throw new Error('カテゴリが選択されていません。');
+    }
+    categoryCommandUsecase.deleteCategory(selectedCategory);
+    close();
+  };
 
   return (
     <>
@@ -136,35 +152,49 @@ const ActivitiesNew = () => {
           ) : (
             <ListContainer>
               {categories.map((category) => (
-                <ListItemCard
+                <DeleteSlideAction
                   key={category.categoryId}
-                  onClick={() => goToEventSelect(category.categoryId)}
+                  onDeleteClick={() => {
+                    openDeleteConfirm(category);
+                  }}
                 >
-                  <Box flexGrow={1} flexShrink={0}>
-                    <CategoryLabel color={category.color} size="large">
-                      {category.categoryName}
-                    </CategoryLabel>
-                  </Box>
-                  <Box flexGrow={0} flexShrink={1}>
-                    <IconButton
-                      color="primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openCategoryEditPopup(category);
-                      }}
-                    >
-                      <EditRounded />
-                    </IconButton>
-                  </Box>
-                </ListItemCard>
+                  <ListItemCard
+                    onClick={() => goToEventSelect(category.categoryId)}
+                  >
+                    <Box flexGrow={1} flexShrink={0}>
+                      <CategoryLabel color={category.color} size="large">
+                        {category.categoryName}
+                      </CategoryLabel>
+                    </Box>
+                    <Box flexGrow={0} flexShrink={1}>
+                      <IconButton
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openCategoryEditPopup(category);
+                        }}
+                      >
+                        <EditRounded />
+                      </IconButton>
+                    </Box>
+                  </ListItemCard>
+                </DeleteSlideAction>
               ))}
             </ListContainer>
           )}
+          <Box sx={{ fontSize: '0.8rem', fontStyle: 'italic' }} marginTop="3px">
+            ※ 項目を左にスワイプすると削除ボタンが表示されます
+          </Box>
         </SectionContainer>
         <SectionContainer>
           <SecondaryButton onClick={backToHome}>ホームへ戻る</SecondaryButton>
         </SectionContainer>
       </PageContainer>
+      <DeleteConfirmDialog
+        open={isOpen}
+        onPrimaryClick={deleteCategory}
+        onSecondaryClick={close}
+      />
       <CategoryEditPopup
         open={categoryEditPopup}
         category={selectedCategory}

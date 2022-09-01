@@ -1,6 +1,6 @@
 import {
   ArrowForwardIosRounded,
-  DeleteForeverRounded,
+  DeleteForeverRounded
 } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
@@ -11,11 +11,10 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react';
-import BaseDialog from '../../../../components/base/base-dialog';
-import BaseDialogTitle from '../../../../components/base/base-dialog-title';
 import AddButton from '../../../../components/case/add-button';
+import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
 import PrimaryButton from '../../../../components/case/primary-button';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import ListContainer from '../../../../components/container/list-container';
@@ -275,14 +274,11 @@ const NewRecord = () => {
           </ListContainer>
         </SectionContainer>
       </Box>
-      <BaseDialog
+      <DeleteConfirmDialog
         open={isOpen}
-        primaryLabel="削除する"
         onPrimaryClick={deleteActivity}
         onSecondaryClick={close}
-      >
-        <BaseDialogTitle alert>削除しますか？</BaseDialogTitle>
-      </BaseDialog>
+      />
 
       <Box display="flex" padding="20px 0 0" gap="20px">
         <SecondaryButton onClick={discard} disabled={isProcessing}>

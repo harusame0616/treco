@@ -7,13 +7,14 @@ interface PrimaryButtonProp {
   onClick?: MouseEventHandler;
   disabled?: boolean;
   isLoading?: boolean;
+  height?: string;
 }
 
 const PrimaryButton = (prop: PrimaryButtonProp) => {
   return (
     <Button
       variant="contained"
-      sx={{ width: '100%' }}
+      sx={{ width: '100%', height: prop.height }}
       color="primary"
       onClick={prop.onClick}
       disabled={prop.disabled}

@@ -21,6 +21,7 @@ export interface CategoryRepository {
   }): Promise<Category | null>;
   findOneByLastOrder(prop: { userId: string }): Promise<Category | null>;
   save(category: Category): Promise<void>;
+  delete(category: Category): Promise<void>;
 }
 
 interface ConstructorProp {
@@ -82,5 +83,16 @@ export class CategoryCommandUsecase {
 
   async createDefaultCategories(userId: string): Promise<void> {
     await this.categoryDomainService.createDefaultCategories(userId);
+  }
+
+  async deleteCategory(prop: { userId: string; categoryId: string }) {
+    const category = await this.prop.categoryRepository.findOneByCategoryId(
+      prop
+    );
+    if (!category) {
+      return;
+    }
+
+    await this.prop.categoryRepository.delete(category);
   }
 }
