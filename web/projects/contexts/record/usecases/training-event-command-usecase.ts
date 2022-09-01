@@ -4,16 +4,15 @@ import {
   TrainingEvent,
   TrainingEventCreateProp,
   TrainingEventDto,
+  TrainingEventFullId,
 } from '../domains/training-event/training-event';
 import { TrainingEventDomainService } from '../domains/training-event/training-event-domain-service';
 
 export interface TrainingEventRepository {
   save(trainingEvent: TrainingEvent): Promise<void>;
-  findOneByTrainingEventId(prop: {
-    userId: string;
-    categoryId: string;
-    trainingEventId: string;
-  }): Promise<TrainingEvent | null>;
+  findOneByTrainingEventId(
+    prop: TrainingEventFullId
+  ): Promise<TrainingEvent | null>;
   findOneByTrainingEventName(prop: {
     userId: string;
     categoryId: string;
@@ -23,6 +22,7 @@ export interface TrainingEventRepository {
     userId: string;
     categoryId: string;
   }): Promise<TrainingEvent | null>;
+  deleteTrainingEvent(trainingEvent: TrainingEvent): Promise<void>;
 }
 
 interface ConstructorProp {
@@ -93,5 +93,16 @@ export class TrainingEventCommandUsecase {
 
     await this.prop.trainingEventRepository.save(registeredTrainingEvent);
     return registeredTrainingEvent.toDto();
+  }
+
+  async deleteTrainingEvent(prop: TrainingEventFullId) {
+    const trainingEvent =
+      await this.prop.trainingEventRepository.findOneByTrainingEventId(prop);
+
+    if (!trainingEvent) {
+      return;
+    }
+
+    await this.prop.trainingEventRepository.deleteTrainingEvent(trainingEvent);
   }
 }

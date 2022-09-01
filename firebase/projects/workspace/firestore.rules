@@ -122,6 +122,8 @@ service cloud.firestore {
       // 更新
       // - 認証済み && 自身のリソース
       allow update: if trainingEventWriteCommonRule();
+
+      allow delete: if isMyResource(userId);
     }
 
     // 自分のデータは全て読み込み可能

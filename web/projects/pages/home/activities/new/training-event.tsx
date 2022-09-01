@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
+import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
+import DeleteSlideAction from '../../../../components/case/delete-slide-action';
 import ListItemCard from '../../../../components/case/list-item-card';
 import SecondaryButton from '../../../../components/case/secondary-button';
 import ListContainer from '../../../../components/container/list-container';
@@ -19,6 +21,7 @@ import { FSTrainigEventRepository } from '../../../../contexts/record/infrastruc
 import { TrainingEventCommandUsecase } from '../../../../contexts/record/usecases/training-event-command-usecase';
 import { ParameterError } from '../../../../custom-error/parameter-error';
 import useCategory from '../../../../hooks/useCategory';
+import useDialog from '../../../../hooks/useDialog';
 import useTrainingEvents from '../../../../hooks/useTrainingEvents';
 import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
 
@@ -33,6 +36,7 @@ const NewEvent = () => {
     throw new ParameterError('カテゴリIDが不正です。');
   }
 
+  const { open, isOpen, close } = useDialog();
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
   const { setTitle } = useContext(TitleContext);
@@ -128,6 +132,15 @@ const NewEvent = () => {
     setEditPopup(true);
   };
 
+  const deleteTrainingEvent = () => {
+    if (!selectedTrainingEvent) {
+      throw new Error('トレーニング種目が選択されていません');
+    }
+
+    trainingEventCommandUsecase.deleteTrainingEvent(selectedTrainingEvent);
+    close();
+  };
+
   useEffect(() => {
     const { date } = router.query;
     if (!setTitle || typeof date !== 'string') {
@@ -156,25 +169,32 @@ const NewEvent = () => {
             <ListContainer>
               {trainingEvents
                 ? trainingEvents.map((event) => (
-                    <ListItemCard
-                      onClick={() => goToNext(event.trainingEventId)}
+                    <DeleteSlideAction
                       key={event.trainingEventId}
+                      onDeleteClick={() => {
+                        setSelectedTrainingEvent(event);
+                        open();
+                      }}
                     >
-                      <Box flexGrow={1} flexShrink={0}>
-                        {event.trainingEventName}
-                      </Box>
-                      <Box flexGrow={0} flexShrink={1}>
-                        <IconButton
-                          color="primary"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openTrainingEventEditPopup(event);
-                          }}
-                        >
-                          <EditRounded />
-                        </IconButton>
-                      </Box>
-                    </ListItemCard>
+                      <ListItemCard
+                        onClick={() => goToNext(event.trainingEventId)}
+                      >
+                        <Box flexGrow={1} flexShrink={0}>
+                          {event.trainingEventName}
+                        </Box>
+                        <Box flexGrow={0} flexShrink={1}>
+                          <IconButton
+                            color="primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openTrainingEventEditPopup(event);
+                            }}
+                          >
+                            <EditRounded />
+                          </IconButton>
+                        </Box>
+                      </ListItemCard>
+                    </DeleteSlideAction>
                   ))
                 : 'トレーニング種目読み込みエラー'}
             </ListContainer>
@@ -187,6 +207,11 @@ const NewEvent = () => {
           </SecondaryButton>
         </SectionContainer>
       </PageContainer>
+      <DeleteConfirmDialog
+        open={isOpen}
+        onPrimaryClick={deleteTrainingEvent}
+        onSecondaryClick={close}
+      />
       <TrainingEventEditPopup
         open={editPopup}
         onError={popError}

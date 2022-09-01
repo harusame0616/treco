@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocFromCache,
@@ -14,7 +15,7 @@ import {
 import { fbDb } from '../../../../utils/firebase';
 import {
   TrainingEvent,
-  TrainingEventDto,
+  TrainingEventFullId,
 } from '../../domains/training-event/training-event';
 import { TrainingEventRepository } from '../../usecases/training-event-command-usecase';
 
@@ -28,11 +29,9 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
     );
   }
 
-  async findOneByTrainingEventId(prop: {
-    userId: string;
-    categoryId: string;
-    trainingEventId: string;
-  }): Promise<TrainingEvent | null> {
+  async findOneByTrainingEventId(
+    prop: TrainingEventFullId
+  ): Promise<TrainingEvent | null> {
     const docRef = doc(
       fbDb,
       'users',
@@ -99,5 +98,19 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
     return trainingEvents.empty
       ? null
       : TrainingEvent.fromDto(trainingEvents.docs[0].data() as any);
+  }
+
+  async deleteTrainingEvent(trainingEvent: TrainingEvent): Promise<void> {
+    const trainingEventDto = trainingEvent.toDto();
+
+    const trainingEventDocRef = doc(
+      fbDb,
+      'users',
+      trainingEventDto.userId,
+      'trainingEvents',
+      trainingEventDto.trainingEventId
+    );
+
+    await deleteDoc(trainingEventDocRef);
   }
 }

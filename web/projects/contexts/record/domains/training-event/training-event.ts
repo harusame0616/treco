@@ -1,15 +1,20 @@
 import { ParameterError } from '../../../../custom-error/parameter-error';
 import { generateId } from '../../../../utils/id';
 
-export interface TrainingEventDto {
+export interface TrainingEventFullId {
   userId: string;
   categoryId: string;
   trainingEventId: string;
+}
+
+export interface TrainingEventProperty {
   trainingEventName: string;
   loadUnit: string;
   valueUnit: string;
   order: number;
 }
+
+export type TrainingEventDto = TrainingEventFullId & TrainingEventProperty;
 
 export type ConstructorProp = TrainingEventDto;
 export type TrainingEventCreateProp = Omit<ConstructorProp, 'trainingEventId'>;
