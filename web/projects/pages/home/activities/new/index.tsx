@@ -2,7 +2,7 @@ import { EditRounded } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
 import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
@@ -37,13 +37,28 @@ const ActivitiesNew = () => {
   const { close, open, isOpen } = useDialog();
   const [categoryEditPopup, setCategoryEditPopup] = useState(false);
 
+  const [exceptCategories, setExceptCategories] = useState<CategoryDto[]>([]);
+
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryDto | undefined
   >();
 
-  const { categories, isLoading } = useCategories({
+  const { categories: _categories, isLoading } = useCategories({
     authId: auth?.auth?.authId,
   });
+
+  // 削除ボタンを押してから実際に削除されて反映されるまでにラグがあるので、
+  // 削除が実行された項目は除外して即座に反映しているように見せる
+  const categories = useMemo(
+    () =>
+      _categories.filter(
+        (category) =>
+          !exceptCategories
+            .map((category) => category.categoryId)
+            .includes(category.categoryId)
+      ),
+    [_categories, exceptCategories]
+  );
   const router = useRouter();
 
   const backToHome = () => {
@@ -135,6 +150,7 @@ const ActivitiesNew = () => {
       throw new Error('カテゴリが選択されていません。');
     }
     categoryCommandUsecase.deleteCategory(selectedCategory);
+    setExceptCategories([...exceptCategories, selectedCategory]);
     close();
   };
 

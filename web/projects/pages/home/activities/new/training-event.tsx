@@ -2,7 +2,7 @@ import { EditRounded } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import BaseProgress from '../../../../components/base/base-progress';
 import AddButton from '../../../../components/case/add-button';
 import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
@@ -43,10 +43,26 @@ const NewEvent = () => {
 
   const [editPopup, setEditPopup] = useState(false);
 
-  const { isLoading, trainingEvents } = useTrainingEvents({
+  const [exceptTrainingEvents, setExceptTrainingEvents] = useState<
+    TrainingEventDto[]
+  >([]);
+  const { isLoading, trainingEvents: _trainingEvents } = useTrainingEvents({
     categoryId: categoryId as string,
     userId: auth?.auth?.authId,
   });
+
+  // 削除ボタンを押してから実際に削除されて反映されるまでにラグがあるので、
+  // 削除が実行された項目は除外して即座に反映しているように見せる
+  const trainingEvents = useMemo(
+    () =>
+      _trainingEvents.filter(
+        (trainingEvent) =>
+          !exceptTrainingEvents
+            .map((trainingEvent) => trainingEvent.trainingEventId)
+            .includes(trainingEvent.trainingEventId)
+      ),
+    [_trainingEvents, exceptTrainingEvents]
+  );
 
   const { isLoading: categoryIsLoading, category } = useCategory({
     categoryId: categoryId as string,
@@ -138,6 +154,7 @@ const NewEvent = () => {
     }
 
     trainingEventCommandUsecase.deleteTrainingEvent(selectedTrainingEvent);
+    setExceptTrainingEvents([...exceptTrainingEvents, selectedTrainingEvent]);
     close();
   };
 
