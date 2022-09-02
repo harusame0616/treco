@@ -29,18 +29,18 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
             <Grid
               container
               sx={{
-                fontSize: '1rem',
+                fontSize: '0.9rem',
               }}
             >
-              <Grid container sx={{ fontSize: '0.5rem', color: '#999' }}>
+              <Grid container sx={{ fontSize: '0.5em', color: '#999' }}>
                 <Grid item xs={1}></Grid>
-                <Grid item xs={2.5} padding="2px">
+                <Grid item xs={3} padding="2px">
                   負荷
                 </Grid>
-                <Grid item xs={2.5} padding="2px">
+                <Grid item xs={3} padding="2px">
                   値
                 </Grid>
-                <Grid item xs={6} padding="2px">
+                <Grid item xs={5} padding="2px">
                   備考
                 </Grid>
               </Grid>
@@ -54,7 +54,7 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
                       fontSize: '0.75rem',
                       display: 'flex',
                       alignItems: 'flex-end',
-                      paddingBottom: '3px',
+                      paddingBottom: '2px',
                       color: '#999',
                     }}
                   >
@@ -62,16 +62,18 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
                   </Grid>
                   <Grid
                     item
-                    xs={2.5}
+                    xs={3}
                     display="flex"
                     alignItems="flex-end"
-                    flexWrap="wrap"
+                    flexWrap="nowrap"
                     padding="2px"
                   >
-                    {record.load}
+                    <Box textOverflow="ellipsis" overflow="hidden">
+                      {record.load}
+                    </Box>
                     <Box
-                      sx={{ fontSize: '0.5rem', color: '#999' }}
-                      paddingBottom="3px"
+                      sx={{ fontSize: '0.5em', color: '#999' }}
+                      paddingBottom="2px"
                       marginLeft="2.5px"
                     >
                       {prop.activity.loadUnit}
@@ -79,16 +81,18 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
                   </Grid>
                   <Grid
                     item
-                    xs={2.5}
+                    xs={3}
                     display="flex"
                     alignItems="flex-end"
-                    flexWrap="wrap"
+                    flexWrap="nowrap"
                     padding="2px"
                   >
-                    {record.value}
+                    <Box textOverflow="ellipsis" overflow="hidden">
+                      {record.value}
+                    </Box>
                     <Box
-                      sx={{ fontSize: '0.5rem', color: '#999' }}
-                      paddingBottom="3px"
+                      sx={{ fontSize: '0.5em', color: '#999' }}
+                      paddingBottom="2px"
                       marginLeft="2.5px"
                     >
                       {prop.activity.valueUnit}
@@ -96,12 +100,15 @@ const ActivityListItem = (prop: ActivityListItemProp) => {
                   </Grid>
                   <Grid
                     item
-                    xs={6}
+                    xs={5}
                     sx={{
-                      fontSize: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
                       padding: '2px',
+                      overflow: 'hidden',
+                      flexWrap: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      verticalAlign: 'center',
+                      marginTop: 'auto',
+                      marginBottom: 'auto',
                     }}
                   >
                     {record.note?.length ? record.note : '-'}
