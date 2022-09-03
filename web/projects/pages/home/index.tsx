@@ -10,7 +10,7 @@ import DeleteSlideAction from '../../components/case/delete-slide-action';
 import PageContainer from '../../components/container/page-container';
 import ActivityListItem from '../../components/domain/activity-list-item';
 import TrainingCalender, {
-  ActivityColorsDateMap
+  ActivityColorsDateMap,
 } from '../../components/domain/training-calender/training-calender';
 import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
@@ -128,6 +128,7 @@ const Home = () => {
         trainingEventId: activity.trainingEventId,
         activityId: activity.activityId,
         returnTo: `/home`,
+        date: selectDate.toDate().toUTCString(),
         returnQuery: JSON.stringify({
           date: selectDate.toDate().toUTCString(),
         }),

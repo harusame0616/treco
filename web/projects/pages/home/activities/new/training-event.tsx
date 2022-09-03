@@ -39,7 +39,7 @@ const NewEvent = () => {
   const { open, isOpen, close } = useDialog();
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
-  const { setTitle } = useContext(TitleContext);
+  const { setTitle, setClickListener } = useContext(TitleContext);
 
   const [editPopup, setEditPopup] = useState(false);
 
@@ -165,6 +165,12 @@ const NewEvent = () => {
     }
 
     setTitle(dayjs(date).format('YYYY-MM-DD'));
+    setClickListener?.(() => {
+      router.push({
+        pathname: '/home/',
+        query: router.query,
+      });
+    });
   }, [router.query, setTitle]);
 
   return (

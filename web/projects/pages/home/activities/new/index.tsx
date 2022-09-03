@@ -32,7 +32,7 @@ const categoryCommandUsecase = new CategoryCommandUsecase({
 const ActivitiesNew = () => {
   const auth = useContext(AuthContext);
   const popMessage = useContext(PopMessageContext);
-  const { setTitle } = useContext(TitleContext);
+  const { setTitle, setClickListener } = useContext(TitleContext);
 
   const { close, open, isOpen } = useDialog();
   const [categoryEditPopup, setCategoryEditPopup] = useState(false);
@@ -143,6 +143,12 @@ const ActivitiesNew = () => {
     }
 
     setTitle?.(dayjs(dateQuery).format('YYYY-MM-DD'));
+    setClickListener?.(() => {
+      router.push({
+        pathname: '/home/',
+        query: router.query,
+      });
+    });
   }, [router.query.date]);
 
   const deleteCategory = () => {

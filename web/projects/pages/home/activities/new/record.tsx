@@ -20,7 +20,7 @@ import { useContext, useMemo, useRef, useState, useEffect } from 'react';
 
 const NewRecord = () => {
   const auth = useContext(AuthContext);
-  const { setTitle } = useContext(TitleContext);
+  const { setTitle, setClickListener } = useContext(TitleContext);
 
   const router = useRouter();
 
@@ -80,6 +80,12 @@ const NewRecord = () => {
     }
 
     setTitle?.(dayjs(router.query.date).format('YYYY-MM-DD'));
+    setClickListener?.(() => {
+      router.push({
+        pathname: '/home/',
+        query: router.query,
+      });
+    });
   }, [router.query.date]);
 
   useEffect(() => {
