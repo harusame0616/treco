@@ -1,19 +1,10 @@
-import { ParameterError } from '../../../../custom-error/parameter-error';
-import { generateId } from '../../../../utils/id';
+import { ParameterError } from '@Errors/parameter-error';
+import { generateId, isId, isUserId } from '@/utils/id';
 
 export interface ActivityRecord {
   load: number;
   value: number;
   note: string;
-}
-
-interface ConstructorProp {
-  userId: string;
-  categoryId: string;
-  trainingEventId: string;
-  activityId: string;
-  records: ActivityRecord[];
-  date: Date;
 }
 
 export interface ActivityFullId {
@@ -23,57 +14,64 @@ export interface ActivityFullId {
   activityId: string;
 }
 
-export type ActivityDto = ReturnType<Activity['toDto']>;
+export interface ActivityProperty {
+  records: ActivityRecord[];
+  date: Date;
+}
+
+export type ActivityDto = ActivityFullId & ActivityProperty;
+type ConstructorProp = ActivityDto;
 
 export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
   static readonly RECORDS_MAX_LENGTH = 30;
 
-  constructor(private prop: ConstructorProp) {
-    this.updateRecords(prop.records);
-  }
+  constructor(private prop: ConstructorProp) {}
 
-  static create(prop: {
-    userId: string;
-    categoryId: string;
-    trainingEventId: string;
-    date: Date;
-  }) {
-    return new Activity({
-      userId: prop.userId,
-      categoryId: prop.categoryId,
-      trainingEventId: prop.trainingEventId,
-      activityId: generateId(),
-      records: [],
-      date: prop.date,
+  static create(prop: Omit<ConstructorProp, 'activityId' | 'records'>) {
+    [
+      [prop.categoryId, 'カテゴリID'],
+      [prop.trainingEventId, 'トレーニング種目ID'],
+    ].forEach(([id, name]) => {
+      if (!isId(id)) {
+        throw new ParameterError(`${name}が不正です。`);
+      }
     });
+
+    if (!isUserId(prop.userId)) {
+      throw new ParameterError(`ユーザーIDが不正です。`);
+    }
+
+    if (Number.isNaN(prop.date.getTime())) {
+      throw new ParameterError('日付が不正です。');
+    }
+
+    return new Activity({ ...prop, activityId: generateId(), records: [] });
   }
 
   updateRecords(records: ActivityRecord[]) {
+    if (!records.length) {
+      throw new ParameterError(`レコードは必須です。`);
+    }
+
     if (records.length > Activity.RECORDS_MAX_LENGTH) {
       throw new ParameterError(
-        `レコード数は最大${Activity.RECORDS_MAX_LENGTH}レコードまでです。`
+        `レコードは最大${Activity.RECORDS_MAX_LENGTH}レコードまでです。`
       );
     }
 
     records.forEach((record) => {
-      if (
-        typeof record.load != 'number' ||
-        typeof record.value != 'number' ||
-        typeof record.note != 'string' ||
-        record.note.length > Activity.RECORD_NOTE_MAX_LENGTH
-      ) {
-        throw new ParameterError('ActivityRecordのパラメーターが不正です。', {
-          records,
-          record,
-        });
+      if (record.note.length > Activity.RECORD_NOTE_MAX_LENGTH) {
+        throw new ParameterError(
+          `備考は最大${Activity.RECORD_NOTE_MAX_LENGTH}文字です。`
+        );
       }
     });
 
     this.prop.records = records;
   }
 
-  toDto() {
+  toDto(): ActivityDto {
     return {
       userId: this.prop.userId,
       categoryId: this.prop.categoryId,
