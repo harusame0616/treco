@@ -29,12 +29,12 @@ if (process.env.NODE_ENV === 'development' && typeof location == 'object') {
       disableWarnings: true,
     });
   }
-  const analytics = getAnalytics(app);
 }
 
 // エラーが発生するため
 // connectFirestoreEmulatorの後でクライアントサイドでのみ設定
 if (typeof window == 'object') {
+  const analytics = getAnalytics(app);
   enableMultiTabIndexedDbPersistence(fbDb);
 }
 
