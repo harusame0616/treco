@@ -19,6 +19,19 @@ const nextConfig = {
       'record',
       'domains'
     );
+    config.resolve.alias['@Usecases'] = path.join(
+      __dirname,
+      'contexts',
+      'record',
+      'usecases'
+    );
+    config.resolve.alias['@Repositories'] = path.join(
+      __dirname,
+      'contexts',
+      'record',
+      'infrastracture',
+      'repository'
+    );
     return config;
   },
 };
