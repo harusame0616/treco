@@ -9,4 +9,4 @@ COPY ./projects /treco/web/projects
 
 RUN npm i && npm run build
 
-CMD ["npm", "start"]
+CMD ["npm", "start", "--", "-H", "0.0.0.0"]
