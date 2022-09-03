@@ -1,28 +1,28 @@
+import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
+import BaseProgress from '@Components/base/base-progress';
+import AddButton from '@Components/case/add-button';
+import DeleteConfirmDialog from '@Components/case/delete-confirm-dialog';
+import DeleteSlideAction from '@Components/case/delete-slide-action';
+import ListItemCard from '@Components/case/list-item-card';
+import SecondaryButton from '@Components/case/secondary-button';
+import PageContainer from '@Components/container/page-container';
+import SectionContainer from '@Components/container/section-container';
+import CategoryLabel from '@Components/domain/category-label';
+import CategoryEditPopup, {
+  CategoryEditInfo,
+} from '@Components/domain/category/category-edit-dialog';
+import { CategoryDto } from '@Domains/category/category';
+import useCategories from '@Hooks/useCategories';
+import useDialog from '@Hooks/useDialog';
 import { EditRounded } from '@mui/icons-material';
-import { Box, IconButton } from '@mui/material';
+import { Box, Collapse, IconButton } from '@mui/material';
+import { FSCategoryRepository } from '@Repositories/fs-category-repository';
+import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
+import { CategoryCommandUsecase } from '@Usecases/category-command-usecase';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import BaseProgress from '../../../../components/base/base-progress';
-import AddButton from '../../../../components/case/add-button';
-import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
-import DeleteSlideAction from '../../../../components/case/delete-slide-action';
-import ListItemCard from '../../../../components/case/list-item-card';
-import SecondaryButton from '../../../../components/case/secondary-button';
-import ListContainer from '../../../../components/container/list-container';
-import PageContainer from '../../../../components/container/page-container';
-import SectionContainer from '../../../../components/container/section-container';
-import CategoryLabel from '../../../../components/domain/category-label';
-import CategoryEditPopup, {
-  CategoryEditInfo,
-} from '../../../../components/domain/category/category-edit-dialog';
-import { CategoryDto } from '../../../../contexts/record/domains/category/category';
-import { FSCategoryRepository } from '../../../../contexts/record/infrastructure/repository/fs-category-repository';
-import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
-import { CategoryCommandUsecase } from '../../../../contexts/record/usecases/category-command-usecase';
-import useCategories from '../../../../hooks/useCategories';
-import useDialog from '../../../../hooks/useDialog';
-import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
+import { TransitionGroup } from 'react-transition-group';
 
 const categoryCommandUsecase = new CategoryCommandUsecase({
   categoryRepository: new FSCategoryRepository(),
@@ -166,37 +166,41 @@ const ActivitiesNew = () => {
               <BaseProgress />
             </Box>
           ) : (
-            <ListContainer>
+            <TransitionGroup>
               {categories.map((category) => (
-                <DeleteSlideAction
+                <Collapse
                   key={category.categoryId}
-                  onDeleteClick={() => {
-                    openDeleteConfirm(category);
-                  }}
+                  sx={{ marginBottom: '5px' }}
                 >
-                  <ListItemCard
-                    onClick={() => goToEventSelect(category.categoryId)}
+                  <DeleteSlideAction
+                    onDeleteClick={() => {
+                      openDeleteConfirm(category);
+                    }}
                   >
-                    <Box flexGrow={1} flexShrink={0}>
-                      <CategoryLabel color={category.color} size="large">
-                        {category.categoryName}
-                      </CategoryLabel>
-                    </Box>
-                    <Box flexGrow={0} flexShrink={1}>
-                      <IconButton
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openCategoryEditPopup(category);
-                        }}
-                      >
-                        <EditRounded />
-                      </IconButton>
-                    </Box>
-                  </ListItemCard>
-                </DeleteSlideAction>
+                    <ListItemCard
+                      onClick={() => goToEventSelect(category.categoryId)}
+                    >
+                      <Box flexGrow={1} flexShrink={0}>
+                        <CategoryLabel color={category.color} size="large">
+                          {category.categoryName}
+                        </CategoryLabel>
+                      </Box>
+                      <Box flexGrow={0} flexShrink={1}>
+                        <IconButton
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCategoryEditPopup(category);
+                          }}
+                        >
+                          <EditRounded />
+                        </IconButton>
+                      </Box>
+                    </ListItemCard>
+                  </DeleteSlideAction>
+                </Collapse>
               ))}
-            </ListContainer>
+            </TransitionGroup>
           )}
           <Box sx={{ fontSize: '0.8rem', fontStyle: 'italic' }} marginTop="3px">
             ※ 項目を左にスワイプすると削除ボタンが表示されます

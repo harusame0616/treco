@@ -1,7 +1,8 @@
-import { Box, ClickAwayListener } from '@mui/material';
+import { Box, Collapse } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { TransitionGroup } from 'react-transition-group';
 import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
 import DeleteConfirmDialog from '../../components/case/delete-confirm-dialog';
@@ -9,7 +10,7 @@ import DeleteSlideAction from '../../components/case/delete-slide-action';
 import PageContainer from '../../components/container/page-container';
 import ActivityListItem from '../../components/domain/activity-list-item';
 import TrainingCalender, {
-  ActivityColorsDateMap,
+  ActivityColorsDateMap
 } from '../../components/domain/training-calender/training-calender';
 import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
@@ -205,18 +206,23 @@ const Home = () => {
                 <BaseProgress />
               </Box>
             ) : (
-              selectDateActivities.map((activity) => (
-                <Box key={activity.activityId} marginBottom="20px">
-                  <DeleteSlideAction
-                    onDeleteClick={() => openDeleteConfirm(activity)}
+              <TransitionGroup>
+                {selectDateActivities.map((activity) => (
+                  <Collapse
+                    key={activity.activityId}
+                    sx={{ marginBottom: '20px' }}
                   >
-                    <ActivityListItem
-                      activity={activity}
-                      onClick={goToActivityEdit}
-                    />
-                  </DeleteSlideAction>
-                </Box>
-              ))
+                    <DeleteSlideAction
+                      onDeleteClick={() => openDeleteConfirm(activity)}
+                    >
+                      <ActivityListItem
+                        activity={activity}
+                        onClick={goToActivityEdit}
+                      />
+                    </DeleteSlideAction>
+                  </Collapse>
+                ))}
+              </TransitionGroup>
             )}
 
             {selectDateActivities.length ? (

@@ -1,29 +1,29 @@
-import { EditRounded } from '@mui/icons-material';
-import { Box, IconButton } from '@mui/material';
-import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import BaseProgress from '../../../../components/base/base-progress';
-import AddButton from '../../../../components/case/add-button';
-import DeleteConfirmDialog from '../../../../components/case/delete-confirm-dialog';
-import DeleteSlideAction from '../../../../components/case/delete-slide-action';
-import ListItemCard from '../../../../components/case/list-item-card';
-import SecondaryButton from '../../../../components/case/secondary-button';
-import ListContainer from '../../../../components/container/list-container';
-import PageContainer from '../../../../components/container/page-container';
-import SectionContainer from '../../../../components/container/section-container';
-import CategoryLabel from '../../../../components/domain/category-label';
+import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
+import BaseProgress from '@Components/base/base-progress';
+import AddButton from '@Components/case/add-button';
+import DeleteConfirmDialog from '@Components/case/delete-confirm-dialog';
+import DeleteSlideAction from '@Components/case/delete-slide-action';
+import ListItemCard from '@Components/case/list-item-card';
+import SecondaryButton from '@Components/case/secondary-button';
+import PageContainer from '@Components/container/page-container';
+import SectionContainer from '@Components/container/section-container';
+import CategoryLabel from '@Components/domain/category-label';
 import TrainingEventEditPopup, {
   TrainingEventEditInfo,
-} from '../../../../components/domain/training-event/training-event-edit-popup';
-import { TrainingEventDto } from '../../../../contexts/record/domains/training-event/training-event';
-import { FSTrainigEventRepository } from '../../../../contexts/record/infrastructure/repository/fs-training-event-repository';
-import { TrainingEventCommandUsecase } from '../../../../contexts/record/usecases/training-event-command-usecase';
-import { ParameterError } from '../../../../custom-error/parameter-error';
-import useCategory from '../../../../hooks/useCategory';
-import useDialog from '../../../../hooks/useDialog';
-import useTrainingEvents from '../../../../hooks/useTrainingEvents';
-import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
+} from '@Components/domain/training-event/training-event-edit-popup';
+import { TrainingEventDto } from '@Domains/training-event/training-event';
+import { ParameterError } from '@Errors/parameter-error';
+import useCategory from '@Hooks/useCategory';
+import useDialog from '@Hooks/useDialog';
+import useTrainingEvents from '@Hooks/useTrainingEvents';
+import { EditRounded } from '@mui/icons-material';
+import { Box, Collapse, IconButton } from '@mui/material';
+import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
+import { TrainingEventCommandUsecase } from '@Usecases/training-event-command-usecase';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
+import { useContext, useState, useMemo, useEffect } from 'react';
+import { TransitionGroup } from 'react-transition-group';
 
 const trainingEventCommandUsecase = new TrainingEventCommandUsecase({
   trainingEventRepository: new FSTrainigEventRepository(),
@@ -183,38 +183,42 @@ const NewEvent = () => {
               <BaseProgress />
             </Box>
           ) : (
-            <ListContainer>
+            <TransitionGroup>
               {trainingEvents
                 ? trainingEvents.map((event) => (
-                    <DeleteSlideAction
+                    <Collapse
                       key={event.trainingEventId}
-                      onDeleteClick={() => {
-                        setSelectedTrainingEvent(event);
-                        open();
-                      }}
+                      sx={{ marginBottom: '5px' }}
                     >
-                      <ListItemCard
-                        onClick={() => goToNext(event.trainingEventId)}
+                      <DeleteSlideAction
+                        onDeleteClick={() => {
+                          setSelectedTrainingEvent(event);
+                          open();
+                        }}
                       >
-                        <Box flexGrow={1} flexShrink={0}>
-                          {event.trainingEventName}
-                        </Box>
-                        <Box flexGrow={0} flexShrink={1}>
-                          <IconButton
-                            color="primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openTrainingEventEditPopup(event);
-                            }}
-                          >
-                            <EditRounded />
-                          </IconButton>
-                        </Box>
-                      </ListItemCard>
-                    </DeleteSlideAction>
+                        <ListItemCard
+                          onClick={() => goToNext(event.trainingEventId)}
+                        >
+                          <Box flexGrow={1} flexShrink={0}>
+                            {event.trainingEventName}
+                          </Box>
+                          <Box flexGrow={0} flexShrink={1}>
+                            <IconButton
+                              color="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openTrainingEventEditPopup(event);
+                              }}
+                            >
+                              <EditRounded />
+                            </IconButton>
+                          </Box>
+                        </ListItemCard>
+                      </DeleteSlideAction>
+                    </Collapse>
                   ))
                 : 'トレーニング種目読み込みエラー'}
-            </ListContainer>
+            </TransitionGroup>
           )}
         </SectionContainer>
 
