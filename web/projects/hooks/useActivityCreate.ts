@@ -1,11 +1,10 @@
+import { Activity, ActivityRecord } from '@Domains/activity/activity';
+import { ParameterError } from '@Errors/parameter-error';
+import { FSActivityRepository } from '@Repositories/fs-activity-repository';
+import { FSCategoryRepository } from '@Repositories/fs-category-repository';
+import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
+import { ActivityCommandUsecase } from '@Usecases/activity-command-usecase';
 import { useEffect, useState } from 'react';
-import {
-  Activity,
-  ActivityRecord,
-} from '../contexts/record/domains/activity/activity';
-import { FSActivityRepository } from '../contexts/record/infrastructure/repository/fs-activity-repository';
-import { ActivityCommandUsecase } from '../contexts/record/usecases/activity-command-usecase';
-import { ParameterError } from '../custom-error/parameter-error';
 import useActivity from './useActivity';
 import useTrainingEvent from './useTrainingEvent';
 
@@ -25,6 +24,8 @@ export interface ActivityRecordWork {
 
 const activityCommandUsecase = new ActivityCommandUsecase({
   activityRepository: new FSActivityRepository(),
+  categoryRepository: new FSCategoryRepository(),
+  trainingEventRepository: new FSTrainigEventRepository(),
 });
 
 const useActivityCreate = (prop: UseActivityCreateProp) => {

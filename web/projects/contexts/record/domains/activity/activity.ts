@@ -21,6 +21,7 @@ export interface ActivityProperty {
 
 export type ActivityDto = ActivityFullId & ActivityProperty;
 type ConstructorProp = ActivityDto;
+export type CreateProp = Omit<ConstructorProp, 'activityId' | 'records'>;
 
 export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
@@ -28,7 +29,7 @@ export class Activity {
 
   constructor(private prop: ConstructorProp) {}
 
-  static create(prop: Omit<ConstructorProp, 'activityId' | 'records'>) {
+  static create(prop: CreateProp) {
     [
       [prop.categoryId, 'カテゴリID'],
       [prop.trainingEventId, 'トレーニング種目ID'],

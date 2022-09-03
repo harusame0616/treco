@@ -92,6 +92,9 @@ const configuration: Config = {
   moduleNameMapper: {
     '@Errors/(.*)$': '<rootDir>/custom-error/$1',
     '@Domains/(.*)$': '<rootDir>/contexts/record/domains/$1',
+    '@Usecases/(.*)$': '<rootDir>/contexts/record/usecases/$1',
+    '@Repositories/(.*)$':
+      '<rootDir>/contexts/record/infrastructure/repository/$1',
     '@/(.*)$': '<rootDir>/$1',
   },
 

@@ -7,7 +7,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
-import { Activity } from '../../domains/activity/activity';
+import { Activity, ActivityFullId } from '../../domains/activity/activity';
 import { ActivityRepository } from '../../usecases/activity-command-usecase';
 
 export class FSActivityRepository implements ActivityRepository {
@@ -49,17 +49,13 @@ export class FSActivityRepository implements ActivityRepository {
         'activities',
         activityDto.activityId
       ),
-      activityDto
+      {
+        ...activityDto,
+      }
     );
   }
 
-  async findOne(prop: {
-    userId: string;
-    categoryId: string;
-    trainingEventId: string;
-    activityId: string;
-  }): Promise<Activity | null> {
-    console.log('findone', { prop });
+  async findOne(prop: ActivityFullId): Promise<Activity | null> {
     const activityDocRef = doc(
       fbDb,
       'users',
