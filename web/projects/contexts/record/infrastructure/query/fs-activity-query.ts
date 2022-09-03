@@ -199,14 +199,22 @@ export class FSActivityQuery implements ActivityQuery {
       })
     );
 
-    return snapshot.docs.map((doc) => {
-      const activity = doc.data();
-      return {
-        ...(categoryMappedCategoryId[activity.categoryId] ?? {}),
-        ...(trainingEventMappedTrainingEventId[activity.trainingEventId] ?? {}),
-        ...activity,
-        date: activity.date?.toDate(),
-      };
-    }) as any[];
+    return snapshot.docs
+      .map((doc) => {
+        const activity = doc.data();
+        const categoryInfo = categoryMappedCategoryId[activity.categoryId];
+        const trainingEventInfo =
+          trainingEventMappedTrainingEventId[activity.trainingEventId];
+
+        return activity && categoryInfo && trainingEventInfo
+          ? {
+              ...categoryInfo,
+              ...trainingEventInfo,
+              ...activity,
+              date: activity.date?.toDate(),
+            }
+          : undefined;
+      })
+      .filter((activity) => activity) as any[];
   }
 }
