@@ -9,6 +9,7 @@ services:
   web:
     build:
       context: ./web
+      target: DEVELOP
     command: ['npm', 'run', 'dev']
     volumes:
       - ./:/treco/
