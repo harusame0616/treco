@@ -1,7 +1,7 @@
 import { CloseRounded } from '@mui/icons-material';
 import { Box, IconButton, TextField } from '@mui/material';
 import { ChangeEventHandler, MouseEventHandler, ReactNode } from 'react';
-import { ActivityRecordWork } from '../../hooks/useActivityCreate';
+import { ActivityRecordWork } from '../../hooks/useActivityEdit';
 import BaseCard from '../base/base-card';
 
 interface Prop {

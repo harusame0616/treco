@@ -13,7 +13,7 @@ import ActivityListItem from '../../../../components/domain/activity-list-item';
 import CategoryLabel from '../../../../components/domain/category-label';
 import RecordCard from '../../../../components/domain/record-card';
 import { Activity } from '../../../../contexts/record/domains/activity/activity';
-import useActivityCreate from '../../../../hooks/useActivityCreate';
+import useActivityCreate from '../../../../hooks/useActivityEdit';
 import useActivityOfLastTrainingEvent from '../../../../hooks/useActivityOfLastTrainingEvent';
 import useProcessing from '../../../../hooks/useProcessing';
 import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
