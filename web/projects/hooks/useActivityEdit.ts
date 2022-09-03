@@ -1,4 +1,8 @@
-import { Activity, ActivityRecord } from '@Domains/activity/activity';
+import {
+  Activity,
+  ActivityDto,
+  ActivityRecord,
+} from '@Domains/activity/activity';
 import { ParameterError } from '@Errors/parameter-error';
 import { FSActivityRepository } from '@Repositories/fs-activity-repository';
 import { FSCategoryRepository } from '@Repositories/fs-category-repository';
@@ -8,19 +12,22 @@ import { useEffect, useState } from 'react';
 import useActivity from './useActivity';
 import useTrainingEvent from './useTrainingEvent';
 
-interface UseActivityCreateProp {
-  userId?: string;
-  categoryId?: string;
-  trainingEventId?: string;
-  activityId?: string;
-  date: Date;
-}
-
+// ---------- types ----------
+type UseActivityEditProp = Partial<Omit<ActivityDto, 'records'>>;
 export interface ActivityRecordWork {
   load: '' | number;
   value: '' | number;
   note: string;
 }
+
+const DEFAULT_RECORD_COUNT = 10;
+const EMPTY_RECORD: ActivityRecordWork = { load: '', value: '', note: '' };
+
+// ---------- functions ----------
+const generateEmptyRecords = () =>
+  Array(DEFAULT_RECORD_COUNT)
+    .fill(0)
+    .map((_) => ({ ...EMPTY_RECORD } as ActivityRecordWork));
 
 const activityCommandUsecase = new ActivityCommandUsecase({
   activityRepository: new FSActivityRepository(),
@@ -28,7 +35,8 @@ const activityCommandUsecase = new ActivityCommandUsecase({
   trainingEventRepository: new FSTrainigEventRepository(),
 });
 
-const useActivityCreate = (prop: UseActivityCreateProp) => {
+// ---------- custom hook ----------
+const useActivityEdit = (prop: UseActivityEditProp) => {
   const { isLoading, trainingEvent, isError } = useTrainingEvent(prop);
   const [errorRecordIndex, setErrorRecordIndex] = useState<null | number>(null);
 
@@ -39,25 +47,15 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
   } = useActivity(prop);
 
   const [records, setRecords] = useState<ActivityRecordWork[]>(
-    activity?.records ?? [
-      { load: '', value: '', note: '' },
-      { load: '', value: '', note: '' },
-      { load: '', value: '', note: '' },
-    ]
+    activity?.records ?? generateEmptyRecords()
   );
 
   useEffect(() => {
-    setRecords(
-      activity?.records ?? [
-        { load: '', value: '', note: '' },
-        { load: '', value: '', note: '' },
-        { load: '', value: '', note: '' },
-      ]
-    );
+    setRecords(activity?.records ?? generateEmptyRecords());
   }, [activity]);
 
   const addNewRecord = () => {
-    setRecords([...records, { load: '', value: '', note: '' }]);
+    setRecords([...records, { ...EMPTY_RECORD }]);
   };
 
   const setRecord = (record: ActivityRecordWork, index: number) => {
@@ -122,15 +120,22 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
       trainingEventId: prop.trainingEventId,
     };
 
-    let activity;
-    let activityId = prop.activityId;
-    if (!activityId) {
-      activity = await activityCommandUsecase.createNewActivity({
-        ...activitySearchParam,
-        date: prop.date,
-      });
-      activityId = activity.activityId;
-    }
+    let activityId = await (async () => {
+      if (typeof prop.activityId === 'string') {
+        return prop.activityId;
+      }
+
+      if (!prop.date) {
+        throw new ParameterError('日付は必須です。');
+      }
+
+      return (
+        await activityCommandUsecase.createNewActivity({
+          ...activitySearchParam,
+          date: prop.date,
+        })
+      ).activityId;
+    })();
 
     await activityCommandUsecase.updateActivityRecord({
       ...activitySearchParam,
@@ -152,4 +157,4 @@ const useActivityCreate = (prop: UseActivityCreateProp) => {
   };
 };
 
-export default useActivityCreate;
+export default useActivityEdit;

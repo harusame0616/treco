@@ -1,13 +1,8 @@
+import { ActivityFullId } from '@Domains/activity/activity';
+import { ParameterError } from '@Errors/parameter-error';
+import { FSActivityQuery } from '@Queries/fs-activity-query';
+import { ActivityQueryUsecase } from '@Usecases/activity-query-usecase';
 import useSWR from 'swr';
-import { FSActivityQuery } from '../contexts/record/infrastructure/query/fs-activity-query';
-import { ActivityQueryUsecase } from '../contexts/record/usecases/activity-query-usecase';
-import { ParameterError } from '../custom-error/parameter-error';
-
-interface Prop {
-  userId: string;
-  categoryId: string;
-  trainingEventId: string;
-}
 
 const activityQueryUsecase = new ActivityQueryUsecase({
   activityQuery: new FSActivityQuery(),
@@ -29,7 +24,9 @@ const fecher = (
   });
 };
 
-const useActivityOfLastTrainingEvent = (prop: Partial<Prop>) => {
+const useActivityOfLastTrainingEvent = (
+  prop: Partial<Omit<ActivityFullId, 'activityId'>>
+) => {
   const { data, error } = useSWR(
     [
       'activity/queryDetailOfLastTrainingEvent',

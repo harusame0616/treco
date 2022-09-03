@@ -1,27 +1,14 @@
+import { FSActivityQuery } from '@Queries/fs-activity-query';
+import { ActivityFullId } from '@Domains/activity/activity';
+import { ParameterError } from '@Errors/parameter-error';
+import { ActivityQueryUsecase } from '@Usecases/activity-query-usecase';
 import useSWR from 'swr';
-import { FSActivityQuery } from '../contexts/record/infrastructure/query/fs-activity-query';
-import {
-  ActivityQueryUsecase,
-  ActivityWithCategoryAndTrainingEventDto,
-} from '../contexts/record/usecases/activity-query-usecase';
-import { ParameterError } from '../custom-error/parameter-error';
-
-interface UseActivitiesReturnType {
-  isError: boolean;
-  isLoading: boolean;
-  activity: ActivityWithCategoryAndTrainingEventDto | null;
-}
 
 const activityQueryUsecase = new ActivityQueryUsecase({
   activityQuery: new FSActivityQuery(),
 });
 
-const useActivity = (prop: {
-  userId?: string;
-  categoryId?: string;
-  trainingEventId?: string;
-  activityId?: string;
-}): UseActivitiesReturnType => {
+const useActivity = (prop: Partial<ActivityFullId>) => {
   const { data, error } = useSWR(
     [
       'activity/queryDetail',

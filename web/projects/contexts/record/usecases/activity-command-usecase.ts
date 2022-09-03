@@ -39,7 +39,7 @@ export class ActivityCommandUsecase {
 
     const activity = Activity.create(prop);
 
-    await this.prop.activityRepository.insert(activity);
+    this.prop.activityRepository.insert(activity);
     return activity.toDto();
   }
 

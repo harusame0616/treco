@@ -1,22 +1,22 @@
+import { AuthContext, TitleContext, PopMessageContext } from '@/pages/_app';
+import AddButton from '@Components/case/add-button';
+import PrimaryButton from '@Components/case/primary-button';
+import SecondaryButton from '@Components/case/secondary-button';
+import ListContainer from '@Components/container/list-container';
+import PageContainer from '@Components/container/page-container';
+import SectionContainer from '@Components/container/section-container';
+import ActivityListItem from '@Components/domain/activity-list-item';
+import CategoryLabel from '@Components/domain/category-label';
+import RecordCard from '@Components/domain/record-card';
+import { Activity } from '@Domains/activity/activity';
+import useActivityEdit from '@Hooks/useActivityEdit';
+import useActivityOfLastTrainingEvent from '@Hooks/useActivityOfLastTrainingEvent';
+import useProcessing from '@Hooks/useProcessing';
 import { ArrowForwardIosRounded } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import AddButton from '../../../../components/case/add-button';
-import PrimaryButton from '../../../../components/case/primary-button';
-import SecondaryButton from '../../../../components/case/secondary-button';
-import ListContainer from '../../../../components/container/list-container';
-import PageContainer from '../../../../components/container/page-container';
-import SectionContainer from '../../../../components/container/section-container';
-import ActivityListItem from '../../../../components/domain/activity-list-item';
-import CategoryLabel from '../../../../components/domain/category-label';
-import RecordCard from '../../../../components/domain/record-card';
-import { Activity } from '../../../../contexts/record/domains/activity/activity';
-import useActivityCreate from '../../../../hooks/useActivityEdit';
-import useActivityOfLastTrainingEvent from '../../../../hooks/useActivityOfLastTrainingEvent';
-import useProcessing from '../../../../hooks/useProcessing';
-import { AuthContext, PopMessageContext, TitleContext } from '../../../_app';
+import { useContext, useMemo, useRef, useState, useEffect } from 'react';
 
 const NewRecord = () => {
   const auth = useContext(AuthContext);
@@ -51,7 +51,7 @@ const NewRecord = () => {
     errorRecordIndex,
     deleteRecord,
     isError,
-  } = useActivityCreate({
+  } = useActivityEdit({
     ...apiProp,
     date: new Date(router.query['date'] as string),
   });

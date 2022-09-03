@@ -22,6 +22,14 @@ export interface ActivityProperty {
 export type ActivityDto = ActivityFullId & ActivityProperty;
 type ConstructorProp = ActivityDto;
 export type CreateProp = Omit<ConstructorProp, 'activityId' | 'records'>;
+export const isCreateProp = (value: any): value is CreateProp => {
+  return (
+    typeof value.userId === 'string' &&
+    typeof value.categoryId === 'string' &&
+    typeof value.trainingEventId === 'string' &&
+    value.date instanceof Date
+  );
+};
 
 export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;

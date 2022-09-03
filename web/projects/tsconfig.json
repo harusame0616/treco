@@ -20,6 +20,9 @@
       "@Domains/*": ["contexts/record/domains/*"],
       "@Usecases/*": ["contexts/record/usecases/*"],
       "@Repositories/*": ["contexts/record/infrastructure/repository/*"],
+      "@Queries/*": ["contexts/record/infrastructure/query/*"],
+      "@Hooks/*": ["hooks/*"],
+      "@Components/*": ["components/*"],
       "@/*": ["*"]
     }
   },

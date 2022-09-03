@@ -32,6 +32,15 @@ const nextConfig = {
       'infrastracture',
       'repository'
     );
+    config.resolve.alias['@Queries'] = path.join(
+      __dirname,
+      'contexts',
+      'record',
+      'infrastracture',
+      'query'
+    );
+    config.resolve.alias['@Hooks'] = path.join(__dirname, 'hooks');
+    config.resolve.alias['@Components'] = path.join(__dirname, 'components');
     return config;
   },
 };
