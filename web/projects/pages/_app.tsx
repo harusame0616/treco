@@ -84,6 +84,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>TRECo - BESIDE YOUR WORKOUT -</title>
+        <meta
+          name="description"
+          content="あなたのトレーニングを邪魔しない、シンプルで心地の良いトレーニング記録サービス。"
+        />
+        <meta property="og:url" content="" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="TRECo - BESIDE YOUR WORKOUT -" />
+        <meta
+          property="og:description"
+          content="あなたのトレーニングを邪魔しない、シンプルで心地の良いトレーニング記録サービス。"
+        />
+        <meta property="og:site_name" content="TRECo - BESIDE YOUR WORKOUT -" />
+        <meta
+          property="og:image"
+          content="https://storage.googleapis.com/treco-prd-public-resource/ogp-image.png"
+        />
       </Head>
       <CssBaseline />
       <ThemeProvider theme={theme}>
