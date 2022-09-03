@@ -12,7 +12,7 @@ import SectionContainer from '../../container/section-container';
 
 export type TrainingEventEditInfo = Omit<
   TrainingEventDto,
-  'userId' | 'categoryId' | 'trainingEventId'
+  'userId' | 'categoryId' | 'trainingEventId' | 'order'
 >;
 
 interface Prop {
