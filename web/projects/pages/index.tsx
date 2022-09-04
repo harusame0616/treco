@@ -1,7 +1,10 @@
-import { Box, Link } from '@mui/material';
+import BaseLink from '@Components/base/base-link';
+import TextButton from '@Components/case/text-button';
+import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import PrimaryButton from '../components/case/primary-button';
@@ -55,7 +58,9 @@ const Home: NextPage = () => {
               </PrimaryButton>
             </Box>
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
-              <Link onClick={signInAnonymously}>登録せず開始する</Link>
+              <TextButton onClick={signInAnonymously}>
+                登録せず開始する
+              </TextButton>
             </Box>
           </Box>
         </Box>
@@ -66,13 +71,8 @@ const Home: NextPage = () => {
           paddingTop="30px"
         >
           <Box>
-            <Link href="/policies/term-of-service" sx={{ flexShrink: 0 }}>
-              利用規約
-            </Link>
-            、
-            <Link href="/policies/privacy" sx={{ flexShrink: 0 }}>
-              プライバシーポリシー
-            </Link>
+            <BaseLink href="/policies/term-of-service">利用規約</BaseLink>、
+            <BaseLink href="/policies/privacy">プライバシーポリシー</BaseLink>
             に同意の上でご利用ください。
           </Box>
         </Box>

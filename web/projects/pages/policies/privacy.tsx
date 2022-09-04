@@ -1,4 +1,5 @@
 import BaseCard from '@Components/base/base-card';
+import BaseLink from '@Components/base/base-link';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import { Box, Link } from '@mui/material';
@@ -86,7 +87,7 @@ const Privacy = () => {
       </Box>
       <SectionContainer>
         <Box display="flex" justifyContent="center">
-          <Link href="/">戻る</Link>
+          <BaseLink href="/">戻る</BaseLink>
         </Box>
       </SectionContainer>
     </PageContainer>

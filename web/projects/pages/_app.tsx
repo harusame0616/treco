@@ -132,12 +132,17 @@ function MyApp({ Component, pageProps }: AppProps) {
                   >
                     一時アカウントでログインで利用中です。 <br />
                     データの損失を防ぐため、
-                    <Link
+                    <Box
+                      component="span"
                       onClick={() => auth.linkWith('google')}
-                      sx={{ textShadow: '0 0 1px white', fontWeight: 'bold' }}
+                      sx={{
+                        textShadow: '0 0 1px white',
+                        fontWeight: 'bold',
+                        color: 'red',
+                      }}
                     >
                       Google アカウントと連携
-                    </Link>
+                    </Box>
                     してください。
                   </Box>
                 ) : undefined}

@@ -1,3 +1,4 @@
+import BaseLink from '@Components/base/base-link';
 import SectionContainer from '@Components/container/section-container';
 import { CloseRounded, LogoutRounded } from '@mui/icons-material';
 import { Box, Drawer, IconButton, Link } from '@mui/material';
@@ -19,7 +20,7 @@ const UserMenu = (prop: Prop) => {
   if (!auth) {
     throw new CriticalError('context error');
   }
-const signOut = () => {
+  const signOut = () => {
     if (auth.auth.isAnonymous) {
       router.push('/auth/signout');
     } else {
@@ -37,14 +38,10 @@ const signOut = () => {
               <CloseRounded sx={{ color: 'white', fontWeight: 'bold' }} />
             </IconButton>
           </Box>
-          <SectionContainer >
+          <SectionContainer>
             <Box display="flex" flexDirection="column" alignItems="flex-end">
-            <Box>
-                <Link href="/policies/term-of-service">利用規約</Link>
-            </Box>
-            <Box>
-            <Link href="/policies/privacy">プライバシーポリシー</Link>
-            </Box>
+              <BaseLink href="/policies/term-of-service">利用規約</BaseLink>
+              <BaseLink href="/policies/privacy">プライバシーポリシー</BaseLink>
             </Box>
           </SectionContainer>
           <Box>

@@ -1,3 +1,4 @@
+import BaseLink from '@Components/base/base-link';
 import { AppBar, Box, Grid, useTheme } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -35,14 +36,14 @@ const MainHeader = (prop: MainHeaderProp) => {
           justifyContent="flex-start"
           alignItems="center"
         >
-          <Link href={auth.isAuthenticated ? '/home' : '/'} passHref={true}>
+          <BaseLink href={auth.isAuthenticated ? '/home' : '/'}>
             <Image
               src="/icon-512x512.png"
               width={45}
               height={45}
               alt="Treco Service Icon"
             />
-          </Link>
+          </BaseLink>
         </Grid>
         <Grid
           item
