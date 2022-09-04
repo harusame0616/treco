@@ -60,6 +60,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const closeUserMenu = () => setUserMenuOpen(false);
 
   useEffect(() => {
+    closeUserMenu();
     if (auth.isLoading) {
       return;
     }
