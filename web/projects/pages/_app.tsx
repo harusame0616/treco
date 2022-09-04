@@ -96,14 +96,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>TRECo - BESIDE YOUR WORKOUT -</title>
         <meta
           name="description"
-          content="あなたのトレーニングを邪魔しない、シンプルなトレーニング記録サービス。"
+          content="トレーニングをもっと楽しくする、シンプルなトレーニング記録サービス。"
         />
         <meta property="og:url" content="" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="TRECo - BESIDE YOUR WORKOUT -" />
         <meta
           property="og:description"
-          content="あなたのトレーニングを邪魔しない、シンプルなトレーニング記録サービス。"
+          content="トレーニングをもっと楽しくする、シンプルなトレーニング記録サービス。"
         />
         <meta property="og:site_name" content="TRECo - BESIDE YOUR WORKOUT -" />
         <meta

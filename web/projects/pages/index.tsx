@@ -48,9 +48,9 @@ const Home: NextPage = () => {
           flexDirection="column"
           alignItems="center"
           marginBottom="60px"
-          gap="10px"
+          gap="8px"
         >
-          <Box>あなたのトレーニングを邪魔しない</Box>
+          <Box>トレーニングをもっと楽しくする</Box>
           <Box>シンプルなトレーニング記録サービス</Box>
         </Box>
 
