@@ -16,7 +16,7 @@ const PrimaryButton = (prop: PrimaryButtonProp) => {
       variant="contained"
       sx={{ width: '100%', height: prop.height }}
       color="primary"
-      onClick={prop.onClick}
+      onClick={prop.isLoading ? undefined : prop.onClick}
       disabled={prop.disabled}
     >
       {prop.isLoading ? (

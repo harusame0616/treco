@@ -3,10 +3,10 @@ import { useState } from 'react';
 const useProcessing = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const startProcessing = async (promise: Promise<any>) => {
+  const startProcessing = async (promise: () => Promise<any>) => {
     setIsProcessing(true);
     try {
-      await promise;
+      await promise();
     } finally {
       setIsProcessing(false);
     }

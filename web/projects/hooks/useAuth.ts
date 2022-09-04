@@ -34,7 +34,7 @@ const useAuth = () => {
       throw new Error('providerName error: ', providerName);
     }
 
-    signInWithRedirect(fbAuth, providerMappedProviderName[providerName]);
+    await signInWithRedirect(fbAuth, providerMappedProviderName[providerName]);
   };
 
   const signInAnonymously = async () => {
@@ -45,7 +45,7 @@ const useAuth = () => {
     });
   };
 
-  const linkWith = (providerName: OAuthProviderName) => {
+  const linkWith = async (providerName: OAuthProviderName) => {
     if (!isProviderName(providerName)) {
       throw new Error('providerName error: ', providerName);
     }
@@ -58,7 +58,7 @@ const useAuth = () => {
       throw new Error('currentUser is no anonymouse');
     }
 
-    linkWithRedirect(
+    await linkWithRedirect(
       fbAuth.currentUser,
       providerMappedProviderName[providerName]
     );

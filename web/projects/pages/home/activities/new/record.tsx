@@ -114,18 +114,18 @@ const NewRecord = () => {
     });
   };
 
-  const discard = () => {
-    goBack();
+  const discard = async () => {
+    await goBack();
   };
 
   const save = async () => {
     try {
-      await startProcessing(register());
+      await startProcessing(() => register());
+      await goBack();
+      return popMessage!('登録しました。', { mode: 'success' });
     } catch (err: any) {
       return popMessage!(err.message, { mode: 'error' });
     }
-
-    goBack();
   };
 
   return (
@@ -205,6 +205,7 @@ const NewRecord = () => {
               >
                 <RecordCard
                   record={record}
+                  isDisabled={isProcessing}
                   loadUnit={trainingEvent?.loadUnit ?? ''}
                   valueUnit={trainingEvent?.valueUnit ?? ''}
                   label={<div>{i + 1}セット目</div>}
@@ -241,7 +242,10 @@ const NewRecord = () => {
         </SectionContainer>
       </Box>
       <Box display="flex" padding="20px 0 0" gap="20px">
-        <SecondaryButton onClick={discard} disabled={isProcessing}>
+        <SecondaryButton
+          onClick={() => startProcessing(discard)}
+          disabled={isProcessing}
+        >
           破棄する
         </SecondaryButton>
         <PrimaryButton

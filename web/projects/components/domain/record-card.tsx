@@ -14,6 +14,7 @@ interface Prop {
   noteOnChange: ChangeEventHandler;
   onDeleteClick: MouseEventHandler;
   isError?: boolean;
+  isDisabled?: boolean;
 }
 
 const RecordCard = (prop: Prop) => {
@@ -39,6 +40,7 @@ const RecordCard = (prop: Prop) => {
           label={`負荷 ( ${prop.loadUnit} )`}
           onChange={prop.loadOnChange}
           error={prop.isError && prop.record.load == ''}
+          disabled={prop.isDisabled}
         />
         <TextField
           variant="filled"
@@ -49,6 +51,7 @@ const RecordCard = (prop: Prop) => {
           type="number"
           onChange={prop.valueOnChange}
           error={prop.isError && prop.record.value == ''}
+          disabled={prop.isDisabled}
         />
         <TextField
           variant="filled"
@@ -58,6 +61,7 @@ const RecordCard = (prop: Prop) => {
           sx={{ background: '#ddd' }}
           onChange={prop.noteOnChange}
           inputProps={{ maxLength: 1024 }}
+          disabled={prop.isDisabled}
         />
       </Box>
     </BaseCard>

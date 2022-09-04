@@ -1,10 +1,9 @@
 import BaseLink from '@Components/base/base-link';
 import TextButton from '@Components/case/text-button';
+import useProcessing from '@Hooks/useProcessing';
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import PrimaryButton from '../components/case/primary-button';
@@ -13,10 +12,13 @@ import { AuthContext, TitleContext } from './_app';
 
 const Home: NextPage = () => {
   const auth = useContext(AuthContext);
+  const router = useRouter();
   const { setTitle } = useContext(TitleContext);
+  const { isProcessing, startProcessing } = useProcessing();
 
   const signInAnonymously = async () => {
     await auth?.signInAnonymously();
+    await router.push('/home');
   };
 
   useEffect(() => {
@@ -53,12 +55,19 @@ const Home: NextPage = () => {
         <Box display="flex" justifyContent="center">
           <Box sx={{ width: '250px' }}>
             <Box marginBottom="5px" display="flex" justifyContent="center">
-              <PrimaryButton onClick={() => auth.siginInWith('google')}>
+              <PrimaryButton
+                isLoading={isProcessing}
+                onClick={() =>
+                  startProcessing(() => auth.siginInWith('google'))
+                }
+              >
                 Google で開始する
               </PrimaryButton>
             </Box>
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
-              <TextButton onClick={signInAnonymously}>
+              <TextButton
+                onClick={() => startProcessing(() => signInAnonymously())}
+              >
                 登録せず開始する
               </TextButton>
             </Box>

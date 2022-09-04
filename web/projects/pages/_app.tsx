@@ -1,3 +1,4 @@
+import useProcessing from '@Hooks/useProcessing';
 import {
   Alert,
   CssBaseline,
@@ -41,6 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const title = useTitle();
   const popMessage = usePopMessage();
+  const { startProcessing } = useProcessing();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -121,7 +123,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               />
               <Box display="flex" flexDirection="column" height="100%">
                 {auth.isLoading ? undefined : <Component {...pageProps} />}
-                {auth.auth.isAnonymous == true ? (
+                {router.pathname != '/' && auth.auth.isAnonymous == true ? (
                   <Box
                     sx={{ background: '#888800', opacity: '80%' }}
                     width="100vw"
@@ -135,7 +137,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     データの損失を防ぐため、
                     <Box
                       component="span"
-                      onClick={() => auth.linkWith('google')}
+                      onClick={() =>
+                        startProcessing(() => auth.linkWith('google'))
+                      }
                       sx={{
                         textShadow: '0 0 1px white',
                         fontWeight: 'bold',
