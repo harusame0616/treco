@@ -64,6 +64,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       return;
     }
 
+    // 規約ページはログイン、未ログインに関わらず表示可能
+    if (/^\/policies\/.*/.test(router.pathname)) {
+      return;
+    }
+
     if (auth.auth.authId && router.pathname == '/') {
       categoryCommandUsecase
         .createDefaultCategories(auth.auth.authId)
@@ -78,7 +83,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     } else {
       // do nothing
     }
-  }, [auth.isLoading, auth.isAuthenticated]);
+  }, [auth.isLoading, auth.isAuthenticated, router.pathname]);
 
   return (
     <>

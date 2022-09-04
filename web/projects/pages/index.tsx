@@ -57,6 +57,23 @@ const Home: NextPage = () => {
             </Box>
           </Box>
         </Box>
+        <Box
+          sx={{ fontSize: '0.75rem', width: '100%' }}
+          display="flex"
+          justifyContent="center"
+          paddingTop="30px"
+        >
+          <Box>
+            <Link href="/policies/term-of-service" sx={{ flexShrink: 0 }}>
+              利用規約
+            </Link>
+            、
+            <Link href="/policies/privacy" sx={{ flexShrink: 0 }}>
+              プライバシーポリシー
+            </Link>
+            に同意の上でご利用ください。
+          </Box>
+        </Box>
       </main>
     </PageContainer>
   ) : (

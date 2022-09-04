@@ -1,5 +1,6 @@
+import SectionContainer from '@Components/container/section-container';
 import { CloseRounded, LogoutRounded } from '@mui/icons-material';
-import { Box, Drawer, IconButton } from '@mui/material';
+import { Box, Drawer, IconButton, Link } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { CriticalError } from '../../../custom-error/critical-error';
@@ -18,8 +19,7 @@ const UserMenu = (prop: Prop) => {
   if (!auth) {
     throw new CriticalError('context error');
   }
-
-  const signOut = () => {
+const signOut = () => {
     if (auth.auth.isAnonymous) {
       router.push('/auth/signout');
     } else {
@@ -37,6 +37,16 @@ const UserMenu = (prop: Prop) => {
               <CloseRounded sx={{ color: 'white', fontWeight: 'bold' }} />
             </IconButton>
           </Box>
+          <SectionContainer >
+            <Box display="flex" flexDirection="column" alignItems="flex-end">
+            <Box>
+                <Link href="/policies/term-of-service">利用規約</Link>
+            </Box>
+            <Box>
+            <Link href="/policies/privacy">プライバシーポリシー</Link>
+            </Box>
+            </Box>
+          </SectionContainer>
           <Box>
             <TextButton onClick={signOut}>
               <LogoutRounded />
