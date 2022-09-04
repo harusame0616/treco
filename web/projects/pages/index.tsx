@@ -29,16 +29,17 @@ const Home: NextPage = () => {
   return auth ? (
     <PageContainer>
       <main>
-        <Box marginTop="-20px">
-          <Image
-            src="/media/splash.svg"
-            width={500}
-            height={500}
-            layout="responsive"
-            alt="TRECo Splash Image"
-          />
+        <Box marginTop="-20px" display="flex" justifyContent="center">
+          <Box maxWidth="500px" width="100%">
+            <Image
+              src="/media/splash.svg"
+              width={500}
+              height={500}
+              layout="responsive"
+              alt="TRECo Splash Image"
+            />
+          </Box>
         </Box>
-
         <Box
           sx={{
             fontSize: '1.25rem',
