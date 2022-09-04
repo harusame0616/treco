@@ -187,7 +187,7 @@ const ActivitiesNew = () => {
                       onClick={() => goToEventSelect(category.categoryId)}
                     >
                       <Box flexGrow={1} flexShrink={0}>
-                        <CategoryLabel color={category.color} size="large">
+                        <CategoryLabel color={category.color} size="medium">
                           {category.categoryName}
                         </CategoryLabel>
                       </Box>

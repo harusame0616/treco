@@ -3,7 +3,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 interface TextButtonProp {
   children: ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
 const TextButton = (prop: TextButtonProp) => {

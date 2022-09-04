@@ -12,7 +12,7 @@ const ListItemCard = (prop: Prop) => {
     <BaseCard onClick={prop.onClick}>
       <Box
         fontSize="1.5rem"
-        sx={{ minHeight: '48px' }}
+        sx={{ minHeight: '38px' }}
         display="flex"
         alignItems="center"
       >

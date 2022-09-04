@@ -25,29 +25,31 @@ const Home: NextPage = () => {
       <main>
         <Box marginTop="-20px">
           <Image
-            src="/media/splash.png"
+            src="/media/splash.svg"
             width={500}
             height={500}
             layout="responsive"
+            alt="TRECo Splash Image"
           />
         </Box>
 
         <Box
           sx={{
-            fontSize: '1.5rem',
+            fontSize: '1.25rem',
           }}
           display="flex"
           flexDirection="column"
           alignItems="center"
-          marginBottom="80px"
+          marginBottom="60px"
+          gap="10px"
         >
-          <Box marginBottom="25px">あなたのワークアウトの傍に</Box>
-          <Box>シンプルで心地いい記録体験を</Box>
+          <Box>あなたのトレーニングを邪魔しない</Box>
+          <Box>シンプルなトレーニング記録サービス</Box>
         </Box>
 
         <Box display="flex" justifyContent="center">
           <Box sx={{ width: '250px' }}>
-            <Box marginBottom="25px" display="flex" justifyContent="center">
+            <Box marginBottom="5px" display="flex" justifyContent="center">
               <PrimaryButton onClick={() => auth.siginInWith('google')}>
                 Google で開始する
               </PrimaryButton>
