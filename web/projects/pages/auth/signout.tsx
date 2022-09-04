@@ -1,3 +1,4 @@
+import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -74,7 +75,13 @@ const SignoutPage: NextPage = () => {
             サインアウトをキャンセルする
           </SecondaryButton>
           <PrimaryButton onClick={() => auth.linkWith('google')}>
-            Googleアカウントと連携する
+            <Google sx={{ marginRight: '5px' }} /> Google と連携する
+          </PrimaryButton>
+          <PrimaryButton onClick={() => auth.linkWith('twitter')}>
+            <Twitter sx={{ marginRight: '5px' }} /> Twitter と連携する
+          </PrimaryButton>
+          <PrimaryButton onClick={() => auth.linkWith('facebook')}>
+            <Facebook sx={{ marginRight: '5px' }} /> Facebook と連携する
           </PrimaryButton>
         </Box>
       </SectionContainer>

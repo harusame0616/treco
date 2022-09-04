@@ -1,22 +1,28 @@
 import {
+  AuthProvider,
+  FacebookAuthProvider,
   GoogleAuthProvider,
   linkWithRedirect,
   onAuthStateChanged,
   signInAnonymously as _signInAnonymously,
   signInWithRedirect,
   signOut,
+  TwitterAuthProvider,
 } from 'firebase/auth';
 import { useLayoutEffect, useState } from 'react';
 import { fbAuth } from '../utils/firebase';
 
-const oAuthProviderNames = ['google'] as const;
+const oAuthProviderNames = ['google', 'twitter', 'facebook'] as const;
 type OAuthProviderName = typeof oAuthProviderNames[number];
 const isProviderName = (value: any): value is OAuthProviderName =>
   oAuthProviderNames.includes(value);
 
-const providerMappedProviderName = {
-  google: new GoogleAuthProvider(),
-};
+const providerMappedProviderName: { [key in OAuthProviderName]: AuthProvider } =
+  {
+    google: new GoogleAuthProvider(),
+    twitter: new TwitterAuthProvider(),
+    facebook: new FacebookAuthProvider(),
+  };
 
 interface Auth {
   authId?: string;

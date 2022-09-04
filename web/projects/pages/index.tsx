@@ -1,6 +1,7 @@
 import BaseLink from '@Components/base/base-link';
 import TextButton from '@Components/case/text-button';
 import useProcessing from '@Hooks/useProcessing';
+import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 import Image from 'next/image';
@@ -56,12 +57,33 @@ const Home: NextPage = () => {
           <Box sx={{ width: '250px' }}>
             <Box marginBottom="5px" display="flex" justifyContent="center">
               <PrimaryButton
-                isLoading={isProcessing}
+                disabled={isProcessing}
                 onClick={() =>
                   startProcessing(() => auth.siginInWith('google'))
                 }
               >
-                Google で開始する
+                <Google sx={{ marginRight: '5px' }} /> Google で開始する
+              </PrimaryButton>
+            </Box>
+            <Box marginBottom="5px" display="flex" justifyContent="center">
+              <PrimaryButton
+                disabled={isProcessing}
+                onClick={() =>
+                  startProcessing(() => auth.siginInWith('twitter'))
+                }
+              >
+                <Twitter sx={{ marginRight: '5px' }} /> Twitter で開始する
+              </PrimaryButton>
+            </Box>
+            <Box marginBottom="5px" display="flex" justifyContent="center">
+              <PrimaryButton
+                disabled={isProcessing}
+                onClick={() =>
+                  startProcessing(() => auth.siginInWith('facebook'))
+                }
+              >
+                <Facebook sx={{ marginRight: '5px' }} />
+                Facebook で開始する
               </PrimaryButton>
             </Box>
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
