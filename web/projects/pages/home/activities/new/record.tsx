@@ -1,8 +1,8 @@
-import { AuthContext, TitleContext, PopMessageContext } from '@/pages/_app';
+import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
 import AddButton from '@Components/case/add-button';
+import DeleteSlideAction from '@Components/case/delete-slide-action';
 import PrimaryButton from '@Components/case/primary-button';
 import SecondaryButton from '@Components/case/secondary-button';
-import ListContainer from '@Components/container/list-container';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import ActivityListItem from '@Components/domain/activity-list-item';
@@ -13,10 +13,11 @@ import useActivityEdit from '@Hooks/useActivityEdit';
 import useActivityOfLastTrainingEvent from '@Hooks/useActivityOfLastTrainingEvent';
 import useProcessing from '@Hooks/useProcessing';
 import { ArrowForwardIosRounded } from '@mui/icons-material';
-import { Box } from '@mui/material';
+import { Box, Collapse } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useContext, useMemo, useRef, useState, useEffect } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { TransitionGroup } from 'react-transition-group';
 
 const NewRecord = () => {
   const auth = useContext(AuthContext);
@@ -55,24 +56,6 @@ const NewRecord = () => {
     ...apiProp,
     date: new Date(router.query['date'] as string),
   });
-
-  const [stopFollowRecordCard, setStopFollowRecordCard] = useState(true);
-
-  useEffect(() => {
-    if (isLoading || stopFollowRecordCard) {
-      return;
-    }
-
-    lastRecordRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-  }, [records.length]);
-
-  useEffect(() => {
-    // 初回のレンダリング時にスクロールしてしまうのを防ぐ
-    setStopFollowRecordCard(false);
-  }, []);
 
   useEffect(() => {
     if (typeof router.query.date !== 'string') {
@@ -187,11 +170,11 @@ const NewRecord = () => {
           ) : undefined}
         </SectionContainer>
         <SectionContainer>
-          <ListContainer>
-            {records.map((record, i, records) => (
-              <Box
-                sx={{ scrollSnapAlign: 'start' }}
-                key={i}
+          <TransitionGroup>
+            {isLoading ? undefined : records.map((record, i, records) => (
+              <Collapse
+                key={record.id}
+                sx={{ scrollSnapAlign: 'start', marginBottom: '5px' }}
                 ref={
                   records.length - 1 === i
                     ? lastRecordRef
@@ -203,42 +186,43 @@ const NewRecord = () => {
                   setSelectedRecordIndex(i);
                 }}
               >
-                <RecordCard
-                  record={record}
-                  isDisabled={isProcessing}
-                  loadUnit={trainingEvent?.loadUnit ?? ''}
-                  valueUnit={trainingEvent?.valueUnit ?? ''}
-                  label={<div>{i + 1}セット目</div>}
-                  isError={errorRecordIndex == i}
-                  onDeleteClick={() => deleteRecord(i)}
-                  loadOnChange={(e) => {
-                    const { value: input } = e.target as any;
-                    setRecord(
-                      {
-                        ...record,
-                        load: input ? parseFloat(input) : '',
-                      },
-                      i
-                    );
-                  }}
-                  valueOnChange={(e) => {
-                    const { value: input } = e.target as any;
-                    setRecord(
-                      {
-                        ...record,
-                        value: input ? parseFloat(input) : '',
-                      },
-                      i
-                    );
-                  }}
-                  noteOnChange={(e) => {
-                    const { value } = e.target as any;
-                    setRecord({ ...record, note: value }, i);
-                  }}
-                />
-              </Box>
+                <DeleteSlideAction onDeleteClick={() => deleteRecord(i)}>
+                  <RecordCard
+                    record={record}
+                    isDisabled={isProcessing}
+                    loadUnit={trainingEvent?.loadUnit ?? ''}
+                    valueUnit={trainingEvent?.valueUnit ?? ''}
+                    label={<div>{i + 1}セット目</div>}
+                    isError={errorRecordIndex == i}
+                    loadOnChange={(e) => {
+                      const { value: input } = e.target as any;
+                      setRecord(
+                        {
+                          ...record,
+                          load: input ? parseFloat(input) : '',
+                        },
+                        i
+                      );
+                    }}
+                    valueOnChange={(e) => {
+                      const { value: input } = e.target as any;
+                      setRecord(
+                        {
+                          ...record,
+                          value: input ? parseFloat(input) : '',
+                        },
+                        i
+                      );
+                    }}
+                    noteOnChange={(e) => {
+                      const { value } = e.target as any;
+                      setRecord({ ...record, note: value }, i);
+                    }}
+                  />
+                </DeleteSlideAction>
+              </Collapse>
             ))}
-          </ListContainer>
+          </TransitionGroup>
         </SectionContainer>
       </Box>
       <Box display="flex" padding="20px 0 0" gap="20px">
@@ -258,7 +242,13 @@ const NewRecord = () => {
       </Box>
       <Box position="fixed" bottom="100px" right="30px">
         <AddButton
-          onClick={addNewRecord}
+          onClick={() => {
+            lastRecordRef.current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+            addNewRecord();
+          }}
           disabled={records.length >= Activity.RECORDS_MAX_LENGTH}
         />
       </Box>

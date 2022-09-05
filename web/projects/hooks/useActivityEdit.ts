@@ -15,19 +15,24 @@ import useTrainingEvent from './useTrainingEvent';
 // ---------- types ----------
 type UseActivityEditProp = Partial<Omit<ActivityDto, 'records'>>;
 export interface ActivityRecordWork {
+  id: any;
   load: '' | number;
   value: '' | number;
   note: string;
 }
 
 const DEFAULT_RECORD_COUNT = 10;
-const EMPTY_RECORD: ActivityRecordWork = { load: '', value: '', note: '' };
+const EMPTY_RECORD: Omit<ActivityRecordWork, 'id'> = {
+  load: '',
+  value: '',
+  note: '',
+};
 
 // ---------- functions ----------
 const generateEmptyRecords = () =>
   Array(DEFAULT_RECORD_COUNT)
     .fill(0)
-    .map((_) => ({ ...EMPTY_RECORD } as ActivityRecordWork));
+    .map((_) => ({ ...EMPTY_RECORD, id: Math.random() } as ActivityRecordWork));
 
 const activityCommandUsecase = new ActivityCommandUsecase({
   activityRepository: new FSActivityRepository(),
@@ -47,15 +52,25 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
   } = useActivity(prop);
 
   const [records, setRecords] = useState<ActivityRecordWork[]>(
-    activity?.records ?? generateEmptyRecords()
+    activityIsLoading
+      ? []
+      : activity?.records.map((record) => ({ ...record, id: Math.random() })) ??
+          []
   );
 
   useEffect(() => {
-    setRecords(activity?.records ?? generateEmptyRecords());
-  }, [activity]);
+    if (records.length) {
+      return;
+    }
+
+    setRecords(
+      activity?.records?.map((record) => ({ id: Math.random(), ...record })) ??
+        generateEmptyRecords()
+    );
+  }, [activity, activityIsLoading]);
 
   const addNewRecord = () => {
-    setRecords([...records, { ...EMPTY_RECORD }]);
+    setRecords([...records, { ...EMPTY_RECORD, id: Math.random() }]);
   };
 
   const setRecord = (record: ActivityRecordWork, index: number) => {

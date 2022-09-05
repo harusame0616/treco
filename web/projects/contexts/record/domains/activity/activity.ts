@@ -86,7 +86,11 @@ export class Activity {
       categoryId: this.prop.categoryId,
       trainingEventId: this.prop.trainingEventId,
       activityId: this.prop.activityId,
-      records: this.prop.records,
+      records: this.prop.records.map(({ load, value, note }) => ({
+        load,
+        value,
+        note,
+      })),
       date: this.prop.date,
     };
   }
