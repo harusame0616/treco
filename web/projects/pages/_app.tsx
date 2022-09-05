@@ -110,6 +110,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           property="og:image"
           content="https://storage.googleapis.com/treco-prd-public-resource/ogp-image.png"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8857110954304323"
+          crossOrigin="anonymous"
+        />
       </Head>
       <CssBaseline />
       <ThemeProvider theme={theme}>
