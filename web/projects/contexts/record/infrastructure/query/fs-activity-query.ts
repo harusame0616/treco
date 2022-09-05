@@ -222,11 +222,6 @@ export class FSActivityQuery implements ActivityQuery {
       snapshot = await getDocs(activityOwnedUserInMonthQuery);
     }
 
-    let recordsSnapshot = await getDocsFromCache(recordsOwnedUserInMOnthQuery);
-    if (recordsSnapshot.empty) {
-      recordsSnapshot = await getDocs(recordsOwnedUserInMOnthQuery);
-    }
-
     let categoriesSnapshot = await getDocsFromCache(categoriesCollectionRef);
     if (categoriesSnapshot.empty) {
       categoriesSnapshot = await getDocs(categoriesCollectionRef);
@@ -253,41 +248,42 @@ export class FSActivityQuery implements ActivityQuery {
       })
     );
 
-    const recordsAggregatedActivityId = recordsSnapshot.docs.reduce(
-      (prev: any, doc: any) => {
-        const record = doc.data();
+    return (
+      await Promise.all(
+        snapshot.docs.map(async (doc) => {
+          const activity = doc.data();
+          const categoryInfo = categoryMappedCategoryId[activity.categoryId];
+          const trainingEventInfo =
+            trainingEventMappedTrainingEventId[activity.trainingEventId];
+          // const records = recordsAggregatedActivityId[activity.activityId];
+          const recordsCollection = collection(
+            fbDb,
+            'users',
+            activity.userId,
+            'activities',
+            activity.activityId,
+            'records'
+          );
+          let recordsSnapshot = await getDocsFromCache(recordsCollection);
+          if (recordsSnapshot.empty) {
+            recordsSnapshot = await getDocs(recordsCollection);
+          }
 
-        if (!prev[record.activityId]) {
-          prev[record.activityId] = [];
-        }
-
-        prev[record.activityId].push(record);
-
-        return prev;
-      },
-      {}
-    );
-
-    return snapshot.docs
-      .map((doc) => {
-        const activity = doc.data();
-        const categoryInfo = categoryMappedCategoryId[activity.categoryId];
-        const trainingEventInfo =
-          trainingEventMappedTrainingEventId[activity.trainingEventId];
-        const records = recordsAggregatedActivityId[activity.activityId];
-
-        return activity && categoryInfo && trainingEventInfo
-          ? {
-              ...categoryInfo,
-              ...trainingEventInfo,
-              ...activity,
-              date: activity.date?.toDate(),
-              records: records
-                ? records.sort((a: any, b: any) => a.index - b.index)
-                : [],
-            }
-          : undefined;
-      })
-      .filter((activity) => activity) as any[];
+          return activity && categoryInfo && trainingEventInfo
+            ? {
+                ...categoryInfo,
+                ...trainingEventInfo,
+                ...activity,
+                date: activity.date?.toDate(),
+                records: recordsSnapshot.empty
+                  ? []
+                  : recordsSnapshot.docs
+                      .map((doc) => doc.data())
+                      .sort((a: any, b: any) => a.index - b.index),
+              }
+            : undefined;
+        })
+      )
+    ).filter((activity) => activity) as any[];
   }
 }
