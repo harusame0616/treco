@@ -82,7 +82,7 @@ service cloud.firestore {
             && hasKey(data, 'index', 'number')
             && hasKey(data, 'load', 'int')
             && hasKey(data, 'value', 'int')
-            && hasStringKey(data, 'note', {'gt':0, 'lt':1025})
+            && hasStringKey(data, 'note', {'lt':1025})
           );
         }
         allow create: if isMyResource(userId) && isValidRecordSchema(request.resource.data);
