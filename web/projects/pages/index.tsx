@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   return auth ? (
     <PageContainer>
       <main>
-        <Box marginTop="-20px" display="flex" justifyContent="center">
+        <Box marginTop="-40px" display="flex" justifyContent="center">
           <Box maxWidth="500px" width="100%">
             <Image
               src="/media/splash.svg"
@@ -99,9 +99,11 @@ const Home: NextPage = () => {
         <Box
           sx={{ fontSize: '0.75rem', width: '100%' }}
           display="flex"
-          justifyContent="center"
+          flexDirection="column"
+          alignItems="center"
           paddingTop="30px"
         >
+          <Box>本サービスはモバイル端末向けに最適化されています。</Box>
           <Box>
             <BaseLink href="/policies/term-of-service">利用規約</BaseLink>、
             <BaseLink href="/policies/privacy">プライバシーポリシー</BaseLink>
