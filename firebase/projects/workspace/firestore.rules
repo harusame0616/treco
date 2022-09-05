@@ -19,6 +19,7 @@ service cloud.firestore {
         || (type == 'string' && data[keyName] is string)
         || (type == 'list' && data[keyName] is list)
         || (type == 'int' && data[keyName] is int)
+        || (type == 'number' && data[keyName] is number)
       ));
     }
 
@@ -69,6 +70,25 @@ service cloud.firestore {
       allow update: if activityWriteCommonRule() && isNoChange('categoryId') && isNoChange('trainingEventId') && isNoChange('activityId') && isNoChange('userId') && isNoChange('date');
 
       allow delete: if isMyResource(userId);
+
+      match /records/{recordId} {
+        function isValidRecordSchema(data){
+          return ( data.keys().size() == 9
+            && hasIdKey(data, 'activityId')
+            && hasIdKey(data, 'categoryId')
+            && hasIdKey(data, 'trainingEventId')
+            && hasUserIdKey(data)
+            && hasKey(data, 'date', 'timestamp')
+            && hasKey(data, 'index', 'number')
+            && hasKey(data, 'load', 'int')
+            && hasKey(data, 'value', 'int')
+            && hasStringKey(data, 'note', {'gt':0, 'lt':1025})
+          );
+        }
+        allow create: if isMyResource(userId) && isValidRecordSchema(request.resource.data);
+
+        allow delete: if isMyResource(userId);
+      }
     }
 
     match /users/{userId}/categories/{categoryId} {

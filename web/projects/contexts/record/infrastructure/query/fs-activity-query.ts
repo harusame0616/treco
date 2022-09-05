@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {
   collection,
+  collectionGroup,
   doc,
   getDoc,
   getDocFromCache,
@@ -12,7 +13,11 @@ import {
   where,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
-import { ActivityDto, ActivityFullId } from '../../domains/activity/activity';
+import {
+  ActivityDto,
+  ActivityFullId,
+  ActivityRecord,
+} from '../../domains/activity/activity';
 import { CategoryDto } from '../../domains/category/category';
 import { TrainingEventDto } from '../../domains/training-event/training-event';
 import {
@@ -76,13 +81,32 @@ export class FSActivityQuery implements ActivityQuery {
     }
 
     const activity = activitySnapshot.docs[0].data() as any;
+    const recordsCollectionRef = collection(
+      fbDb,
+      'users',
+      prop.userId,
+      'activities',
+      activity.activityId,
+      'records'
+    );
+    let recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
+    if (!recordsSnapshot.empty) {
+      recordsSnapshot = await getDocs(recordsCollectionRef);
+    }
+
     return {
       ...categorySnapshot.data(),
       ...trainingEventSnapshot.data(),
       ...activity,
       date: activity.date.toDate(),
+      records: recordsSnapshot.empty
+        ? []
+        : recordsSnapshot.docs
+            .map((doc) => doc.data() as any)
+            .sort((a, b) => a.index - b.index),
     };
   }
+
   async queryDetail(
     prop: ActivityFullId
   ): Promise<ActivityWithCategoryAndTrainingEventDto | null> {
@@ -132,10 +156,28 @@ export class FSActivityQuery implements ActivityQuery {
       return null;
     }
 
+    const recordsCollectionRef = collection(
+      fbDb,
+      'users',
+      prop.userId,
+      'activities',
+      prop.activityId,
+      'records'
+    );
+    let recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
+    if (!recordsSnapshot.empty) {
+      recordsSnapshot = await getDocs(recordsCollectionRef);
+    }
+
     return {
       ...(categorySnapshot.data() as CategoryDto),
       ...(trainingEventSnapshot.data() as TrainingEventDto),
       ...activityDto,
+      records: recordsSnapshot.empty
+        ? []
+        : recordsSnapshot.docs
+            .map((doc) => doc.data() as ActivityRecord)
+            .sort((a: any, b: any) => a.index - b.index),
     };
   }
 
@@ -161,9 +203,16 @@ export class FSActivityQuery implements ActivityQuery {
       prop.userId,
       'trainingEvents'
     );
+    const recordsCollectionGroupRef = collectionGroup(fbDb, 'records');
 
     const activityOwnedUserInMonthQuery = query(
       activitiesCollectionRef,
+      where('date', '>=', dayjs(prop.month).startOf('month').toDate()),
+      where('date', '<=', dayjs(prop.month).endOf('month').toDate())
+    );
+    const recordsOwnedUserInMOnthQuery = query(
+      recordsCollectionGroupRef,
+      where('userId', '==', prop.userId),
       where('date', '>=', dayjs(prop.month).startOf('month').toDate()),
       where('date', '<=', dayjs(prop.month).endOf('month').toDate())
     );
@@ -171,6 +220,11 @@ export class FSActivityQuery implements ActivityQuery {
     let snapshot = await getDocsFromCache(activityOwnedUserInMonthQuery);
     if (snapshot.empty) {
       snapshot = await getDocs(activityOwnedUserInMonthQuery);
+    }
+
+    let recordsSnapshot = await getDocsFromCache(recordsOwnedUserInMOnthQuery);
+    if (recordsSnapshot.empty) {
+      recordsSnapshot = await getDocs(recordsOwnedUserInMOnthQuery);
     }
 
     let categoriesSnapshot = await getDocsFromCache(categoriesCollectionRef);
@@ -199,12 +253,28 @@ export class FSActivityQuery implements ActivityQuery {
       })
     );
 
+    const recordsAggregatedActivityId = recordsSnapshot.docs.reduce(
+      (prev: any, doc: any) => {
+        const record = doc.data();
+
+        if (!prev[record.activityId]) {
+          prev[record.activityId] = [];
+        }
+
+        prev[record.activityId].push(record);
+
+        return prev;
+      },
+      {}
+    );
+
     return snapshot.docs
       .map((doc) => {
         const activity = doc.data();
         const categoryInfo = categoryMappedCategoryId[activity.categoryId];
         const trainingEventInfo =
           trainingEventMappedTrainingEventId[activity.trainingEventId];
+        const records = recordsAggregatedActivityId[activity.activityId];
 
         return activity && categoryInfo && trainingEventInfo
           ? {
@@ -212,6 +282,9 @@ export class FSActivityQuery implements ActivityQuery {
               ...trainingEventInfo,
               ...activity,
               date: activity.date?.toDate(),
+              records: records
+                ? records.sort((a: any, b: any) => a.index - b.index)
+                : [],
             }
           : undefined;
       })

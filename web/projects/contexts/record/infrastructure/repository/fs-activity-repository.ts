@@ -1,10 +1,13 @@
 import {
+  addDoc,
+  collection,
   deleteDoc,
   doc,
   getDoc,
   getDocFromCache,
+  getDocs,
+  getDocsFromCache,
   setDoc,
-  updateDoc,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
 import { Activity, ActivityFullId } from '../../domains/activity/activity';
@@ -39,19 +42,50 @@ export class FSActivityRepository implements ActivityRepository {
   }
 
   async save(activity: Activity) {
-    const activityDto = activity.toDto();
+    const { records, ...activityInfo } = activity.toDto();
 
-    await updateDoc(
-      doc(
-        fbDb,
-        'users',
-        activityDto.userId,
-        'activities',
-        activityDto.activityId
-      ),
-      {
-        ...activityDto,
-      }
+    const recordsCollectionRef = collection(
+      fbDb,
+      'users',
+      activityInfo.userId,
+      'activities',
+      activityInfo.activityId,
+      'records'
+    );
+
+    const recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
+    if (!recordsSnapshot.empty) {
+      Promise.all(
+        recordsSnapshot.docs.map((document) =>
+          deleteDoc(
+            doc(
+              fbDb,
+              'users',
+              activityInfo.userId,
+              'activities',
+              activityInfo.activityId,
+              'records',
+              document.id
+            )
+          )
+        )
+      );
+    }
+
+    await Promise.all(
+      records.map((record, index) =>
+        addDoc(
+          collection(
+            fbDb,
+            'users',
+            activityInfo.userId,
+            'activities',
+            activityInfo.activityId,
+            'records'
+          ),
+          { ...activityInfo, ...record, index }
+        )
+      )
     );
   }
 
@@ -63,12 +97,32 @@ export class FSActivityRepository implements ActivityRepository {
       'activities',
       prop.activityId
     );
+    const recordsCollectionRef = collection(
+      fbDb,
+      'users',
+      prop.userId,
+      'activities',
+      prop.activityId,
+      'records'
+    );
 
     let activity = await getDocFromCache(activityDocRef);
     if (!activity.exists()) {
       activity = await getDoc(activityDocRef);
     }
 
-    return activity.exists() ? Activity.fromDto(activity.data() as any) : null;
+    let recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
+    if (recordsSnapshot.empty) {
+      recordsSnapshot = await getDocs(recordsCollectionRef);
+    }
+
+    return activity.exists()
+      ? Activity.fromDto({
+          ...(activity.data() as any),
+          records: recordsSnapshot.empty
+            ? []
+            : recordsSnapshot.docs.map((doc) => doc.data()),
+        })
+      : null;
   }
 }
