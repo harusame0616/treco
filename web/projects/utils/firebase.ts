@@ -34,7 +34,9 @@ if (process.env.NODE_ENV === 'development' && typeof location == 'object') {
 // エラーが発生するため
 // connectFirestoreEmulatorの後でクライアントサイドでのみ設定
 if (typeof window == 'object') {
-  const analytics = getAnalytics(app);
+  if (process.env.NODE_ENV === 'production') {
+    const analytics = getAnalytics(app);
+  }
   enableMultiTabIndexedDbPersistence(fbDb);
 }
 
