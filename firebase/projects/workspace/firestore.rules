@@ -96,7 +96,7 @@ service cloud.firestore {
         return ( category.keys().size() == 5
           && hasIdKey(category, 'categoryId')
           && hasStringKey(category, 'categoryName', {'gt':0, 'lt':21})
-          && hasStringKey(category, 'color', null)
+          && hasStringKey(category, 'color', {})
           && category.color.matches('(^#[a-f0-9]{6}$)|(^#[a-f0-9]{8})$')
           && hasUserIdKey(category)
           && hasKey(category, 'order', 'int')
@@ -145,6 +145,35 @@ service cloud.firestore {
 
       allow delete: if isMyResource(userId);
     }
+
+    match /users/{userId}/trainingMenus/{trainingMenuId} {
+      function isValidTrainingMenuSchema(trainingMenu){
+        return ( trainingMenu.keys().size() == 4
+          && hasUserIdKey(trainingMenu)
+          && hasIdKey(trainingMenu, 'trainingMenuId')
+          && hasStringKey(trainingMenu, 'name', {'gt': 0, 'lt': 25})
+          && hasStringKey(trainingMenu, 'note', {'lt': 1025})
+        );
+      }
+
+      // 新規作成
+      allow create: if isMyResource(userId) && isValidTrainingMenuSchema(request.resource.data);
+
+      // 更新
+      allow update: if isMyResource(userId) && isValidTrainingMenuSchema(request.resource.data) && isNoChange('userId') && isNoChange('trainingMenuId');
+    }
+
+    match /users/{userId}/configs/trainingMenu {
+      function isValidConfigTrainingMenuSchema(config){
+        return (config.keys().size() == 1 &&
+          hasKey(config, 'orders', 'list') && config.orders.join('').size() == config.orders.size() * 36
+        );
+      }
+
+      // 新規作成
+      allow create, update: if isMyResource(userId) && isValidConfigTrainingMenuSchema(request.resource.data);
+    }
+
 
     // 自分のデータは全て読み込み可能
     match /users/{userId}/{document=**} {

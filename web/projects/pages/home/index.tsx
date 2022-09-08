@@ -1,3 +1,5 @@
+import BaseCircleButton from '@Components/base/base-circle-button';
+import { FormatListBulletedRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
@@ -235,6 +237,18 @@ const Home = () => {
                 ※ 項目を左にスワイプすると削除ボタンが表示されます
               </Box>
             ) : undefined}
+          </Box>
+          <Box position="absolute" right="20px" bottom="70px" zIndex="1">
+            <BaseCircleButton
+              onClick={() => {
+                router.push({
+                  pathname: '/home/menus/',
+                  query: { date: selectDate.toDate().toUTCString() },
+                });
+              }}
+            >
+              <FormatListBulletedRounded />
+            </BaseCircleButton>
           </Box>
           <Box position="absolute" right="20px" bottom="20px" zIndex="1">
             <AddButton
