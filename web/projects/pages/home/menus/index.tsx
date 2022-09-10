@@ -1,9 +1,10 @@
-import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
-import BaseProgress from '@Components/base/base-progress';
+import { PageInjection } from '@/pages/_app';
 import AddButton from '@Components/case/add-button';
+import CenteredProgress from '@Components/case/centered-progress';
 import DeleteConfirmDialog from '@Components/case/delete-confirm-dialog';
 import DeleteSlideAction from '@Components/case/delete-slide-action';
 import ListItemCard from '@Components/case/list-item-card';
+import ReadErrorTemplate from '@Components/case/read-error-template';
 import SecondaryButton from '@Components/case/secondary-button';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
@@ -12,29 +13,33 @@ import {
   TrainingMenuDto,
   TrainingMenuProperty,
 } from '@Domains/training-menu/training-menu';
-import { TrainingMenuCollection } from '@Domains/training-menu/training-menu-collection';
+import { RequireError } from '@Errors/require-error';
 import useTrainingMenus from '@Hooks/training-menu/useTrainingMenus';
 import useDialog from '@Hooks/useDialog';
+import useProcessing from '@Hooks/useProcessing';
 import { EditRounded } from '@mui/icons-material';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { FSTrainingMenuCollectionRepository } from '@Repositories/fs-training-menu-collection-repository';
 import { TrainingMenuCollectionCommandUsecase } from '@Usecases/training-menu-collection-command-usecase';
 import dayjs from 'dayjs';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
 const trainingMenuCommandUsecase = new TrainingMenuCollectionCommandUsecase({
   trainingMenuCollectionRepository: new FSTrainingMenuCollectionRepository(),
 });
 
-const MenusIndex = () => {
-  const auth = useContext(AuthContext);
-  const popMessage = useContext(PopMessageContext);
-  const { setTitle, setClickListener } = useContext(TitleContext);
+const MenusIndex: NextPage<PageInjection> = ({
+  popMessage,
+  auth,
+  pageTitle,
+}) => {
+  const router = useRouter();
 
-  const { trainingMenus: _trainingMenus, isLoading } = useTrainingMenus({
-    userId: auth?.auth?.authId,
+  const { trainingMenus, isLoading, isError, refresh } = useTrainingMenus({
+    userId: auth.auth.authId,
   });
 
   const { close, open, isOpen } = useDialog();
@@ -44,26 +49,83 @@ const MenusIndex = () => {
     isOpen: editIsOpen,
   } = useDialog();
 
-  const [exceptItems, setExceptItems] = useState<TrainingMenuDto[]>([]);
-
   const [selectedTrainingMenu, setSelectedTrainingMenu] = useState<
     TrainingMenuDto | undefined
   >();
 
-  // 削除ボタンを押してから実際に削除されて反映されるまでにラグがあるので、
-  // 削除が実行された項目は除外して即座に反映しているように見せる
-  const menus = useMemo(
-    () =>
-      _trainingMenus.filter(
-        (menu: TrainingMenuDto) =>
-          !exceptItems
-            .map((item) => item.trainingMenuId)
-            .includes(menu.trainingMenuId)
-      ),
-    [_trainingMenus, exceptItems]
-  );
+  const { startProcessing, isProcessing } = useProcessing();
 
-  const router = useRouter();
+  useEffect(() => {
+    const dateQuery = router.query.date;
+    if (typeof dateQuery != 'string') {
+      return;
+    }
+
+    pageTitle.setTitle(dayjs(dateQuery).format('YYYY-MM-DD'));
+    pageTitle.setClickListener(() => {
+      router.push({
+        pathname: '/home/',
+        query: router.query,
+      });
+    });
+  }, [router.query.date]);
+
+  if (isError) {
+    return <ReadErrorTemplate />;
+  }
+
+  if (isLoading) {
+    return <CenteredProgress />;
+  }
+
+  const saveTrainingMenu = async (
+    data: Omit<TrainingMenuProperty, 'trainingEventIds'>,
+    reset: () => void
+  ) => {
+    try {
+      await startProcessing(async () => {
+        if (!auth.auth.authId) {
+          throw new RequireError('ユーザーID');
+        }
+
+        if (selectedTrainingMenu) {
+          await trainingMenuCommandUsecase.editTrainingMenu({
+            ...selectedTrainingMenu,
+            ...data,
+          });
+        } else {
+          await trainingMenuCommandUsecase.addTrainingMenu({
+            userId: auth.auth.authId,
+            ...data,
+          });
+        }
+
+        refresh();
+        closeEditPopup();
+        reset();
+      });
+    } catch (err: any) {
+      popMessage.error(err);
+    }
+  };
+
+  const deleteTrainingMenu = async () => {
+    try {
+      await startProcessing(async () => {
+        if (!selectedTrainingMenu) {
+          throw new Error('カテゴリが選択されていません。');
+        }
+
+        await trainingMenuCommandUsecase.deleteTrainingMenu(
+          selectedTrainingMenu
+        );
+        refresh();
+        close();
+      });
+    } catch (err: any) {
+      popMessage.error(err);
+    }
+  };
 
   const backToHome = () => {
     router.push({
@@ -84,49 +146,6 @@ const MenusIndex = () => {
     });
   };
 
-  const saveTrainingMenu = (data: TrainingMenuProperty, reset: () => void) => {
-    if (selectedTrainingMenu) {
-      editTrainingMenu({ ...selectedTrainingMenu, ...data });
-    } else {
-      createTrainingMenu(data);
-    }
-
-    closeEditPopup();
-    reset();
-  };
-
-  const createTrainingMenu = async (data: TrainingMenuProperty) => {
-    if (menus.length >= TrainingMenuCollection.TRAINING_MENUS_MAX_LENGTH) {
-      return popMessage?.('トレーニングメニューの最大登録数を超えています。', {
-        mode: 'error',
-      });
-    }
-    if (menus.map((menu) => menu.name).includes(data.name)) {
-      return popMessage?.('同じ名前のトレーニングメニュー名が登録済みです。', {
-        mode: 'error',
-      });
-    }
-
-    trainingMenuCommandUsecase.addTrainingMenu({
-      userId: auth!.auth!.authId as string,
-      ...data,
-    });
-  };
-
-  const editTrainingMenu = (trainingMenu: TrainingMenuDto) => {
-    if (
-      menus
-        .filter((menu) => menu.trainingMenuId != trainingMenu.trainingMenuId)
-        .map(({ name }) => name)
-        .includes(trainingMenu.name)
-    ) {
-      return popMessage?.('同じ名前のトレーニング名が登録済みです。', {
-        mode: 'error',
-      });
-    }
-    trainingMenuCommandUsecase.editTrainingMenu(trainingMenu);
-  };
-
   const openTrainingMenuPop = (trainingMenu?: TrainingMenuDto) => {
     setSelectedTrainingMenu(trainingMenu);
     openEditPopup();
@@ -136,34 +155,6 @@ const MenusIndex = () => {
     open();
   };
 
-  const popupError = (e: Error) => {
-    popMessage?.(e.message, { mode: 'error' });
-  };
-
-  useEffect(() => {
-    const dateQuery = router.query.date;
-    if (typeof dateQuery != 'string') {
-      return;
-    }
-
-    setTitle?.(dayjs(dateQuery).format('YYYY-MM-DD'));
-    setClickListener?.(() => {
-      router.push({
-        pathname: '/home/',
-        query: router.query,
-      });
-    });
-  }, [router.query.date]);
-
-  const deleteTrainingMenu = () => {
-    if (!selectedTrainingMenu) {
-      throw new Error('カテゴリが選択されていません。');
-    }
-    trainingMenuCommandUsecase.deleteTrainingMenu(selectedTrainingMenu);
-    setExceptItems([...exceptItems, selectedTrainingMenu]);
-    close();
-  };
-
   return (
     <>
       <PageContainer>
@@ -171,62 +162,53 @@ const MenusIndex = () => {
           記録するトレーニングメニューを選択してください。
         </SectionContainer>
         <SectionContainer>
-          {isLoading ? (
-            <Box display="flex" justifyContent="center">
-              <BaseProgress />
-            </Box>
-          ) : (
-            <TransitionGroup>
-              {menus.map((menu) => (
-                <Collapse
-                  key={menu.trainingMenuId}
-                  sx={{ marginBottom: '5px' }}
+          <TransitionGroup>
+            {trainingMenus.map((menu) => (
+              <Collapse key={menu.trainingMenuId} sx={{ marginBottom: '5px' }}>
+                <DeleteSlideAction
+                  onDeleteClick={() => {
+                    openDeleteConfirm(menu);
+                  }}
                 >
-                  <DeleteSlideAction
-                    onDeleteClick={() => {
-                      openDeleteConfirm(menu);
-                    }}
+                  <ListItemCard
+                    onClick={() => goToEventSelect(menu.trainingMenuId)}
                   >
-                    <ListItemCard
-                      onClick={() => goToEventSelect(menu.trainingMenuId)}
-                    >
-                      <Box flexGrow={1}>
-                        <Box
-                          sx={{
-                            whiteSpace: 'pre-wrap',
-                            wordBreak: 'break-all',
-                          }}
-                        >
-                          {menu.name}
-                        </Box>
-                        <Box
-                          fontSize="0.6em"
-                          sx={{
-                            color: '#aaa',
-                            whiteSpace: 'pre-wrap',
-                            wordBreak: 'break-all',
-                          }}
-                        >
-                          {menu.note}
-                        </Box>
+                    <Box flexGrow={1}>
+                      <Box
+                        sx={{
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-all',
+                        }}
+                      >
+                        {menu.name}
                       </Box>
-                      <Box flexGrow={0} flexShrink={1}>
-                        <IconButton
-                          color="primary"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openTrainingMenuPop(menu);
-                          }}
-                        >
-                          <EditRounded />
-                        </IconButton>
+                      <Box
+                        fontSize="0.6em"
+                        sx={{
+                          color: '#aaa',
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-all',
+                        }}
+                      >
+                        {menu.note}
                       </Box>
-                    </ListItemCard>
-                  </DeleteSlideAction>
-                </Collapse>
-              ))}
-            </TransitionGroup>
-          )}
+                    </Box>
+                    <Box flexGrow={0} flexShrink={1}>
+                      <IconButton
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openTrainingMenuPop(menu);
+                        }}
+                      >
+                        <EditRounded />
+                      </IconButton>
+                    </Box>
+                  </ListItemCard>
+                </DeleteSlideAction>
+              </Collapse>
+            ))}
+          </TransitionGroup>
           <Box sx={{ fontSize: '0.8rem', fontStyle: 'italic' }} marginTop="3px">
             ※ 項目を左にスワイプすると削除ボタンが表示されます
           </Box>
@@ -242,6 +224,7 @@ const MenusIndex = () => {
         open={isOpen}
         onPrimaryClick={deleteTrainingMenu}
         onSecondaryClick={close}
+        isLoading={isProcessing}
       />
       <TrainingMenuEditPopup
         open={editIsOpen}
@@ -251,7 +234,8 @@ const MenusIndex = () => {
           closeEditPopup();
           reset();
         }}
-        onError={popupError}
+        onError={popMessage.error}
+        isLoading={isProcessing}
       />
     </>
   );

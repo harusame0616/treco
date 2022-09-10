@@ -16,6 +16,9 @@ const useTitle = () => {
     setTitle,
     clickListener,
     setClickListener,
+    clear() {
+      setTitle('');
+    },
   };
 };
 export default useTitle;

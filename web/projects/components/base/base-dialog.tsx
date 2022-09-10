@@ -17,6 +17,7 @@ interface Prop {
   onSecondaryClick?: MouseEventHandler;
   onClose?: () => void;
   alert?: boolean;
+  isLoading?: boolean;
 }
 
 const BaseDialog = (prop: Prop) => {
@@ -33,10 +34,16 @@ const BaseDialog = (prop: Prop) => {
           gap="10px"
           width="100%"
         >
-          <SecondaryButton onClick={prop.onSecondaryClick}>
+          <SecondaryButton
+            onClick={prop.onSecondaryClick}
+            disabled={prop.isLoading}
+          >
             {prop.secondaryLabel ?? 'キャンセル'}
           </SecondaryButton>
-          <PrimaryButton onClick={prop.onPrimaryClick}>
+          <PrimaryButton
+            onClick={prop.onPrimaryClick}
+            isLoading={prop.isLoading}
+          >
             {prop.primaryLabel ?? 'ok'}
           </PrimaryButton>
         </Box>

@@ -46,6 +46,7 @@ const categoryCommandUsecase = new CategoryCommandUsecase({
 export interface PageInjection {
   auth: ReturnType<typeof useAuth>;
   popMessage: ReturnType<typeof usePopMessage>;
+  pageTitle: ReturnType<typeof useTitle>;
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -109,7 +110,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="トレーニングをもっと楽しくする、シンプルなトレーニング記録サービス。"
         />
         <meta property="og:url" content="" />
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="website" />{' '}
         <meta property="og:title" content="TRECo - BESIDE YOUR WORKOUT -" />
         <meta
           property="og:description"
@@ -142,6 +143,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     {...pageProps}
                     popMessage={popMessage}
                     auth={auth}
+                    pageTitle={title}
                   />
                 )}
                 {router.pathname != '/' && auth.auth.isAnonymous == true ? (

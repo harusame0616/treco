@@ -18,12 +18,16 @@ export class TrainingMenuCollectionCommandUsecase {
     }
   ) {}
 
-  async addTrainingMenu(prop: Omit<TrainingMenuDto, 'trainingMenuId'>) {
+  async addTrainingMenu(
+    prop: Omit<TrainingMenuDto, 'trainingMenuId' | 'trainingEventIds'>
+  ) {
     const trainingMenuCollection =
       await this.prop.trainingMenuCollectionRepository.findByUserId(prop);
 
     trainingMenuCollection.addTrainingMenu(TrainingMenu.create(prop));
-    this.prop.trainingMenuCollectionRepository.save(trainingMenuCollection);
+    await this.prop.trainingMenuCollectionRepository.save(
+      trainingMenuCollection
+    );
   }
 
   async editTrainingMenu(prop: TrainingMenuDto) {
@@ -31,7 +35,9 @@ export class TrainingMenuCollectionCommandUsecase {
       await this.prop.trainingMenuCollectionRepository.findByUserId(prop);
 
     trainingMenuCollection.editTrainingMenu(prop);
-    this.prop.trainingMenuCollectionRepository.save(trainingMenuCollection);
+    await this.prop.trainingMenuCollectionRepository.save(
+      trainingMenuCollection
+    );
   }
 
   async deleteTrainingMenu(prop: TrainingMenuFullId) {

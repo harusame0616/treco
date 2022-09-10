@@ -1,7 +1,7 @@
 import {
   TrainingMenu,
   TrainingMenuDto,
-  TrainingMenuProperty
+  TrainingMenuProperty,
 } from '@Domains/training-menu/training-menu';
 import { Box, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -12,14 +12,15 @@ interface Prop {
   open: boolean;
   trainingMenu?: TrainingMenuDto;
   onPirmaryClick: (
-    data: TrainingMenuProperty,
+    data: Omit<TrainingMenuProperty, 'trainingEventIds'>,
     reset: () => void
   ) => Promise<void> | void;
   onSecondaryClick: (
-    data: TrainingMenuProperty,
+    data: Omit<TrainingMenuProperty, 'trainingEventIds'>,
     reset: () => void
   ) => Promise<void> | void;
   onError: (error: Error) => void;
+  isLoading?: boolean;
 }
 
 const DEFAULT_NAME = '';
@@ -58,6 +59,7 @@ const TrainingMenuEditPopup = (prop: Prop) => {
       onSecondaryClick={() => prop.onSecondaryClick(trainingMenu, reset)}
       onPrimaryClick={createTrainingMenu}
       primaryLabel="作成する"
+      isLoading={prop.isLoading}
     >
       <BaseDialogTitle>トレーニングメニュー作成</BaseDialogTitle>
       <Box display="flex" flexDirection="column" gap="5px">
@@ -70,6 +72,7 @@ const TrainingMenuEditPopup = (prop: Prop) => {
           label="トレーニングメニュー名"
           onChange={(e) => setName(e.target.value)}
           fullWidth
+          disabled={prop.isLoading}
         />
         <TextField
           variant="filled"
@@ -79,6 +82,7 @@ const TrainingMenuEditPopup = (prop: Prop) => {
           label="備考"
           onChange={(e) => setNote(e.target.value)}
           fullWidth
+          disabled={prop.isLoading}
         />
       </Box>
     </BaseDialog>

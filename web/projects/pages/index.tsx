@@ -1,32 +1,52 @@
 import BaseLink from '@Components/base/base-link';
+import CenteredProgress from '@Components/case/centered-progress';
 import TextButton from '@Components/case/text-button';
+import { OAuthProviderName } from '@Hooks/useAuth';
 import useProcessing from '@Hooks/useProcessing';
 import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import PrimaryButton from '../components/case/primary-button';
 import PageContainer from '../components/container/page-container';
-import { AuthContext, TitleContext } from './_app';
+import { PageInjection } from './_app';
 
-const Home: NextPage = () => {
-  const auth = useContext(AuthContext);
+type ProviderSettings = [OAuthProviderName, ReactNode];
+const providers: ProviderSettings[] = [
+  ['google', <Google key="google" />],
+  ['twitter', <Twitter key="twitter" />],
+  ['facebook', <Facebook key="facebook" />],
+];
+
+const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   const router = useRouter();
-  const { setTitle } = useContext(TitleContext);
   const { isProcessing, startProcessing } = useProcessing();
 
-  const signInAnonymously = async () => {
-    await auth?.signInAnonymously();
-    await router.push('/home');
-  };
-
   useEffect(() => {
-    setTitle?.('');
+    pageTitle.clear();
   }, []);
 
-  return auth ? (
+  if (auth.isLoading) {
+    return <CenteredProgress />;
+  }
+
+  const signInAnonymously = async () => {
+    await startProcessing(async () => {
+      await auth.signInAnonymously();
+      await router.push('/home');
+    });
+  };
+
+  const signInWith = async (provider: OAuthProviderName) => {
+    await startProcessing(async () => {
+      await auth.siginInWith(provider);
+      await router.push('/home');
+    });
+  };
+
+  return (
     <PageContainer>
       <main>
         <Box marginTop="-40px" display="flex" justifyContent="center">
@@ -42,7 +62,7 @@ const Home: NextPage = () => {
         </Box>
         <Box
           sx={{
-            fontSize: '1.25rem',
+            fontSize: 'min(5vw, 28px)',
           }}
           display="flex"
           flexDirection="column"
@@ -56,41 +76,24 @@ const Home: NextPage = () => {
 
         <Box display="flex" justifyContent="center">
           <Box sx={{ width: '250px' }}>
-            <Box marginBottom="5px" display="flex" justifyContent="center">
-              <PrimaryButton
-                disabled={isProcessing}
-                onClick={() =>
-                  startProcessing(() => auth.siginInWith('google'))
-                }
+            {providers.map(([providerName, providerIcon]) => (
+              <Box
+                marginBottom="5px"
+                display="flex"
+                justifyContent="center"
+                key={providerName}
               >
-                <Google sx={{ marginRight: '5px' }} /> Google で開始する
-              </PrimaryButton>
-            </Box>
-            <Box marginBottom="5px" display="flex" justifyContent="center">
-              <PrimaryButton
-                disabled={isProcessing}
-                onClick={() =>
-                  startProcessing(() => auth.siginInWith('twitter'))
-                }
-              >
-                <Twitter sx={{ marginRight: '5px' }} /> Twitter で開始する
-              </PrimaryButton>
-            </Box>
-            <Box marginBottom="5px" display="flex" justifyContent="center">
-              <PrimaryButton
-                disabled={isProcessing}
-                onClick={() =>
-                  startProcessing(() => auth.siginInWith('facebook'))
-                }
-              >
-                <Facebook sx={{ marginRight: '5px' }} />
-                Facebook で開始する
-              </PrimaryButton>
-            </Box>
+                <PrimaryButton
+                  disabled={isProcessing}
+                  onClick={() => signInWith(providerName)}
+                >
+                  {providerIcon}{' '}
+                  <Box marginLeft="5px">{providerName} で開始する</Box>
+                </PrimaryButton>
+              </Box>
+            ))}
             <Box display="flex" justifyContent="flex-end" marginRight="5px">
-              <TextButton
-                onClick={() => startProcessing(() => signInAnonymously())}
-              >
+              <TextButton onClick={signInAnonymously}>
                 登録せず開始する
               </TextButton>
             </Box>
@@ -112,8 +115,6 @@ const Home: NextPage = () => {
         </Box>
       </main>
     </PageContainer>
-  ) : (
-    <div></div>
   );
 };
 

@@ -6,6 +6,7 @@ interface Prop {
   open: boolean;
   onPrimaryClick: MouseEventHandler;
   onSecondaryClick: MouseEventHandler;
+  isLoading?: boolean;
 }
 
 const DeleteConfirmDialog = (prop: Prop) => {

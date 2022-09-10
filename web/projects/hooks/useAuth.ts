@@ -13,7 +13,7 @@ import { useLayoutEffect, useState } from 'react';
 import { fbAuth } from '../utils/firebase';
 
 const oAuthProviderNames = ['google', 'twitter', 'facebook'] as const;
-type OAuthProviderName = typeof oAuthProviderNames[number];
+export type OAuthProviderName = typeof oAuthProviderNames[number];
 const isProviderName = (value: any): value is OAuthProviderName =>
   oAuthProviderNames.includes(value);
 
@@ -35,7 +35,7 @@ const useAuth = () => {
   const [auth, setAuth] = useState<Auth>({});
   const isAuthenticated = !!auth.authId;
 
-  const siginInWith = async (providerName: OAuthProviderName) => {
+  const signInWith = async (providerName: OAuthProviderName) => {
     if (!isProviderName(providerName)) {
       throw new Error('providerName error: ', providerName);
     }
@@ -85,7 +85,7 @@ const useAuth = () => {
     isLoading,
     isError,
     auth,
-    siginInWith,
+    siginInWith: signInWith,
     isAuthenticated,
     signInAnonymously,
     linkWith,

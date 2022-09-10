@@ -17,7 +17,7 @@ const PrimaryButton = (prop: PrimaryButtonProp) => {
       sx={{ width: '100%', height: prop.height }}
       color="primary"
       onClick={prop.isLoading ? undefined : prop.onClick}
-      disabled={prop.disabled}
+      disabled={prop.disabled || prop.isLoading}
     >
       {prop.isLoading ? (
         <BaseProgress size="1.5rem" color="white" />
