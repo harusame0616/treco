@@ -1,3 +1,4 @@
+import { OverflowError } from '@Errors/overflow-error';
 import { RequireError } from '@Errors/require-error';
 import { TextOverflowError } from '@Errors/text-overflow-error';
 import { generateId } from '../../../../utils/id';
@@ -10,6 +11,7 @@ export interface TrainingMenuFullId {
 export interface TrainingMenuProperty {
   name: string;
   note: string;
+  trainingEventIds: string[];
 }
 
 export type TrainingMenuDto = TrainingMenuFullId & TrainingMenuProperty;
@@ -17,12 +19,13 @@ export type TrainingMenuDto = TrainingMenuFullId & TrainingMenuProperty;
 export type ConstructorProp = TrainingMenuDto;
 export type TrainingMenuCreateProp = Omit<
   ConstructorProp,
-  'trainingMenuId' | 'menus'
+  'trainingMenuId' | 'menus' | 'trainingEventIds'
 >;
 
 export class TrainingMenu {
   static readonly NAME_MAX = 24;
   static readonly NOTE_MAX = 1024;
+  static readonly TRAINING_EVENT_LENGTH = 10;
 
   constructor(private prop: ConstructorProp) {}
 
@@ -30,6 +33,7 @@ export class TrainingMenu {
     const trainingMenu = new TrainingMenu({
       ...prop,
       trainingMenuId: generateId(),
+      trainingEventIds: [],
     });
 
     trainingMenu.changeName(prop.name);
@@ -55,12 +59,18 @@ export class TrainingMenu {
     this.prop.note = note;
   }
 
+  changeTrainingEvents(trainingEventIds: string[]) {
+    TrainingMenu.validateTrainingEvents(trainingEventIds);
+    this.prop.trainingEventIds = trainingEventIds;
+  }
+
   toDto(): TrainingMenuDto {
     return {
       userId: this.prop.userId,
       trainingMenuId: this.prop.trainingMenuId,
       name: this.prop.name,
       note: this.prop.note,
+      trainingEventIds: this.prop.trainingEventIds,
     };
   }
 
@@ -85,6 +95,17 @@ export class TrainingMenu {
 
     if (note.length > TrainingMenu.NOTE_MAX) {
       throw new TextOverflowError(PARAMETER_NAME, TrainingMenu.NAME_MAX);
+    }
+  }
+
+  static validateTrainingEvents(trainingEventIds: string[]) {
+    const PARAMETER_NAME = 'トレーニング種目';
+
+    if (trainingEventIds.length > TrainingMenu.TRAINING_EVENT_LENGTH) {
+      throw new OverflowError(
+        PARAMETER_NAME,
+        TrainingMenu.TRAINING_EVENT_LENGTH
+      );
     }
   }
 }

@@ -17,15 +17,15 @@ import useTrainingMenus from '@Hooks/training-menu/useTrainingMenus';
 import useDialog from '@Hooks/useDialog';
 import { EditRounded } from '@mui/icons-material';
 import { Box, Collapse, IconButton } from '@mui/material';
-import { FSTrainingMenuRepository } from '@Repositories/fs-training-menu-collection-repository';
-import { TrainingMenuCollectionUsecase } from '@Usecases/training-menu-collection-usecase';
+import { FSTrainingMenuCollectionRepository } from '@Repositories/fs-training-menu-collection-repository';
+import { TrainingMenuCollectionCommandUsecase } from '@Usecases/training-menu-collection-command-usecase';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
-const trainingMenuCommandUsecase = new TrainingMenuCollectionUsecase({
-  trainingMenuCollectionRepository: new FSTrainingMenuRepository(),
+const trainingMenuCommandUsecase = new TrainingMenuCollectionCommandUsecase({
+  trainingMenuCollectionRepository: new FSTrainingMenuCollectionRepository(),
 });
 
 const MenusIndex = () => {
@@ -74,12 +74,12 @@ const MenusIndex = () => {
     });
   };
 
-  const goToEventSelect = async (categoryId: string) => {
+  const goToEventSelect = async (trainingMenuId: string) => {
     await router.push({
-      pathname: '/home/menus/training-events',
+      pathname: `/home/menus/${trainingMenuId}`,
       query: {
         ...router.query,
-        categoryId,
+        trainingMenuId,
       },
     });
   };

@@ -1,5 +1,5 @@
 import { TrainingMenuCollection } from '@Domains/training-menu/training-menu-collection';
-import { TrainingMenuCollectionRepository } from '@Usecases/training-menu-collection-usecase';
+import { TrainingMenuCollectionRepository } from '@Usecases/training-menu-collection-command-usecase';
 import { setDoc } from 'firebase/firestore';
 import {
   fsConfigDocRef,
@@ -9,7 +9,7 @@ import {
   getDocsManagedCache,
 } from '../firestore-utils';
 
-export class FSTrainingMenuRepository
+export class FSTrainingMenuCollectionRepository
   implements TrainingMenuCollectionRepository
 {
   async findByUserId(prop: {
@@ -50,9 +50,9 @@ export class FSTrainingMenuRepository
     const orders = trainingMenus.map(({ trainingMenuId }) => trainingMenuId);
     await Promise.all([
       setDoc(fsConfigDocRef({ userId, configId: 'trainingMenu' }), { orders }),
-      ...trainingMenus.map((trainingMenu) =>
-        setDoc(fsTrainingMenuDocRef(trainingMenu), trainingMenu)
-      ),
+      ...trainingMenus.map((trainingMenu) => {
+        setDoc(fsTrainingMenuDocRef(trainingMenu), trainingMenu);
+      }),
     ]);
   }
 }

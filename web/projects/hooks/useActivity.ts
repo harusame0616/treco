@@ -38,10 +38,26 @@ const useActivity = (prop: Partial<ActivityFullId>) => {
     }
   );
 
+  if (error) {
+    return {
+      isLoading: false as const,
+      isError: true as const,
+      error,
+    };
+  }
+
+  if (data === undefined && !error) {
+    return {
+      isLoading: true as const,
+      isError: false as const,
+    };
+  }
+
   return {
-    isLoading: !data && !error,
-    isError: error,
+    isLoading: false as const,
+    isError: false as const,
     activity: data ?? null,
   };
 };
+
 export default useActivity;

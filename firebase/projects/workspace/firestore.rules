@@ -96,7 +96,7 @@ service cloud.firestore {
         return ( category.keys().size() == 5
           && hasIdKey(category, 'categoryId')
           && hasStringKey(category, 'categoryName', {'gt':0, 'lt':21})
-          && hasStringKey(category, 'color', {})
+          && hasStringKey(category, 'color', null)
           && category.color.matches('(^#[a-f0-9]{6}$)|(^#[a-f0-9]{8})$')
           && hasUserIdKey(category)
           && hasKey(category, 'order', 'int')
@@ -148,11 +148,12 @@ service cloud.firestore {
 
     match /users/{userId}/trainingMenus/{trainingMenuId} {
       function isValidTrainingMenuSchema(trainingMenu){
-        return ( trainingMenu.keys().size() == 4
+        return ( trainingMenu.keys().size() == 5
           && hasUserIdKey(trainingMenu)
           && hasIdKey(trainingMenu, 'trainingMenuId')
           && hasStringKey(trainingMenu, 'name', {'gt': 0, 'lt': 25})
           && hasStringKey(trainingMenu, 'note', {'lt': 1025})
+          && hasKey(trainingMenu, 'trainingEventIds', 'list') && trainingMenu.trainingEventIds.size() < 11 && trainingMenu.trainingEventIds.join('').size() ==  trainingMenu.trainingEventIds.size() * 36
         );
       }
 
@@ -160,7 +161,9 @@ service cloud.firestore {
       allow create: if isMyResource(userId) && isValidTrainingMenuSchema(request.resource.data);
 
       // 更新
-      allow update: if isMyResource(userId) && isValidTrainingMenuSchema(request.resource.data) && isNoChange('userId') && isNoChange('trainingMenuId');
+      // メモと備考の更新
+      // トレーニング種別更新
+      allow update: if isMyResource(userId) && isValidTrainingMenuSchema(request.resource.data) && ((isNoChange('userId') && isNoChange('trainingMenuId') && isNoChange('trainingEventIds')) || (isNoChange('userId') && isNoChange('trainingMenuId') && isNoChange('name') && isNoChange('note')));
     }
 
     match /users/{userId}/configs/trainingMenu {

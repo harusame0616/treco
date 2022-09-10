@@ -1,7 +1,9 @@
 import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
 import AddButton from '@Components/case/add-button';
+import CenteredProgress from '@Components/case/centered-progress';
 import DeleteSlideAction from '@Components/case/delete-slide-action';
 import PrimaryButton from '@Components/case/primary-button';
+import ReadErrorTemplate from '@Components/case/read-error-template';
 import SecondaryButton from '@Components/case/secondary-button';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
@@ -40,7 +42,12 @@ const NewRecord = () => {
   const lastRecordRef = useRef<HTMLElement | null>(null);
   const [selectedRecordIndex, setSelectedRecordIndex] = useState(0);
   const selectedRecordRef = useRef<HTMLElement | null>(null);
-  const { activity: lastActivity } = useActivityOfLastTrainingEvent(apiProp);
+  const {
+    activity: lastActivity,
+    isLoading: lastActivityIsLoading,
+    isError: lastActivityIsError,
+    error: lasctActivityError,
+  } = useActivityOfLastTrainingEvent(apiProp);
 
   const {
     records,
@@ -52,6 +59,7 @@ const NewRecord = () => {
     errorRecordIndex,
     deleteRecord,
     isError,
+    error,
   } = useActivityEdit({
     ...apiProp,
     date: new Date(router.query['date'] as string),
@@ -72,7 +80,15 @@ const NewRecord = () => {
   }, [router.query.date]);
 
   useEffect(() => {
-    if (selectedRecordIndex - 1 === records.length) {
+    if (isError || lastActivityIsError) {
+      return;
+    }
+
+    if (isLoading || lastActivityIsLoading) {
+      return;
+    }
+
+    if (selectedRecordIndex - 1 === records?.length) {
       lastRecordRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -84,6 +100,14 @@ const NewRecord = () => {
       });
     }
   }, [selectedRecordIndex]);
+
+  if (isError || lastActivityIsError) {
+    return <ReadErrorTemplate />;
+  }
+
+  if (isLoading || lastActivityIsLoading) {
+    return <CenteredProgress />;
+  }
 
   const goBack = async (param?: { query: object }) => {
     await router.push({
@@ -171,57 +195,59 @@ const NewRecord = () => {
         </SectionContainer>
         <SectionContainer>
           <TransitionGroup>
-            {isLoading ? undefined : records.map((record, i, records) => (
-              <Collapse
-                key={record.id}
-                sx={{ scrollSnapAlign: 'start', marginBottom: '5px' }}
-                ref={
-                  records.length - 1 === i
-                    ? lastRecordRef
-                    : selectedRecordIndex === i
-                    ? selectedRecordRef
-                    : null
-                }
-                onClick={() => {
-                  setSelectedRecordIndex(i);
-                }}
-              >
-                <DeleteSlideAction onDeleteClick={() => deleteRecord(i)}>
-                  <RecordCard
-                    record={record}
-                    isDisabled={isProcessing}
-                    loadUnit={trainingEvent?.loadUnit ?? ''}
-                    valueUnit={trainingEvent?.valueUnit ?? ''}
-                    label={<div>{i + 1}セット目</div>}
-                    isError={errorRecordIndex == i}
-                    loadOnChange={(e) => {
-                      const { value: input } = e.target as any;
-                      setRecord(
-                        {
-                          ...record,
-                          load: input ? parseFloat(input) : '',
-                        },
-                        i
-                      );
+            {isLoading
+              ? undefined
+              : records.map((record, i, records) => (
+                  <Collapse
+                    key={record.id}
+                    sx={{ scrollSnapAlign: 'start', marginBottom: '5px' }}
+                    ref={
+                      records.length - 1 === i
+                        ? lastRecordRef
+                        : selectedRecordIndex === i
+                        ? selectedRecordRef
+                        : null
+                    }
+                    onClick={() => {
+                      setSelectedRecordIndex(i);
                     }}
-                    valueOnChange={(e) => {
-                      const { value: input } = e.target as any;
-                      setRecord(
-                        {
-                          ...record,
-                          value: input ? parseFloat(input) : '',
-                        },
-                        i
-                      );
-                    }}
-                    noteOnChange={(e) => {
-                      const { value } = e.target as any;
-                      setRecord({ ...record, note: value }, i);
-                    }}
-                  />
-                </DeleteSlideAction>
-              </Collapse>
-            ))}
+                  >
+                    <DeleteSlideAction onDeleteClick={() => deleteRecord(i)}>
+                      <RecordCard
+                        record={record}
+                        isDisabled={isProcessing}
+                        loadUnit={trainingEvent?.loadUnit ?? ''}
+                        valueUnit={trainingEvent?.valueUnit ?? ''}
+                        label={<div>{i + 1}セット目</div>}
+                        isError={errorRecordIndex == i}
+                        loadOnChange={(e) => {
+                          const { value: input } = e.target as any;
+                          setRecord(
+                            {
+                              ...record,
+                              load: input ? parseFloat(input) : '',
+                            },
+                            i
+                          );
+                        }}
+                        valueOnChange={(e) => {
+                          const { value: input } = e.target as any;
+                          setRecord(
+                            {
+                              ...record,
+                              value: input ? parseFloat(input) : '',
+                            },
+                            i
+                          );
+                        }}
+                        noteOnChange={(e) => {
+                          const { value } = e.target as any;
+                          setRecord({ ...record, note: value }, i);
+                        }}
+                      />
+                    </DeleteSlideAction>
+                  </Collapse>
+                ))}
           </TransitionGroup>
         </SectionContainer>
       </Box>

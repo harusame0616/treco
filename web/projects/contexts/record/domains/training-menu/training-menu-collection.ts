@@ -56,6 +56,20 @@ export class TrainingMenuCollection {
     editTarget.changeNote(prop.note);
   }
 
+  editTrainingMenuTrainingEvents(
+    prop: TrainingMenuFullId & { trainingEventIds: string[] }
+  ) {
+    const editTarget = this.prop.trainingMenus.find(
+      (trainingMenu) => trainingMenu.trainingMenuId == prop.trainingMenuId
+    );
+
+    if (!editTarget) {
+      throw new NotFoundError('トレーニングメニューが見つかりませんでした。');
+    }
+
+    editTarget.changeTrainingEvents(prop.trainingEventIds);
+  }
+
   deleteTrainingMenu(prop: TrainingMenuFullId) {
     const index = this.prop.trainingMenus.findIndex(
       (trainingMenu) => trainingMenu.trainingMenuId == prop.trainingMenuId
@@ -73,7 +87,10 @@ export class TrainingMenuCollection {
       userId: dto.userId,
       trainingMenus:
         dto.trainingMenus?.map?.((trainingMenu) =>
-          TrainingMenu.fromDto(trainingMenu)
+          TrainingMenu.fromDto({
+            ...trainingMenu,
+            trainingEventIds: trainingMenu.trainingEventIds ?? [],
+          })
         ) ?? [],
     });
   }

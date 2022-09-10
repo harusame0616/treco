@@ -159,9 +159,24 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
     });
   };
 
+  if (isLoading || activityIsLoading) {
+    return {
+      isLoading: true as const,
+      isError: false as const,
+    };
+  }
+
+  if (isError || (prop.activityId != null && activityIsError)) {
+    return {
+      isLoading: false as const,
+      isError: true as const,
+      error: isError || activityIsError,
+    };
+  }
+
   return {
-    isLoading: isLoading || activityIsLoading,
-    isError: isError || (prop.activityId != null && activityIsError),
+    isLoading: false as const,
+    isError: false as const,
     trainingEvent,
     records,
     addNewRecord,

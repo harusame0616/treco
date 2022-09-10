@@ -2,13 +2,18 @@ import { ParameterError } from '../../../../custom-error/parameter-error';
 import { generateId } from '../../../../utils/id';
 import defaultCategories from './default-categories.json';
 
-export interface CategoryDto {
+export interface CategoryFullId {
   userId: string;
   categoryId: string;
+}
+
+export interface CategoryProperty {
   categoryName: string;
   color: string;
   order: number;
 }
+
+export type CategoryDto = CategoryFullId & CategoryProperty;
 
 type ConstructorProp = CategoryDto;
 export type CategoryCreateProp = Omit<ConstructorProp, 'categoryId'>;

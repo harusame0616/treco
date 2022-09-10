@@ -37,9 +37,26 @@ const useActivityOfLastTrainingEvent = (
     fecher
   );
 
+  if (data === undefined && !error) {
+    return {
+      isLoading: true as const,
+      isError: false as const,
+      activity: null,
+    };
+  }
+
+  if (error) {
+    return {
+      isLoading: false as const,
+      isError: true as const,
+      activity: null,
+      error,
+    };
+  }
+
   return {
-    isLoading: !data && !error,
-    isError: !data && error,
+    isLoading: false as const,
+    isError: false as const,
     activity: data ?? null,
   };
 };

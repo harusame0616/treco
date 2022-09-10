@@ -20,6 +20,11 @@ export interface ActivityQuery {
     userId: string;
     month: Date;
   }): Promise<ActivityWithCategoryAndTrainingEventDto[]>;
+
+  queryListOnDate(prop: {
+    userId: string;
+    date: Date;
+  }): Promise<ActivityWithCategoryAndTrainingEventDto[]>;
 }
 
 interface ConstructorProp {
@@ -31,6 +36,10 @@ export class ActivityQueryUsecase {
 
   async queryDetail(prop: ActivityFullId) {
     return await this.prop.activityQuery.queryDetail(prop);
+  }
+
+  async queryListOnDate(prop: { userId: string; date: Date }) {
+    return await this.prop.activityQuery.queryListOnDate(prop);
   }
 
   async queryListInMonth(prop: { userId: string; month: Date }) {

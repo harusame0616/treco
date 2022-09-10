@@ -67,6 +67,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const closeUserMenu = () => setUserMenuOpen(false);
 
   useEffect(() => {
+    console.log({ auth });
     closeUserMenu();
     if (auth.isLoading) {
       return;
@@ -81,7 +82,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       categoryCommandUsecase
         .createDefaultCategories(auth.auth.authId)
         .catch((e) => {
-          console.log({ e });
           // 既にカテゴリが作成済みの場合はエラーが返ってくるが何もしない
           /* do nothing*/
         });

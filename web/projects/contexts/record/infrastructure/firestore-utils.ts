@@ -1,20 +1,71 @@
 import { fbDb } from '@/utils/firebase';
+import { ActivityFullId } from '@Domains/activity/activity';
+import { CategoryFullId } from '@Domains/category/category';
+import { TrainingEventFullId } from '@Domains/training-event/training-event';
+import { TrainingMenuFullId } from '@Domains/training-menu/training-menu';
 import {
-    collection,
-    doc,
-    DocumentReference,
-    getDoc,
-    getDocFromCache,
-    getDocs,
-    getDocsFromCache, Query
+  collection,
+  doc,
+  DocumentReference,
+  getDoc,
+  getDocFromCache,
+  getDocs,
+  getDocsFromCache,
+  Query,
 } from 'firebase/firestore';
 
-export const fsTrainingMenusCollectionRef = (prop: any) => {
+export const fsTrainingMenusCollectionRef = (
+  prop: Omit<TrainingMenuFullId, 'trainingMenuId'>
+) => {
   return collection(fbDb, 'users', prop.userId, 'trainingMenus');
 };
 
-export const fsTrainingMenuDocRef = (prop: any) => {
+export const fsTrainingMenuDocRef = (prop: TrainingMenuFullId) => {
   return doc(fbDb, 'users', prop.userId, 'trainingMenus', prop.trainingMenuId);
+};
+
+export const fsTrainingEventCollectionRef = (
+  prop: Omit<TrainingEventFullId, 'trainingEventId' | 'categoryId'>
+) => {
+  return collection(fbDb, 'users', prop.userId, 'trainingEvents');
+};
+
+export const fsTrainingEventDocRef = (
+  prop: Omit<TrainingEventFullId, 'categoryId'>
+) => {
+  return doc(
+    fbDb,
+    'users',
+    prop.userId,
+    'trainingEvents',
+    prop.trainingEventId
+  );
+};
+
+export const fsCategoryCollection = (
+  prop: Omit<CategoryFullId, 'categoryId'>
+) => {
+  return collection(fbDb, 'users', prop.userId, 'categories');
+};
+
+export const fsActivityCollection = (
+  prop: Omit<ActivityFullId, 'trainingEventId' | 'categoryId' | 'activityId'>
+) => {
+  return collection(fbDb, 'users', prop.userId, 'activities');
+};
+
+export const fsRecordsCollection = (prop: {
+  userId: string;
+  activityId: string;
+}) => {
+  return collection(
+    fbDb,
+    'users',
+    prop.userId,
+    'activities',
+    prop.activityId,
+    'records'
+  );
 };
 
 export const fsConfigDocRef = (prop: { userId: string; configId: string }) => {

@@ -15,6 +15,7 @@ const ListItemCard = (prop: Prop) => {
         sx={{ minHeight: '38px' }}
         display="flex"
         alignItems="center"
+        position="relative"
       >
         {prop.children}
       </Box>

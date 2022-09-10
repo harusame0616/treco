@@ -1,7 +1,10 @@
+import { RequireError } from '@Errors/require-error';
 import { ParameterError } from '../../../custom-error/parameter-error';
 import { CategoryDto } from '../domains/category/category';
-import { TrainingEventDto } from '../domains/training-event/training-event';
-import { CategoryQuery } from './category-query-usecase';
+import {
+  TrainingEventDto,
+  TrainingEventFullId,
+} from '../domains/training-event/training-event';
 
 export type TrainingEventWithCategoryDto = TrainingEventDto & CategoryDto;
 
@@ -16,11 +19,14 @@ export interface TrainingEventQuery {
     userId: string,
     categoryId: string
   ): Promise<TrainingEventWithCategoryDto[]>;
+
+  queryList(
+    prop: Omit<TrainingEventFullId, 'categoryId' | 'trainingEventId'>
+  ): Promise<TrainingEventWithCategoryDto[]>;
 }
 
 interface ConstructorProp {
   trainingEventQuery: TrainingEventQuery;
-  categoryQuery: CategoryQuery;
 }
 
 export class TrainingEventQueryUsecase {
@@ -36,6 +42,16 @@ export class TrainingEventQueryUsecase {
       categoryId,
       trainingEventId
     );
+  }
+
+  async queryList(
+    prop: Omit<TrainingEventFullId, 'categoryId' | 'trainingEventId'>
+  ) {
+    if (prop.userId == null) {
+      throw new RequireError('ユーザーID');
+    }
+
+    return await this.prop.trainingEventQuery.queryList(prop);
   }
 
   async queryListInCategory(userId: string, categoryId: string) {

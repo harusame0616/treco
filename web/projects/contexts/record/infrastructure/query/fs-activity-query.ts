@@ -24,6 +24,13 @@ import {
   ActivityQuery,
   ActivityWithCategoryAndTrainingEventDto,
 } from '../../usecases/activity-query-usecase';
+import {
+  fsActivityCollection,
+  fsCategoryCollection,
+  fsRecordsCollection,
+  fsTrainingEventCollectionRef,
+  getDocsManagedCache,
+} from '../firestore-utils';
 
 export class FSActivityQuery implements ActivityQuery {
   async queryDetailOfLastTrainingEvent(prop: {
@@ -282,6 +289,64 @@ export class FSActivityQuery implements ActivityQuery {
                       .sort((a: any, b: any) => a.index - b.index),
               }
             : undefined;
+        })
+      )
+    ).filter((activity) => activity) as any[];
+  }
+
+  async queryListOnDate(prop: {
+    userId: string;
+    date: Date;
+  }): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
+    const activitiesCollectionRef = fsActivityCollection(prop);
+    const categoriesCollectionRef = fsCategoryCollection(prop);
+    const trainingEventsCollectionRef = fsTrainingEventCollectionRef(prop);
+
+    const activityOwnedUserOnDateQuery = query(
+      activitiesCollectionRef,
+      where('date', '>=', dayjs(prop.date).startOf('date').toDate()),
+      where('date', '<=', dayjs(prop.date).endOf('date').toDate())
+    );
+
+    const [activitiesSnapshot, categoriesSnapshot, trainingEventsSnapshot] =
+      await Promise.all([
+        getDocsManagedCache(activityOwnedUserOnDateQuery),
+        getDocsManagedCache(categoriesCollectionRef),
+        getDocsManagedCache(trainingEventsCollectionRef),
+      ]);
+
+    const categoryMappedCategoryId = Object.fromEntries(
+      categoriesSnapshot.docs.map((doc) => [doc.id, doc.data()])
+    );
+
+    const trainingEventMappedTrainingEventId = Object.fromEntries(
+      trainingEventsSnapshot.docs.map((doc) => [doc.id, doc.data()])
+    );
+
+    return (
+      await Promise.all(
+        activitiesSnapshot.docs.map(async (doc) => {
+          const activity = doc.data() as ActivityDto;
+          const categoryInfo = categoryMappedCategoryId[activity.categoryId];
+          const trainingEventInfo =
+            trainingEventMappedTrainingEventId[activity.trainingEventId];
+          const recordsCollectionRef = fsRecordsCollection(activity);
+          let recordsSnapshot = await getDocsManagedCache(recordsCollectionRef);
+
+          if (activity && categoryInfo && trainingEventInfo) {
+            return {
+              ...categoryInfo,
+              ...trainingEventInfo,
+              ...activity,
+              date: (activity.date as any).toDate(),
+              records: recordsSnapshot.empty
+                ? []
+                : recordsSnapshot.docs
+                    .map((doc) => doc.data())
+                    .sort((a: any, b: any) => a.index - b.index),
+            };
+          }
+          return undefined;
         })
       )
     ).filter((activity) => activity) as any[];

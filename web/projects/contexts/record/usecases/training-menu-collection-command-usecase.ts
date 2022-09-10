@@ -1,16 +1,17 @@
 import {
-    TrainingMenu,
-    TrainingMenuDto,
-    TrainingMenuFullId
+  TrainingMenu,
+  TrainingMenuDto,
+  TrainingMenuFullId,
 } from '@Domains/training-menu/training-menu';
 import { TrainingMenuCollection } from '@Domains/training-menu/training-menu-collection';
+import { NotFoundError } from '@Errors/not-found-error';
 
 export interface TrainingMenuCollectionRepository {
   findByUserId(prop: { userId: string }): Promise<TrainingMenuCollection>;
   save(trainingMenuCollection: TrainingMenuCollection): Promise<void>;
 }
 
-export class TrainingMenuCollectionUsecase {
+export class TrainingMenuCollectionCommandUsecase {
   constructor(
     private prop: {
       trainingMenuCollectionRepository: TrainingMenuCollectionRepository;
@@ -39,6 +40,22 @@ export class TrainingMenuCollectionUsecase {
 
     trainingMenuCollection.deleteTrainingMenu(prop);
 
+    await this.prop.trainingMenuCollectionRepository.save(
+      trainingMenuCollection
+    );
+  }
+
+  async editTrainingMenuTrainingEvents(
+    prop: TrainingMenuFullId & { trainingEventIds: string[] }
+  ) {
+    const trainingMenuCollection =
+      await this.prop.trainingMenuCollectionRepository.findByUserId(prop);
+
+    if (!trainingMenuCollection) {
+      throw new NotFoundError('トレーニングメニューコレクション');
+    }
+
+    trainingMenuCollection.editTrainingMenuTrainingEvents(prop);
     await this.prop.trainingMenuCollectionRepository.save(
       trainingMenuCollection
     );
