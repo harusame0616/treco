@@ -190,9 +190,23 @@ const MenusIndex = () => {
                     <ListItemCard
                       onClick={() => goToEventSelect(menu.trainingMenuId)}
                     >
-                      <Box flexGrow={1} flexShrink={0}>
-                        <Box>{menu.name}</Box>
-                        <Box fontSize="0.85rem" sx={{ color: '#aaa' }}>
+                      <Box flexGrow={1}>
+                        <Box
+                          sx={{
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-all',
+                          }}
+                        >
+                          {menu.name}
+                        </Box>
+                        <Box
+                          fontSize="0.6em"
+                          sx={{
+                            color: '#aaa',
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-all',
+                          }}
+                        >
                           {menu.note}
                         </Box>
                       </Box>
