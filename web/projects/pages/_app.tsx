@@ -42,6 +42,12 @@ const categoryCommandUsecase = new CategoryCommandUsecase({
   categoryRepository: new FSCategoryRepository(),
   trainingEventRepository: new FSTrainigEventRepository(),
 });
+
+export interface PageInjection {
+  auth: ReturnType<typeof useAuth>;
+  popMessage: ReturnType<typeof usePopMessage>;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   const auth = useAuth();
   const router = useRouter();
@@ -67,7 +73,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const closeUserMenu = () => setUserMenuOpen(false);
 
   useEffect(() => {
-    console.log({ auth });
     closeUserMenu();
     if (auth.isLoading) {
       return;
@@ -132,7 +137,13 @@ function MyApp({ Component, pageProps }: AppProps) {
                 isAuthenticated={auth.isAuthenticated}
               />
               <Box display="flex" flexDirection="column" height="100%">
-                {auth.isLoading ? undefined : <Component {...pageProps} />}
+                {auth.isLoading ? undefined : (
+                  <Component
+                    {...pageProps}
+                    popMessage={popMessage}
+                    auth={auth}
+                  />
+                )}
                 {router.pathname != '/' && auth.auth.isAnonymous == true ? (
                   <Box
                     sx={{ background: '#888800', opacity: '80%' }}

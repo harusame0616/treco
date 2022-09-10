@@ -1,4 +1,5 @@
 import {
+  TrainingMenu,
   TrainingMenuDto,
   TrainingMenuFullId,
 } from '@Domains/training-menu/training-menu';
@@ -83,22 +84,23 @@ const useTrainingMenuTrainingEventEdit = (prop: UseTrainingEventsProp) => {
       );
 
       if (index < 0) {
-        setSelectedTrainingEventIds([
-          ..._selectedTrainingEventIds,
-          trainingEventId,
-        ]);
+        const work = [..._selectedTrainingEventIds, trainingEventId];
+        TrainingMenu.validateTrainingEvents(work);
+        setSelectedTrainingEventIds(work);
       } else {
         const work = [..._selectedTrainingEventIds];
         work.splice(index, 1);
         setSelectedTrainingEventIds(work);
       }
     },
-    save: () => {
-      trainingMenuCollectionCommandUsecase.editTrainingMenuTrainingEvents({
-        trainingMenuId: prop.trainingMenuId as string,
-        userId: prop.userId as string,
-        trainingEventIds: _selectedTrainingEventIds,
-      });
+    save: async () => {
+      await trainingMenuCollectionCommandUsecase.editTrainingMenuTrainingEvents(
+        {
+          trainingMenuId: prop.trainingMenuId as string,
+          userId: prop.userId as string,
+          trainingEventIds: _selectedTrainingEventIds,
+        }
+      );
     },
   };
 };

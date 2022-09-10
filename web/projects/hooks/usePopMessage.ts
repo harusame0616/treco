@@ -27,11 +27,20 @@ const usePopMessage = () => {
     setOpen(true);
   };
 
+  const error = (
+    message: string | Error,
+    { duration = DEFAULT_OPTION.duration }: Option = DEFAULT_OPTION
+  ) => {
+    setMessage(message instanceof Error ? message.message : message);
+    setOption({ mode: 'error', duration });
+    setOpen(true);
+  };
+
   const closeMessage = () => {
     setOpen(false);
   };
 
-  return { popMessage, open, option, message, closeMessage };
+  return { popMessage, error, open, option, message, closeMessage };
 };
 
 export default usePopMessage;

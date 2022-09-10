@@ -1,4 +1,4 @@
-import { AuthContext } from '@/pages/_app';
+import { PageInjection } from '@/pages/_app';
 import AuthErrorTemplate from '@Components/case/auth-error-template';
 import CenteredProgress from '@Components/case/centered-progress';
 import ListItemCard from '@Components/case/list-item-card';
@@ -11,22 +11,16 @@ import CategoryLabel from '@Components/domain/category-label';
 import useTrainingMenuEdit from '@Hooks/training-menu/useTrainingMenuTrainingEventEdit';
 import useProcessing from '@Hooks/useProcessing';
 import { Box } from '@mui/material';
-import { FSTrainingMenuCollectionRepository } from '@Repositories/fs-training-menu-collection-repository';
-import { TrainingMenuCollectionCommandUsecase } from '@Usecases/training-menu-collection-command-usecase';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
 
-const trainingMenuCollectionCommandUsecase =
-  new TrainingMenuCollectionCommandUsecase({
-    trainingMenuCollectionRepository: new FSTrainingMenuCollectionRepository(),
-  });
-
-const TrainingMenuEditPage = () => {
+const TrainingMenuEditPage: NextPage<PageInjection> = ({
+  popMessage,
+  auth,
+}) => {
   const router = useRouter();
   const trainingMenuId = router.query.trainingMenuId as string;
   const { startProcessing, isProcessing } = useProcessing();
-
-  const auth = useContext(AuthContext);
 
   const {
     trainingEvents,
@@ -34,7 +28,7 @@ const TrainingMenuEditPage = () => {
     isLoading,
     toggleTrainingEvent,
     selectedTrainingEventIds,
-    error,
+    save,
   } = useTrainingMenuEdit({
     trainingMenuId,
     userId: auth.auth.authId,
@@ -47,31 +41,30 @@ const TrainingMenuEditPage = () => {
     return <CenteredProgress />;
   }
 
-  const userId = auth.auth.authId;
-  if (!userId) {
+  if (!auth.auth.authId) {
     return <AuthErrorTemplate />;
   }
 
   const goBack = () => {
-    return router.push({
-      pathname: `/home/menus/${trainingMenuId}`,
-      query: {
-        ...router.query,
-      },
-    });
+    return startProcessing(() =>
+      router.push({
+        pathname: `/home/menus/${trainingMenuId}`,
+        query: {
+          ...router.query,
+        },
+      })
+    );
   };
 
-  const save = async () => {
-    startProcessing(async () => {
-      await trainingMenuCollectionCommandUsecase.editTrainingMenuTrainingEvents(
-        {
-          userId,
-          trainingMenuId,
-          trainingEventIds: selectedTrainingEventIds,
-        }
-      );
-      await goBack();
-    });
+  const saveHandler = async () => {
+    try {
+      await startProcessing(async () => {
+        await save();
+        await goBack();
+      });
+    } catch (e: any) {
+      popMessage.error(e);
+    }
   };
 
   return (
@@ -90,9 +83,13 @@ const TrainingMenuEditPage = () => {
               ) : undefined}
               <ListItemCard
                 key={trainingEvent.trainingEventId}
-                onClick={() =>
-                  toggleTrainingEvent(trainingEvent.trainingEventId)
-                }
+                onClick={() => {
+                  try {
+                    toggleTrainingEvent(trainingEvent.trainingEventId);
+                  } catch (e: any) {
+                    popMessage.error(e);
+                  }
+                }}
               >
                 {(() => {
                   const index = selectedTrainingEventIds.findIndex(
@@ -149,8 +146,7 @@ const TrainingMenuEditPage = () => {
           <SecondaryButton onClick={goBack} disabled={isProcessing}>
             キャンセルする
           </SecondaryButton>
-          <PrimaryButton onClick={save} disabled={isProcessing}>
-            {' '}
+          <PrimaryButton onClick={saveHandler} disabled={isProcessing}>
             トレーニングメニューを更新する
           </PrimaryButton>
         </Box>
