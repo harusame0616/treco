@@ -82,7 +82,7 @@ const useAuth = () => {
   }, []);
 
   return {
-    isLoading,
+    isLoading: false as const,
     isError,
     auth,
     siginInWith,

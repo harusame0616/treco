@@ -22,9 +22,14 @@ import usePopMessage from '../hooks/usePopMessage';
 import useTitle from '../hooks/useTitle';
 import '../styles/globals.css';
 
-export const AuthContext = createContext<ReturnType<typeof useAuth> | null>(
-  null
-);
+const defaultAuthContext = {
+  isAuthenticated: false as const,
+  isLoading: true as const,
+  auth: { authId: undefined },
+};
+export const AuthContext = createContext<
+  ReturnType<typeof useAuth> | typeof defaultAuthContext
+>(defaultAuthContext);
 export const PopMessageContext = createContext<
   ReturnType<typeof usePopMessage>['popMessage'] | null
 >(null);

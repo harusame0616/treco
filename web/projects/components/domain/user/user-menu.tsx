@@ -1,7 +1,7 @@
 import BaseLink from '@Components/base/base-link';
 import SectionContainer from '@Components/container/section-container';
 import { CloseRounded, LogoutRounded } from '@mui/icons-material';
-import { Box, Drawer, IconButton, Link } from '@mui/material';
+import { Box, Drawer, IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { CriticalError } from '../../../custom-error/critical-error';
@@ -21,11 +21,16 @@ const UserMenu = (prop: Prop) => {
     throw new CriticalError('context error');
   }
   const signOut = () => {
-    if (auth.auth.isAnonymous) {
-      router.push('/auth/signout');
-    } else {
-      auth.signOut();
+    if (auth.isLoading) {
+      throw new Error();
     }
+
+    if (auth.auth.isAnonymous) {
+      router.push('/auth/signout-confirm');
+    } else {
+      router.push('/auth/signout');
+    }
+
     prop.onClose();
   };
 
@@ -47,7 +52,7 @@ const UserMenu = (prop: Prop) => {
           <Box>
             <TextButton onClick={signOut}>
               <LogoutRounded />
-              ログアウト
+              サインアウト
             </TextButton>
           </Box>
         </Box>
