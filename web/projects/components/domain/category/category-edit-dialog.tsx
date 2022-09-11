@@ -1,10 +1,6 @@
 import { Box, IconButton, Input, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Category,
-  CategoryDto,
-} from '../../../contexts/record/domains/category/category';
-import { ParameterError } from '../../../custom-error/parameter-error';
+import { CategoryDto } from '../../../contexts/record/domains/category/category';
 import BaseDialog from '../../base/base-dialog';
 import BaseDialogTitle from '../../base/base-dialog-title';
 import TrainingMark from '../training-mark';
@@ -26,9 +22,10 @@ interface Prop {
     reset: () => void
   ) => Promise<void> | void;
   onError: (error: Error) => void;
+  isLoading?: boolean;
 }
 
-const DEFAULT_COLOR = '#FFFFFF';
+const DEFAULT_COLOR = '#ffffff';
 const DEFAULT_NAME = '';
 
 const CategoryEditPopup = (prop: Prop) => {
@@ -50,38 +47,13 @@ const CategoryEditPopup = (prop: Prop) => {
     setCategoryName(prop.category?.categoryName ?? DEFAULT_NAME);
   }, [prop.category]);
 
-  const createCategory = () => {
-    if (!categoryName.length) {
-      prop.onError(new ParameterError('カテゴリ名は必須です。'));
-      return;
-    }
-    if (categoryName.length > Category.CATEGORY_NAME_MAX_LENGTH) {
-      prop.onError?.(
-        new ParameterError(
-          `カテゴリ名は${Category.CATEGORY_NAME_MAX_LENGTH}文字以内で入力してください`
-        )
-      );
-      return;
-    }
-
-    if (!color.length) {
-      prop.onError(new ParameterError(`カラーは必須です。`));
-      return;
-    }
-    if (!new RegExp(Category.COLOR_PATTERN).test(color)) {
-      prop.onError(new ParameterError(`カラーのフォーマットが不正です。`));
-      return;
-    }
-
-    prop.onPirmaryClick(category, reset);
-  };
-
   return (
     <BaseDialog
       open={prop.open}
       onSecondaryClick={() => prop.onSecondaryClick(category, reset)}
-      onPrimaryClick={createCategory}
+      onPrimaryClick={() => prop.onPirmaryClick(category, reset)}
       primaryLabel="作成する"
+      isLoading={prop.isLoading}
     >
       <BaseDialogTitle>カテゴリ作成</BaseDialogTitle>
       <Box display="flex" alignItems="center">
@@ -104,6 +76,7 @@ const CategoryEditPopup = (prop: Prop) => {
             height: '0px',
             opacity: '0',
           }}
+          disabled={prop.isLoading}
         />
         <TextField
           autoFocus
@@ -114,6 +87,7 @@ const CategoryEditPopup = (prop: Prop) => {
           label="カテゴリ名"
           onChange={(e) => setCategoryName(e.target.value)}
           fullWidth
+          disabled={prop.isLoading}
         />
       </Box>
     </BaseDialog>
