@@ -1,4 +1,6 @@
-import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
+import {
+  PageInjection
+} from '@/pages/_app';
 import BaseCircleButton from '@Components/base/base-circle-button';
 import CenteredProgress from '@Components/case/centered-progress';
 import ListItemCard from '@Components/case/list-item-card';
@@ -13,17 +15,14 @@ import { Box, Collapse } from '@mui/material';
 import dayjs from 'dayjs';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
-const TrainingMenuDetail: NextPage = () => {
+const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   const router = useRouter();
   const trainingMenuId = router.query.trainingMenuId as string;
 
-  const auth = useContext(AuthContext);
-  const { setTitle, setClickListener } = useContext(TitleContext);
-
-  const { trainingMenu, isLoading, isError, error } = useTrainingMenu({
+  const { trainingMenu, isLoading, isError } = useTrainingMenu({
     trainingMenuId,
     userId: auth.auth.authId,
   });
@@ -37,27 +36,20 @@ const TrainingMenuDetail: NextPage = () => {
     date: new Date(router.query.date as any),
   });
 
-  const goBack = () => {
-    router.push({
-      pathname: '/home/menus',
-      query: router.query,
-    });
-  };
-
   useEffect(() => {
     const { date } = router.query;
-    if (!setTitle || typeof date !== 'string') {
+    if (typeof date !== 'string') {
       return;
     }
 
-    setTitle(dayjs(date).format('YYYY-MM-DD'));
-    setClickListener?.(() => {
+    pageTitle.setTitle(dayjs(date).format('YYYY-MM-DD'));
+    pageTitle.setClickListener(() => {
       router.push({
         pathname: '/home/',
         query: router.query,
       });
     });
-  }, [router.query, setTitle]);
+  }, [router.query]);
 
   if (isError || activitiesAreError) {
     return <ReadErrorTemplate />;
@@ -93,6 +85,13 @@ const TrainingMenuDetail: NextPage = () => {
         returnTo: `/home/menus/${trainingMenuId}`,
         returnQuery: JSON.stringify(router.query),
       },
+    });
+  };
+
+  const goBack = () => {
+    router.push({
+      pathname: '/home/menus',
+      query: router.query,
     });
   };
 
