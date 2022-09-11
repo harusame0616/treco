@@ -1,9 +1,13 @@
 import BaseCircleButton from '@Components/base/base-circle-button';
+import CenteredProgress from '@Components/case/centered-progress';
+import ReadErrorTemplate from '@Components/case/read-error-template';
+import useProcessing from '@Hooks/useProcessing';
 import { FormatListBulletedRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import BaseProgress from '../../components/base/base-progress';
 import AddButton from '../../components/case/add-button';
@@ -20,11 +24,9 @@ import useActivities from '../../hooks/useActivities';
 import useActivityDelete from '../../hooks/useActivityDelete';
 import useDialog from '../../hooks/useDialog';
 import useIsClient from '../../hooks/useIsClient';
-import { AuthContext, TitleContext } from '../_app';
+import { PageInjection } from '../_app';
 
-const Home = () => {
-  const auth = useContext(AuthContext);
-  const { setTitle, setClickListener } = useContext(TitleContext);
+const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
   const router = useRouter();
   const activityDelete = useActivityDelete();
 
@@ -35,6 +37,7 @@ const Home = () => {
       : today
   );
   const [month, setMonth] = useState(selectDate);
+  const { isProcessing, startProcessing } = useProcessing();
 
   const selectDateMonth = selectDate.startOf('month').toDate();
   const viewCurrentMonth = month.startOf('month').toDate();
@@ -44,29 +47,43 @@ const Home = () => {
   const {
     activities: selectDateMonthActivities,
     isLoading: selectDateMonthActivitiesIsLoading,
+    isError: selectDateMonthActivitiesIsError,
+    refresh: selectDateMonthActivitiesRefresh,
   } = useActivities({
     userId: auth?.auth.authId,
     month: selectDateMonth,
   });
 
-  const [exceptActivities, setExceptActivities] = useState<ActivityDto[]>([]);
-  const { activities: currentMonthActivities } = useActivities({
+  const {
+    activities: currentMonthActivities,
+    isLoading: currentMonthActivitiesIsLoading,
+    isError: currentMonthActivitiesIsError,
+  } = useActivities({
     userId: auth?.auth.authId,
     month: viewCurrentMonth,
   });
-  const [selectedActivity, setSelectedActivity] = useState<ActivityDto | null>(
-    null
-  );
 
-  const { activities: prevMonthActivities } = useActivities({
+  const {
+    activities: prevMonthActivities,
+    isLoading: prevMonthActivitiesIsLoading,
+    isError: prevMonthActivitiesIsError,
+  } = useActivities({
     userId: auth?.auth.authId,
     month: viewPrevMonth,
   });
 
-  const { activities: nextMonthActivities } = useActivities({
+  const {
+    activities: nextMonthActivities,
+    isLoading: nextMonthActivitiesIsLoading,
+    isError: nextMonthActivitiesIsError,
+  } = useActivities({
     userId: auth?.auth.authId,
     month: viewNextMonth,
   });
+
+  const [selectedActivity, setSelectedActivity] = useState<ActivityDto | null>(
+    null
+  );
 
   // selectDate の activities と重複しないように、
   // selectDate と同じ月の activities は集計しない
@@ -81,12 +98,7 @@ const Home = () => {
       ? []
       : nextMonthActivities ?? []),
     ...(selectDateMonthActivities ?? []),
-  ].filter(
-    (activity) =>
-      !exceptActivities
-        .map((activity) => activity.activityId)
-        .includes(activity.activityId)
-  );
+  ];
   const { isClient } = useIsClient();
 
   const changeSelectDate = useCallback(
@@ -139,28 +151,45 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (!setTitle) {
-      return;
-    }
-
-    setTitle(month.format('YYYY-MM'));
-  }, [month, setTitle]);
+    pageTitle.setTitle(month.format('YYYY-MM'));
+  }, [month]);
 
   useEffect(() => {
-    setClickListener?.(() => {
+    pageTitle.setClickListener(() => {
       setMonth(dayjs().startOf('month'));
       changeSelectDate(dayjs());
     });
-  }, [setClickListener]);
+  }, []);
 
-  const deleteActivity = () => {
-    if (!selectedActivity) {
-      throw new Error('アクティビティが選択されていません。');
-    }
+  const isLoading =
+    selectDateMonthActivitiesIsLoading ||
+    prevMonthActivitiesIsLoading ||
+    currentMonthActivitiesIsLoading ||
+    nextMonthActivitiesIsLoading;
 
-    activityDelete.deleteActivity(selectedActivity);
-    setExceptActivities([...exceptActivities, selectedActivity]);
-    close();
+  if (
+    selectDateMonthActivitiesIsError ||
+    prevMonthActivitiesIsError ||
+    currentMonthActivitiesIsError ||
+    nextMonthActivitiesIsError
+  ) {
+    return <ReadErrorTemplate />;
+  }
+
+  const deleteActivity = async () => {
+    await startProcessing(async () => {
+      try {
+        if (!selectedActivity) {
+          throw new Error('アクティビティが選択されていません。');
+        }
+
+        await activityDelete.deleteActivity(selectedActivity);
+        selectDateMonthActivitiesRefresh?.();
+        close();
+      } catch (err: any) {
+        popMessage.error(err);
+      }
+    });
   };
 
   const openDeleteConfirm = (activity: ActivityDto) => {
@@ -198,7 +227,7 @@ const Home = () => {
             overflow="auto"
             gap="20px"
           >
-            {selectDateMonthActivitiesIsLoading ? (
+            {isLoading ? (
               <Box
                 display="flex"
                 alignItems="center"
@@ -228,15 +257,19 @@ const Home = () => {
               </TransitionGroup>
             )}
 
-            {selectDateActivities.length ? (
-              <Box
-                fontSize="0.75rem"
-                sx={{ fontStyle: 'italic' }}
-                marginTop="-15px"
-              >
-                ※ 項目を左にスワイプすると削除ボタンが表示されます
-              </Box>
-            ) : undefined}
+            {(() => {
+              if (selectDateActivities.length) {
+                return (
+                  <Box
+                    fontSize="0.75rem"
+                    sx={{ fontStyle: 'italic' }}
+                    marginTop="-15px"
+                  >
+                    ※ 項目を左にスワイプすると削除ボタンが表示されます
+                  </Box>
+                );
+              }
+            })()}
           </Box>
           <Box position="absolute" right="20px" bottom="70px" zIndex="1">
             <BaseCircleButton
@@ -266,6 +299,7 @@ const Home = () => {
         open={isOpen}
         onPrimaryClick={deleteActivity}
         onSecondaryClick={close}
+        isLoading={isProcessing}
       />
     </PageContainer>
   );

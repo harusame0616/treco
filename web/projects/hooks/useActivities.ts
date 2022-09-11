@@ -13,7 +13,7 @@ const useActivities = (prop: {
   month?: Date;
   date?: Date;
 }) => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     ['activity/queryList', prop.userId, prop.month, prop.date],
     (_: string, userId: string, month: Date, date: Date) => {
       if (!userId) {
@@ -51,6 +51,9 @@ const useActivities = (prop: {
     isLoading: false as const,
     isError: false as const,
     activities: data ?? [],
+    async refresh() {
+      await mutate();
+    },
   };
 };
 
