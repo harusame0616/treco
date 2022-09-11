@@ -270,28 +270,6 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
               }
             })()}
           </Box>
-          <Box position="absolute" right="20px" bottom="70px" zIndex="1">
-            <BaseCircleButton
-              onClick={() => {
-                router.push({
-                  pathname: '/home/menus/',
-                  query: { date: selectDate.toDate().toUTCString() },
-                });
-              }}
-            >
-              <FormatListBulletedRounded />
-            </BaseCircleButton>
-          </Box>
-          <Box position="absolute" right="20px" bottom="20px" zIndex="1">
-            <AddButton
-              onClick={() => {
-                router.push({
-                  pathname: '/home/categories',
-                  query: { date: selectDate.toDate().toUTCString() },
-                });
-              }}
-            />
-          </Box>
         </>
       ) : undefined}
       <DeleteConfirmDialog
@@ -300,6 +278,28 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
         onSecondaryClick={close}
         isLoading={isProcessing}
       />
+      <Box position="fixed" right="20px" bottom="110px" zIndex="1">
+        <BaseCircleButton
+          onClick={() => {
+            router.push({
+              pathname: '/home/menus/',
+              query: { date: selectDate.toDate().toUTCString() },
+            });
+          }}
+        >
+          <FormatListBulletedRounded />
+        </BaseCircleButton>
+      </Box>
+      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
+        <AddButton
+          onClick={() => {
+            router.push({
+              pathname: '/home/categories',
+              query: { date: selectDate.toDate().toUTCString() },
+            });
+          }}
+        />
+      </Box>
     </PageContainer>
   );
 };

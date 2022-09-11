@@ -1,6 +1,4 @@
-import {
-  PageInjection
-} from '@/pages/_app';
+import { PageInjection } from '@/pages/_app';
 import BaseCircleButton from '@Components/base/base-circle-button';
 import CenteredProgress from '@Components/case/centered-progress';
 import ListItemCard from '@Components/case/list-item-card';
@@ -164,7 +162,7 @@ const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
           トレーニングメニュー選択に戻る
         </SecondaryButton>
       </SectionContainer>
-      <Box position="fixed" right="20px" bottom="20px" zIndex="1">
+      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
         <BaseCircleButton onClick={() => goToEdit()}>
           <EditRounded />
         </BaseCircleButton>

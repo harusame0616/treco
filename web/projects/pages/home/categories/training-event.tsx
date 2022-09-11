@@ -215,7 +215,7 @@ const TrainingEventsInCategory: NextPage<PageInjection> = ({
         }}
         isLoading={isProcessing}
       />
-      <Box position="fixed" right="20px" bottom="20px" zIndex="1">
+      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
         <AddButton
           onClick={() => {
             openTrainingEventEditPopup();

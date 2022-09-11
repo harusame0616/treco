@@ -216,7 +216,7 @@ const MenusIndex: NextPage<PageInjection> = ({
         <SectionContainer>
           <SecondaryButton onClick={backToHome}>ホームへ戻る</SecondaryButton>
         </SectionContainer>
-        <Box position="fixed" right="20px" bottom="20px" zIndex="1">
+        <Box position="fixed" right="20px" bottom="60px" zIndex="1">
           <AddButton onClick={() => openTrainingMenuPop()} />
         </Box>
       </PageContainer>

@@ -147,61 +147,54 @@ const CategoriesPage: NextPage<PageInjection> = ({
   };
 
   return (
-    <>
-      <PageContainer>
-        <SectionContainer>
-          記録するカテゴリを選択してください。
-        </SectionContainer>
-        <SectionContainer>
-          {isLoading ? (
-            <Box display="flex" justifyContent="center">
-              <BaseProgress />
-            </Box>
-          ) : (
-            <TransitionGroup>
-              {categories.map((category) => (
-                <Collapse
-                  key={category.categoryId}
-                  sx={{ marginBottom: '5px' }}
-                >
-                  <DeleteSlideAction
-                    onDeleteClick={() => {
-                      openDeleteConfirm(category);
-                    }}
-                  >
-                    <ListItemCard
-                      onClick={() => goToEventSelect(category.categoryId)}
-                    >
-                      <Box flexGrow={1} flexShrink={0}>
-                        <CategoryLabel color={category.color} size="medium">
-                          {category.categoryName}
-                        </CategoryLabel>
-                      </Box>
-                      <Box flexGrow={0} flexShrink={1}>
-                        <IconButton
-                          color="primary"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openCategoryEditPopup(category);
-                          }}
-                        >
-                          <EditRounded />
-                        </IconButton>
-                      </Box>
-                    </ListItemCard>
-                  </DeleteSlideAction>
-                </Collapse>
-              ))}
-            </TransitionGroup>
-          )}
-          <Box sx={{ fontSize: '0.8rem', fontStyle: 'italic' }} marginTop="3px">
-            ※ 項目を左にスワイプすると削除ボタンが表示されます
+    <PageContainer>
+      <SectionContainer>記録するカテゴリを選択してください。</SectionContainer>
+      <SectionContainer>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center">
+            <BaseProgress />
           </Box>
-        </SectionContainer>
-        <SectionContainer>
-          <SecondaryButton onClick={backHome}>ホームへ戻る</SecondaryButton>
-        </SectionContainer>
-      </PageContainer>
+        ) : (
+          <TransitionGroup>
+            {categories.map((category) => (
+              <Collapse key={category.categoryId} sx={{ marginBottom: '5px' }}>
+                <DeleteSlideAction
+                  onDeleteClick={() => {
+                    openDeleteConfirm(category);
+                  }}
+                >
+                  <ListItemCard
+                    onClick={() => goToEventSelect(category.categoryId)}
+                  >
+                    <Box flexGrow={1} flexShrink={0}>
+                      <CategoryLabel color={category.color} size="medium">
+                        {category.categoryName}
+                      </CategoryLabel>
+                    </Box>
+                    <Box flexGrow={0} flexShrink={1}>
+                      <IconButton
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openCategoryEditPopup(category);
+                        }}
+                      >
+                        <EditRounded />
+                      </IconButton>
+                    </Box>
+                  </ListItemCard>
+                </DeleteSlideAction>
+              </Collapse>
+            ))}
+          </TransitionGroup>
+        )}
+        <Box sx={{ fontSize: '0.8rem', fontStyle: 'italic' }} marginTop="3px">
+          ※ 項目を左にスワイプすると削除ボタンが表示されます
+        </Box>
+      </SectionContainer>
+      <SectionContainer>
+        <SecondaryButton onClick={backHome}>ホームへ戻る</SecondaryButton>
+      </SectionContainer>
       <DeleteConfirmDialog
         open={isOpen}
         onPrimaryClick={deleteCategory}
@@ -219,10 +212,10 @@ const CategoriesPage: NextPage<PageInjection> = ({
         onError={(err) => popMessage.error(err)}
         isLoading={isProcessing}
       />
-      <Box position="fixed" right="20px" bottom="20px" zIndex="1">
+      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
         <AddButton onClick={() => openCategoryEditPopup()} />
       </Box>
-    </>
+    </PageContainer>
   );
 };
 
