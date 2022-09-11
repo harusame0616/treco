@@ -136,7 +136,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
 
   const goToActivityEdit = (activity: ActivityDto) => {
     router.push({
-      pathname: '/home/activities/new/record',
+      pathname: '/home/categories/record',
       query: {
         categoryId: activity.categoryId,
         trainingEventId: activity.trainingEventId,
@@ -287,7 +287,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
             <AddButton
               onClick={() => {
                 router.push({
-                  pathname: '/home/activities/new',
+                  pathname: '/home/categories',
                   query: { date: selectDate.toDate().toUTCString() },
                 });
               }}

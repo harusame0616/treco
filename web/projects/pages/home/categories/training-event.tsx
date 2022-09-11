@@ -75,19 +75,19 @@ const NewEvent = () => {
 
   const goToBack = () => {
     router.push({
-      pathname: '/home/activities/new',
+      pathname: '/home/categories',
       query: router.query,
     });
   };
 
   const goToNext = async (trainingEventId: string) => {
     await router.push({
-      pathname: '/home/activities/new/record',
+      pathname: '/home/categories/record',
       query: {
         ...router.query,
         categoryId,
         trainingEventId,
-        returnTo: '/home/activities/new/training-event',
+        returnTo: '/home/categories/training-event',
         returnQuery: JSON.stringify(router.query),
       },
     });

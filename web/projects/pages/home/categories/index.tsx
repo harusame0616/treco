@@ -72,7 +72,7 @@ const ActivitiesNew = () => {
 
   const goToEventSelect = async (categoryId: string) => {
     await router.push({
-      pathname: '/home/activities/new/training-event',
+      pathname: '/home/categories/training-event',
       query: {
         ...router.query,
         categoryId,

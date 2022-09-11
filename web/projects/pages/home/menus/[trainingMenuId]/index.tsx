@@ -74,7 +74,7 @@ const TrainingMenuDetail: NextPage = () => {
     categoryId: string;
   }) => {
     await router.push({
-      pathname: '/home/activities/new/record',
+      pathname: '/home/categories/record',
       query: {
         ...router.query,
         trainingEventId,
