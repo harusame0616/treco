@@ -109,7 +109,9 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
           <Box>本サービスはモバイル端末向けに最適化されています。</Box>
           <Box>
             <BaseLink href="/policies/term-of-service">利用規約</BaseLink>、
-            <BaseLink href="/policies/privacy">プライバシーポリシー</BaseLink>
+            <BaseLink href="/policies/privacy-policy">
+              プライバシーポリシー
+            </BaseLink>
             に同意の上でご利用ください。
           </Box>
         </Box>

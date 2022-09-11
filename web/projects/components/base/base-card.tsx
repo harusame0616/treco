@@ -26,6 +26,7 @@ const BaseCard = (prop: Prop) => {
         maxWidth: prop.maxWidth,
         height: prop.height,
         minHeight: prop.minHeight,
+        overflow: 'scroll',
       }}
     >
       {prop.children}
