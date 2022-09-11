@@ -46,7 +46,9 @@ const UserMenu = (prop: Prop) => {
           <SectionContainer>
             <Box display="flex" flexDirection="column" alignItems="flex-end">
               <BaseLink href="/policies/term-of-service">利用規約</BaseLink>
-              <BaseLink href="/policies/privacy">プライバシーポリシー</BaseLink>
+              <BaseLink href="/policies/privacy-policy">
+                プライバシーポリシー
+              </BaseLink>
             </Box>
           </SectionContainer>
           <Box>
