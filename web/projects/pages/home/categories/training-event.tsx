@@ -42,15 +42,17 @@ const TrainingEventsInCategory: NextPage<PageInjection> = ({
   const { open, isOpen, close } = useDialog();
   const [editPopup, setEditPopup] = useState(false);
 
-  const { isLoading, trainingEvents, isError, refresh } = useTrainingEvents({
-    categoryId: categoryId as string,
-    userId: auth?.auth?.authId,
-  });
+  const { isLoading, trainingEvents, isError, refresh, error } =
+    useTrainingEvents({
+      categoryId: categoryId as string,
+      userId: auth?.auth?.authId,
+    });
 
   const {
     isLoading: categoryIsLoading,
     isError: categoryIsError,
     category,
+    error: categoryError,
   } = useCategory({
     categoryId: categoryId as string,
     userId: auth.auth.authId,
@@ -82,6 +84,7 @@ const TrainingEventsInCategory: NextPage<PageInjection> = ({
   }
 
   if (isError || categoryIsError) {
+    console.error({ error, categoryError });
     return <ReadErrorTemplate />;
   }
 

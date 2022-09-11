@@ -29,14 +29,17 @@ const TrainingMenuEditPage: NextPage<PageInjection> = ({
     toggleTrainingEvent,
     selectedTrainingEventIds,
     save,
+    error,
   } = useTrainingMenuEdit({
     trainingMenuId,
     userId: auth.auth.authId,
   });
 
   if (isError) {
+    console.error(error);
     return <ReadErrorTemplate />;
   }
+
   if (isLoading) {
     return <CenteredProgress />;
   }

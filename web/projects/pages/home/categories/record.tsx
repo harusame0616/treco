@@ -48,6 +48,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
     activity: lastActivity,
     isLoading: lastActivityIsLoading,
     isError: lastActivityIsError,
+    error: lastActivityError,
   } = useActivityOfLastTrainingEvent(apiProp);
 
   const {
@@ -60,6 +61,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
     errorRecordIndex,
     deleteRecord,
     isError,
+    error: activityEditError,
   } = useActivityEdit({
     ...apiProp,
     date: new Date(router.query['date'] as string),
@@ -104,6 +106,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
   }, [selectedRecordIndex]);
 
   if (isError || lastActivityIsError) {
+    console.error({ activityEditError, lastActivityError });
     return <ReadErrorTemplate />;
   }
 

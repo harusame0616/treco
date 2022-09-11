@@ -43,6 +43,7 @@ const useActivities = (prop: {
     return {
       isLoading: false as const,
       isError: true as const,
+      error,
       activities: null,
     };
   }

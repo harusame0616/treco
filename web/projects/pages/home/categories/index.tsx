@@ -49,7 +49,7 @@ const CategoriesPage: NextPage<PageInjection> = ({
     CategoryDto | undefined
   >();
 
-  const { categories, isLoading, isError, refresh } = useCategories({
+  const { categories, isLoading, isError, refresh, error } = useCategories({
     userId: auth.auth.authId,
   });
   const { isProcessing, startProcessing } = useProcessing();
@@ -77,6 +77,7 @@ const CategoriesPage: NextPage<PageInjection> = ({
   }
 
   if (isError) {
+    console.error(error);
     return <ReadErrorTemplate />;
   }
 

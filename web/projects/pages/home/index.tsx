@@ -48,6 +48,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     isLoading: selectDateMonthActivitiesIsLoading,
     isError: selectDateMonthActivitiesIsError,
     refresh: selectDateMonthActivitiesRefresh,
+    error: selectDateMonthActivitiesError,
   } = useActivities({
     userId: auth?.auth.authId,
     month: selectDateMonth,
@@ -57,6 +58,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     activities: currentMonthActivities,
     isLoading: currentMonthActivitiesIsLoading,
     isError: currentMonthActivitiesIsError,
+    error: currentMonthActivitiesError,
   } = useActivities({
     userId: auth?.auth.authId,
     month: viewCurrentMonth,
@@ -66,6 +68,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     activities: prevMonthActivities,
     isLoading: prevMonthActivitiesIsLoading,
     isError: prevMonthActivitiesIsError,
+    error: prevMonthActivitiesError,
   } = useActivities({
     userId: auth?.auth.authId,
     month: viewPrevMonth,
@@ -75,6 +78,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     activities: nextMonthActivities,
     isLoading: nextMonthActivitiesIsLoading,
     isError: nextMonthActivitiesIsError,
+    error: nextMonthActivitiesError,
   } = useActivities({
     userId: auth?.auth.authId,
     month: viewNextMonth,
@@ -174,6 +178,12 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     currentMonthActivitiesIsError ||
     nextMonthActivitiesIsError
   ) {
+    console.error({
+      selectDateMonthActivitiesError,
+      prevMonthActivitiesError,
+      currentMonthActivitiesError,
+      nextMonthActivitiesError,
+    });
     return <ReadErrorTemplate />;
   }
 

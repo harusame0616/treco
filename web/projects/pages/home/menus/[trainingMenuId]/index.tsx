@@ -20,7 +20,7 @@ const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   const router = useRouter();
   const trainingMenuId = router.query.trainingMenuId as string;
 
-  const { trainingMenu, isLoading, isError } = useTrainingMenu({
+  const { trainingMenu, isLoading, isError, error } = useTrainingMenu({
     trainingMenuId,
     userId: auth.auth.authId,
   });
@@ -29,6 +29,7 @@ const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
     activities,
     isLoading: activitiesIsLoading,
     isError: activitiesAreError,
+    error: activitiesError,
   } = useActivities({
     userId: auth.auth.authId,
     date: new Date(router.query.date as any),
@@ -51,6 +52,7 @@ const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   }, [router.query]);
 
   if (isError || activitiesAreError) {
+    console.error({ error, activitiesError });
     return <ReadErrorTemplate />;
   }
   if (isLoading || activitiesIsLoading) {

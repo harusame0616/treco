@@ -38,9 +38,10 @@ const MenusIndex: NextPage<PageInjection> = ({
 }) => {
   const router = useRouter();
 
-  const { trainingMenus, isLoading, isError, refresh } = useTrainingMenus({
-    userId: auth.auth.authId,
-  });
+  const { trainingMenus, isLoading, isError, refresh, error } =
+    useTrainingMenus({
+      userId: auth.auth.authId,
+    });
 
   const { close, open, isOpen } = useDialog();
   const {
@@ -72,6 +73,7 @@ const MenusIndex: NextPage<PageInjection> = ({
   }, [router.query.date]);
 
   if (isError) {
+    console.error(error);
     return <ReadErrorTemplate />;
   }
 
