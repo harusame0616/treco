@@ -1,8 +1,7 @@
-import { FSCategoryQuery } from '../contexts/record/infrastructure/query/fs-category-query';
+import { RequireError } from '@Errors/require-error';
+import useSWR from 'swr';
 import { FSTrainingEventQuery } from '../contexts/record/infrastructure/query/fs-training-event-query';
 import { TrainingEventQueryUsecase } from '../contexts/record/usecases/training-event-query-usecase';
-import useSWR from 'swr';
-import { ParameterError } from '../custom-error/parameter-error';
 
 interface UseTrainingEventsProp {
   userId?: string | null;
@@ -11,27 +10,48 @@ interface UseTrainingEventsProp {
 
 const trainingEventQueryUsecase = new TrainingEventQueryUsecase({
   trainingEventQuery: new FSTrainingEventQuery(),
-  categoryQuery: new FSCategoryQuery(),
 });
 
 const useTrainingEvents = (prop: UseTrainingEventsProp) => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     ['trainingEvent/queryListInCategory', prop.userId, prop.categoryId],
-    (_, userId?: string | null, categoryId?: string | null) => {
-      if (!userId || !categoryId) {
-        throw new ParameterError('userId and categoryId is required.');
+    (_, userId?: string, categoryId?: string) => {
+      if (!userId) {
+        throw new RequireError('ユーザーID');
+      }
+      if (!categoryId) {
+        throw new RequireError('カテゴリID');
       }
 
       return trainingEventQueryUsecase.queryListInCategory(userId, categoryId);
-    },
-    { refreshInterval: 100 }
+    }
   );
 
+  if (!error && !data) {
+    return {
+      isLoading: true as const,
+      isError: false as const,
+      trainingEvents: null,
+    };
+  }
+
+  if (error) {
+    return {
+      isLoading: false as const,
+      isError: true as const,
+      trainingEvents: null,
+      error,
+    };
+  }
+
   return {
-    isLoading:
-      prop.categoryId == null || prop.userId == null || (!error && !data),
-    isError: prop.categoryId && prop.userId && error,
+    isLoading: false as const,
+    isError: false as const,
     trainingEvents: data ?? [],
+    async refresh() {
+      await mutate();
+    },
   };
 };
+
 export default useTrainingEvents;

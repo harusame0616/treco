@@ -1,9 +1,10 @@
-import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
-import BaseProgress from '@Components/base/base-progress';
+import { PageInjection } from '@/pages/_app';
 import AddButton from '@Components/case/add-button';
+import CenteredProgress from '@Components/case/centered-progress';
 import DeleteConfirmDialog from '@Components/case/delete-confirm-dialog';
 import DeleteSlideAction from '@Components/case/delete-slide-action';
 import ListItemCard from '@Components/case/list-item-card';
+import ReadErrorTemplate from '@Components/case/read-error-template';
 import SecondaryButton from '@Components/case/secondary-button';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
@@ -12,75 +13,85 @@ import TrainingEventEditPopup, {
   TrainingEventEditInfo,
 } from '@Components/domain/training-event/training-event-edit-popup';
 import { TrainingEventDto } from '@Domains/training-event/training-event';
-import { ParameterError } from '@Errors/parameter-error';
 import useCategory from '@Hooks/useCategory';
 import useDialog from '@Hooks/useDialog';
+import useProcessing from '@Hooks/useProcessing';
 import useTrainingEvents from '@Hooks/useTrainingEvents';
 import { EditRounded } from '@mui/icons-material';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
 import { TrainingEventCommandUsecase } from '@Usecases/training-event-command-usecase';
 import dayjs from 'dayjs';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext, useState, useMemo, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
 const trainingEventCommandUsecase = new TrainingEventCommandUsecase({
   trainingEventRepository: new FSTrainigEventRepository(),
 });
 
-const NewEvent = () => {
+const TrainingEventsInCategory: NextPage<PageInjection> = ({
+  auth,
+  popMessage,
+  pageTitle,
+}) => {
   const router = useRouter();
-  const categoryId = router.query['categoryId'];
-  if (typeof categoryId != 'string') {
-    throw new ParameterError('カテゴリIDが不正です。');
-  }
+  const categoryId = router.query.categoryId as string;
 
   const { open, isOpen, close } = useDialog();
-  const auth = useContext(AuthContext);
-  const popMessage = useContext(PopMessageContext);
-  const { setTitle, setClickListener } = useContext(TitleContext);
-
   const [editPopup, setEditPopup] = useState(false);
 
-  const [exceptTrainingEvents, setExceptTrainingEvents] = useState<
-    TrainingEventDto[]
-  >([]);
-  const { isLoading, trainingEvents: _trainingEvents } = useTrainingEvents({
+  const { isLoading, trainingEvents, isError, refresh } = useTrainingEvents({
     categoryId: categoryId as string,
     userId: auth?.auth?.authId,
   });
 
-  // 削除ボタンを押してから実際に削除されて反映されるまでにラグがあるので、
-  // 削除が実行された項目は除外して即座に反映しているように見せる
-  const trainingEvents = useMemo(
-    () =>
-      _trainingEvents.filter(
-        (trainingEvent) =>
-          !exceptTrainingEvents
-            .map((trainingEvent) => trainingEvent.trainingEventId)
-            .includes(trainingEvent.trainingEventId)
-      ),
-    [_trainingEvents, exceptTrainingEvents]
-  );
-
-  const { isLoading: categoryIsLoading, category } = useCategory({
+  const {
+    isLoading: categoryIsLoading,
+    isError: categoryIsError,
+    category,
+  } = useCategory({
     categoryId: categoryId as string,
-    userId: auth?.auth?.authId,
+    userId: auth.auth.authId,
   });
 
   const [selectedTrainingEvent, setSelectedTrainingEvent] = useState<
     TrainingEventDto | undefined
   >();
+  const { isProcessing, startProcessing } = useProcessing();
 
-  const goToBack = () => {
+  useEffect(() => {
+    const { date } = router.query;
+    if (typeof date !== 'string') {
+      return;
+    }
+
+    pageTitle.setTitle(dayjs(date).format('YYYY-MM-DD'));
+    pageTitle.setClickListener(() => {
+      router.push({
+        pathname: '/home/',
+        query: router.query,
+      });
+    });
+  }, [router.query]);
+
+  if (isLoading || categoryIsLoading) {
+    return <CenteredProgress />;
+  }
+
+  if (isError || categoryIsError) {
+    return <ReadErrorTemplate />;
+  }
+
+  const goBack = () => {
     router.push({
       pathname: '/home/categories',
       query: router.query,
     });
   };
 
-  const goToNext = async (trainingEventId: string) => {
+  const goNext = async (trainingEventId: string) => {
     await router.push({
       pathname: '/home/categories/record',
       query: {
@@ -93,54 +104,28 @@ const NewEvent = () => {
     });
   };
 
-  const popError = (error: Error) => {
-    popMessage?.(error.message, { mode: 'error' });
-  };
+  const saveTrainingEvent = async (data: TrainingEventEditInfo) => {
+    startProcessing(async () => {
+      try {
+        if (selectedTrainingEvent) {
+          await trainingEventCommandUsecase.editTrainingEvent({
+            ...selectedTrainingEvent,
+            ...data,
+          });
+        } else {
+          await trainingEventCommandUsecase.createNewTrainingEvent({
+            userId: auth!.auth!.authId as string,
+            categoryId,
+            ...data,
+          });
+        }
 
-  const saveTrainingEvent = (
-    data: TrainingEventEditInfo,
-    reset: () => void
-  ) => {
-    if (selectedTrainingEvent) {
-      if (
-        trainingEvents
-          .filter(
-            (trainingEvent) =>
-              trainingEvent.trainingEventId !=
-              selectedTrainingEvent.trainingEventId
-          )
-          .map((trainingEvent) => trainingEvent.trainingEventName)
-          .includes(data.trainingEventName)
-      ) {
-        return popMessage?.('同じ名前のトレーニング種目が登録済みです。', {
-          mode: 'error',
-        });
+        setEditPopup(false);
+        await refresh();
+      } catch (err: any) {
+        popMessage.error(err);
       }
-
-      trainingEventCommandUsecase.editTrainingEvent({
-        ...selectedTrainingEvent,
-        ...data,
-      });
-    } else {
-      if (
-        trainingEvents
-          .map((trainingEvent) => trainingEvent.trainingEventName)
-          .includes(data.trainingEventName)
-      ) {
-        return popMessage?.('同じ名前のトレーニング種目が登録済みです。', {
-          mode: 'error',
-        });
-      }
-
-      trainingEventCommandUsecase.createNewTrainingEvent({
-        userId: auth!.auth!.authId as string,
-        categoryId,
-        ...data,
-      });
-    }
-
-    setEditPopup(false);
-    reset();
+    });
   };
 
   const openTrainingEventEditPopup = (trainingEvent?: TrainingEventDto) => {
@@ -148,106 +133,87 @@ const NewEvent = () => {
     setEditPopup(true);
   };
 
-  const deleteTrainingEvent = () => {
-    if (!selectedTrainingEvent) {
-      throw new Error('トレーニング種目が選択されていません');
-    }
+  const deleteTrainingEvent = async () => {
+    await startProcessing(async () => {
+      try {
+        if (!selectedTrainingEvent) {
+          throw new Error('トレーニング種目が選択されていません');
+        }
 
-    trainingEventCommandUsecase.deleteTrainingEvent(selectedTrainingEvent);
-    setExceptTrainingEvents([...exceptTrainingEvents, selectedTrainingEvent]);
-    close();
-  };
-
-  useEffect(() => {
-    const { date } = router.query;
-    if (!setTitle || typeof date !== 'string') {
-      return;
-    }
-
-    setTitle(dayjs(date).format('YYYY-MM-DD'));
-    setClickListener?.(() => {
-      router.push({
-        pathname: '/home/',
-        query: router.query,
-      });
+        await trainingEventCommandUsecase.deleteTrainingEvent(
+          selectedTrainingEvent
+        );
+        await refresh();
+        close();
+      } catch (err: any) {
+        popMessage.error(err);
+      }
     });
-  }, [router.query, setTitle]);
+  };
 
   return (
     <>
       <PageContainer>
         <SectionContainer>記録する種目を選択してください。</SectionContainer>
-        <CategoryLabel color={category?.color}>
-          {categoryIsLoading
-            ? '読み込み中'
-            : category?.categoryName ?? 'カテゴリ読み取りエラー'}
+        <CategoryLabel color={category.color}>
+          {category.categoryName}
         </CategoryLabel>
 
         <SectionContainer>
-          {isLoading ? (
-            <Box display="flex" justifyContent="center">
-              <BaseProgress />
-            </Box>
-          ) : (
-            <TransitionGroup>
-              {trainingEvents
-                ? trainingEvents.map((event) => (
-                    <Collapse
-                      key={event.trainingEventId}
-                      sx={{ marginBottom: '5px' }}
-                    >
-                      <DeleteSlideAction
-                        onDeleteClick={() => {
-                          setSelectedTrainingEvent(event);
-                          open();
+          <TransitionGroup>
+            {trainingEvents.map((event) => (
+              <Collapse
+                key={event.trainingEventId}
+                sx={{ marginBottom: '5px' }}
+              >
+                <DeleteSlideAction
+                  onDeleteClick={() => {
+                    setSelectedTrainingEvent(event);
+                    open();
+                  }}
+                >
+                  <ListItemCard onClick={() => goNext(event.trainingEventId)}>
+                    <Box flexGrow={1} flexShrink={0}>
+                      {event.trainingEventName}
+                    </Box>
+                    <Box flexGrow={0} flexShrink={1}>
+                      <IconButton
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openTrainingEventEditPopup(event);
                         }}
                       >
-                        <ListItemCard
-                          onClick={() => goToNext(event.trainingEventId)}
-                        >
-                          <Box flexGrow={1} flexShrink={0}>
-                            {event.trainingEventName}
-                          </Box>
-                          <Box flexGrow={0} flexShrink={1}>
-                            <IconButton
-                              color="primary"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openTrainingEventEditPopup(event);
-                              }}
-                            >
-                              <EditRounded />
-                            </IconButton>
-                          </Box>
-                        </ListItemCard>
-                      </DeleteSlideAction>
-                    </Collapse>
-                  ))
-                : 'トレーニング種目読み込みエラー'}
-            </TransitionGroup>
-          )}
+                        <EditRounded />
+                      </IconButton>
+                    </Box>
+                  </ListItemCard>
+                </DeleteSlideAction>
+              </Collapse>
+            ))}
+          </TransitionGroup>
         </SectionContainer>
 
         <SectionContainer>
-          <SecondaryButton onClick={goToBack}>
-            カテゴリ選択に戻る
-          </SecondaryButton>
+          <SecondaryButton onClick={goBack}>カテゴリ選択に戻る</SecondaryButton>
         </SectionContainer>
       </PageContainer>
       <DeleteConfirmDialog
         open={isOpen}
         onPrimaryClick={deleteTrainingEvent}
         onSecondaryClick={close}
+        isLoading={isProcessing}
       />
       <TrainingEventEditPopup
         open={editPopup}
-        onError={popError}
+        onError={(err) => popMessage.error(err)}
         default={selectedTrainingEvent}
         onPirmaryClick={saveTrainingEvent}
         onSecondaryClick={(_, reset) => {
           setEditPopup(false);
           reset();
         }}
+        isLoading={isProcessing}
       />
       <Box position="fixed" right="20px" bottom="20px" zIndex="1">
         <AddButton
@@ -260,4 +226,4 @@ const NewEvent = () => {
   );
 };
 
-export default NewEvent;
+export default TrainingEventsInCategory;
