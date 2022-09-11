@@ -1,4 +1,5 @@
-import { AuthContext, PopMessageContext, TitleContext } from '@/pages/_app';
+import { PageInjection } from '@/pages/_app';
+import BaseCard from '@Components/base/base-card';
 import AddButton from '@Components/case/add-button';
 import CenteredProgress from '@Components/case/centered-progress';
 import DeleteSlideAction from '@Components/case/delete-slide-action';
@@ -17,14 +18,16 @@ import useProcessing from '@Hooks/useProcessing';
 import { ArrowForwardIosRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
 import dayjs from 'dayjs';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 
-const NewRecord = () => {
-  const auth = useContext(AuthContext);
-  const { setTitle, setClickListener } = useContext(TitleContext);
-
+const RecordEditPage: NextPage<PageInjection> = ({
+  auth,
+  pageTitle,
+  popMessage,
+}) => {
   const router = useRouter();
 
   const apiProp = useMemo(
@@ -37,7 +40,6 @@ const NewRecord = () => {
     [router.query, auth?.auth.authId]
   );
 
-  const popMessage = useContext(PopMessageContext);
   const { isProcessing, startProcessing } = useProcessing();
   const lastRecordRef = useRef<HTMLElement | null>(null);
   const [selectedRecordIndex, setSelectedRecordIndex] = useState(0);
@@ -46,7 +48,6 @@ const NewRecord = () => {
     activity: lastActivity,
     isLoading: lastActivityIsLoading,
     isError: lastActivityIsError,
-    error: lasctActivityError,
   } = useActivityOfLastTrainingEvent(apiProp);
 
   const {
@@ -59,7 +60,6 @@ const NewRecord = () => {
     errorRecordIndex,
     deleteRecord,
     isError,
-    error,
   } = useActivityEdit({
     ...apiProp,
     date: new Date(router.query['date'] as string),
@@ -70,8 +70,8 @@ const NewRecord = () => {
       return;
     }
 
-    setTitle?.(dayjs(router.query.date).format('YYYY-MM-DD'));
-    setClickListener?.(() => {
+    pageTitle.setTitle(dayjs(router.query.date).format('YYYY-MM-DD'));
+    pageTitle.setClickListener(() => {
       router.push({
         pathname: '/home/',
         query: router.query,
@@ -126,13 +126,15 @@ const NewRecord = () => {
   };
 
   const save = async () => {
-    try {
-      await startProcessing(() => register());
-      await goBack();
-      return popMessage!('登録しました。', { mode: 'success' });
-    } catch (err: any) {
-      return popMessage!(err.message, { mode: 'error' });
-    }
+    await startProcessing(async () => {
+      try {
+        await register();
+        await goBack();
+        return popMessage.popMessage('登録しました。');
+      } catch (err: any) {
+        return popMessage.error(err);
+      }
+    });
   };
 
   return (
@@ -155,17 +157,11 @@ const NewRecord = () => {
             alignItems="center"
           >
             <CategoryLabel color={trainingEvent?.color}>
-              {isLoading ? (
-                '読み込み中'
-              ) : trainingEvent?.categoryName ? (
-                <Box display="flex" alignItems="center" gap="5px" flexGrow="1">
-                  {trainingEvent.categoryName}{' '}
-                  <ArrowForwardIosRounded sx={{ fontSize: '0.8rem' }} />
-                  {trainingEvent?.trainingEventName}{' '}
-                </Box>
-              ) : (
-                'トレーニング種目読み込みエラー'
-              )}
+              <Box display="flex" alignItems="center" gap="5px" flexGrow="1">
+                {trainingEvent.categoryName}{' '}
+                <ArrowForwardIosRounded sx={{ fontSize: '0.8rem' }} />
+                {trainingEvent.trainingEventName}{' '}
+              </Box>
             </CategoryLabel>
           </Box>
         </SectionContainer>
@@ -182,7 +178,7 @@ const NewRecord = () => {
                   alignItems="flex-end"
                 >
                   <Box fontSize="0.8rem" marginRight="10px">
-                    {dayjs(lastActivity.date).format('YYYY/MM/DD')}
+                    最終日: {dayjs(lastActivity.date).format('YYYY/MM/DD')}
                   </Box>
                   <Box fontSize="0.8rem">
                     ({dayjs(new Date()).diff(lastActivity.date, 'days')}
@@ -191,63 +187,77 @@ const NewRecord = () => {
                 </Box>
               }
             />
-          ) : undefined}
+          ) : (
+            <Box>
+              <Box
+                fontSize="1rem"
+                marginLeft="4px"
+                marginBottom="2px"
+                display="flex"
+                alignItems="flex-end"
+              >
+                <Box fontSize="0.8rem" marginRight="10px">
+                  最終日 ----/--/--
+                </Box>
+                <Box fontSize="0.8rem">(-日前)</Box>
+              </Box>
+              <BaseCard></BaseCard>
+            </Box>
+          )}
         </SectionContainer>
         <SectionContainer>
           <TransitionGroup>
-            {isLoading
-              ? undefined
-              : records.map((record, i, records) => (
-                  <Collapse
-                    key={record.id}
-                    sx={{ scrollSnapAlign: 'start', marginBottom: '5px' }}
-                    ref={
-                      records.length - 1 === i
-                        ? lastRecordRef
-                        : selectedRecordIndex === i
-                        ? selectedRecordRef
-                        : null
-                    }
-                    onClick={() => {
-                      setSelectedRecordIndex(i);
+            {records.map((record, i, records) => (
+              <Collapse
+                key={record.id}
+                sx={{ scrollSnapAlign: 'start', marginBottom: '5px' }}
+                ref={
+                  records.length - 1 === i
+                    ? lastRecordRef
+                    : selectedRecordIndex === i
+                    ? selectedRecordRef
+                    : null
+                }
+                onClick={() => {
+                  setSelectedRecordIndex(i);
+                }}
+              >
+                <DeleteSlideAction onDeleteClick={() => deleteRecord(i)}>
+                  <RecordCard
+                    record={record}
+                    isDisabled={isProcessing}
+                    loadUnit={trainingEvent?.loadUnit ?? ''}
+                    valueUnit={trainingEvent?.valueUnit ?? ''}
+                    label={<div>{i + 1}セット目</div>}
+                    isError={errorRecordIndex == i}
+                    loadOnChange={(e) => {
+                      const { value: input } = e.target as any;
+                      setRecord(
+                        {
+                          ...record,
+                          load: input ? parseFloat(input) : '',
+                        },
+                        i
+                      );
                     }}
-                  >
-                    <DeleteSlideAction onDeleteClick={() => deleteRecord(i)}>
-                      <RecordCard
-                        record={record}
-                        isDisabled={isProcessing}
-                        loadUnit={trainingEvent?.loadUnit ?? ''}
-                        valueUnit={trainingEvent?.valueUnit ?? ''}
-                        label={<div>{i + 1}セット目</div>}
-                        isError={errorRecordIndex == i}
-                        loadOnChange={(e) => {
-                          const { value: input } = e.target as any;
-                          setRecord(
-                            {
-                              ...record,
-                              load: input ? parseFloat(input) : '',
-                            },
-                            i
-                          );
-                        }}
-                        valueOnChange={(e) => {
-                          const { value: input } = e.target as any;
-                          setRecord(
-                            {
-                              ...record,
-                              value: input ? parseFloat(input) : '',
-                            },
-                            i
-                          );
-                        }}
-                        noteOnChange={(e) => {
-                          const { value } = e.target as any;
-                          setRecord({ ...record, note: value }, i);
-                        }}
-                      />
-                    </DeleteSlideAction>
-                  </Collapse>
-                ))}
+                    valueOnChange={(e) => {
+                      const { value: input } = e.target as any;
+                      setRecord(
+                        {
+                          ...record,
+                          value: input ? parseFloat(input) : '',
+                        },
+                        i
+                      );
+                    }}
+                    noteOnChange={(e) => {
+                      const { value } = e.target as any;
+                      setRecord({ ...record, note: value }, i);
+                    }}
+                  />
+                </DeleteSlideAction>
+              </Collapse>
+            ))}
           </TransitionGroup>
         </SectionContainer>
       </Box>
@@ -282,4 +292,4 @@ const NewRecord = () => {
   );
 };
 
-export default NewRecord;
+export default RecordEditPage;

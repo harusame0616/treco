@@ -2,7 +2,7 @@ import { Card, useTheme } from '@mui/material';
 import { MouseEventHandler, ReactNode } from 'react';
 
 interface Prop {
-  children: ReactNode;
+  children?: ReactNode;
   onClick?: MouseEventHandler;
   width?: string;
   maxWidth?: string;

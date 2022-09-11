@@ -8,6 +8,7 @@ import { FSActivityRepository } from '@Repositories/fs-activity-repository';
 import { FSCategoryRepository } from '@Repositories/fs-category-repository';
 import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
 import { ActivityCommandUsecase } from '@Usecases/activity-command-usecase';
+import { TrainingEventWithCategoryDto } from '@Usecases/training-event-query-usecase';
 import { useEffect, useState } from 'react';
 import useActivity from './useActivity';
 import useTrainingEvent from './useTrainingEvent';
@@ -166,7 +167,11 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
     };
   }
 
-  if (isError || (prop.activityId != null && activityIsError)) {
+  if (
+    isError ||
+    (prop.activityId != null && activityIsError) ||
+    trainingEvent == null
+  ) {
     return {
       isLoading: false as const,
       isError: true as const,
