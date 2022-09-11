@@ -42,6 +42,7 @@ const TrainingCalender = (prop: TrainingCalenderProp) => {
 
   const months = useMemo(
     () => createViewMonths(prop.month, slideIndex),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [prop.month]
   );
 

@@ -53,6 +53,7 @@ const TrainingEventEditPopup = (prop: Prop) => {
 
   useEffect(() => {
     reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop.default]);
 
   return (

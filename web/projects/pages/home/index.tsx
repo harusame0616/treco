@@ -151,6 +151,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
 
   useEffect(() => {
     pageTitle.setTitle(month.format('YYYY-MM'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
   useEffect(() => {
@@ -158,6 +159,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
       setMonth(dayjs().startOf('month'));
       changeSelectDate(dayjs());
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isLoading =

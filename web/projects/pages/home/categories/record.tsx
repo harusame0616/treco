@@ -77,6 +77,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
         query: router.query,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.date]);
 
   useEffect(() => {
@@ -99,6 +100,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
         block: 'center',
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRecordIndex]);
 
   if (isError || lastActivityIsError) {

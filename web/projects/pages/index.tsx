@@ -26,6 +26,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
 
   useEffect(() => {
     pageTitle.clear();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (auth.isLoading) {

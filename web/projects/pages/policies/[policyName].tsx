@@ -148,6 +148,7 @@ const PrivacyPage: NextPage<PageInjection> = ({ pageTitle }) => {
     if (isPolicyName(policyName)) {
       pageTitle.setTitle(title[policyName]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   if (!isPolicyName(policyName)) {

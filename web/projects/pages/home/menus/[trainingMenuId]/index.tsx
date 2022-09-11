@@ -47,6 +47,7 @@ const TrainingMenuDetail: NextPage<PageInjection> = ({ auth, pageTitle }) => {
         query: router.query,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   if (isError || activitiesAreError) {

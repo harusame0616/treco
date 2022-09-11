@@ -69,6 +69,7 @@ const CategoriesPage: NextPage<PageInjection> = ({
         query: router.query,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.date]);
 
   if (isLoading) {

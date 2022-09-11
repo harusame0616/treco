@@ -97,6 +97,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     } else {
       // do nothing
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.isLoading, auth.isAuthenticated, router.pathname]);
 
   return (

@@ -12,7 +12,6 @@ interface UseTrainingEventProp {
 
 const trainingEventQueryUsecase = new TrainingEventQueryUsecase({
   trainingEventQuery: new FSTrainingEventQuery(),
-  categoryQuery: new FSCategoryQuery(),
 });
 
 const useTrainingEvent = (prop: UseTrainingEventProp) => {

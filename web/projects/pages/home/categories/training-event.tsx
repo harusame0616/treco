@@ -74,6 +74,7 @@ const TrainingEventsInCategory: NextPage<PageInjection> = ({
         query: router.query,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   if (isLoading || categoryIsLoading) {
