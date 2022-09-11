@@ -2,19 +2,25 @@ import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import CenteredProgress from '../../components/case/centered-progress';
 import PrimaryButton from '../../components/case/primary-button';
 import SecondaryButton from '../../components/case/secondary-button';
 import TextButton from '../../components/case/text-button';
 import PageContainer from '../../components/container/page-container';
 import SectionContainer from '../../components/container/section-container';
-import { AuthContext, TitleContext } from '../_app';
+import { PageInjection } from '../_app';
 
-const SingoutConfirmPage: NextPage = () => {
+const SingoutConfirmPage: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   const router = useRouter();
-  const auth = useContext(AuthContext);
-  const { setTitle } = useContext(TitleContext);
+
+  useEffect(() => {
+    pageTitle.clear();
+  }, []);
+
+  if (!auth.isAuthenticated) {
+    return <CenteredProgress />;
+  }
 
   const signOut = async () => {
     router.push('/auth/signout');
@@ -23,14 +29,6 @@ const SingoutConfirmPage: NextPage = () => {
   const cancel = () => {
     router.push('/home');
   };
-
-  useEffect(() => {
-    setTitle?.('');
-  }, []);
-
-  if (!auth.isAuthenticated) {
-    return <CenteredProgress />;
-  }
 
   if (!auth.auth.isAnonymous) {
     return (

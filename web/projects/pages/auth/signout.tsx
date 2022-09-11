@@ -1,11 +1,8 @@
 import { NextPage } from 'next';
-import { useContext } from 'react';
 import CenteredProgress from '../../components/case/centered-progress';
-import { AuthContext } from '../_app';
+import { PageInjection } from '../_app';
 
-const SignoutPage: NextPage = () => {
-  const auth = useContext(AuthContext);
-
+const SignoutPage: NextPage<PageInjection> = ({ auth }) => {
   if (!auth.isLoading) {
     auth.signOut();
   }
