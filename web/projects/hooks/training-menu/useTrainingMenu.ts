@@ -28,8 +28,7 @@ const useTrainingMenu = (prop: UseTrainingMenuProp) => {
         userId,
         trainingMenuId,
       });
-    },
-    { refreshInterval: 100 }
+    }
   );
 
   if (!error && !data) {
