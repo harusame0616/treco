@@ -52,7 +52,7 @@ const MainHeader = (prop: MainHeaderProp) => {
           justifyContent="center"
           alignItems="center"
           color="white"
-          sx={{ fontSize: '1.5rem' }}
+          sx={{ fontSize: 'min(6vw, 1.5rem)' }}
         >
           <Box onClick={clickListener}>{title}</Box>
         </Grid>
