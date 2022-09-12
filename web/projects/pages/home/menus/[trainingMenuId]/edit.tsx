@@ -110,7 +110,7 @@ const TrainingMenuEditPage: NextPage<PageInjection> = ({
                         left={'-20px'}
                         top={'-10px'}
                         width="calc(100% + 40px)"
-                        height="calc(100% + 40px)"
+                        height="calc(100% + 20px)"
                         sx={{ background: 'black', opacity: '60%' }}
                       />
                       <Box
