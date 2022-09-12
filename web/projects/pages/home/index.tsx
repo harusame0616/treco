@@ -1,5 +1,7 @@
 import BaseCircleButton from '@Components/base/base-circle-button';
+import BaseDatePicker from '@Components/base/base-month-picker';
 import ReadErrorTemplate from '@Components/case/read-error-template';
+import TextButton from '@Components/case/text-button';
 import useProcessing from '@Hooks/useProcessing';
 import { FormatListBulletedRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
@@ -154,17 +156,23 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
   };
 
   useEffect(() => {
-    pageTitle.setTitle(month.format('YYYY-MM'));
+    pageTitle.setTitle(
+      <Box display="flex">
+        <Box
+          onClick={() => {
+            setMonth(dayjs().startOf('month'));
+            changeSelectDate(dayjs());
+          }}
+        >
+          {month.format('YYYY-MM')}
+        </Box>
+        <Box sx={{ marginRight: '-40px', marginTop: '-2px' }}>
+          <BaseDatePicker onChange={(month) => setMonth(month)} month={month} />
+        </Box>
+      </Box>
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
-
-  useEffect(() => {
-    pageTitle.setClickListener(() => {
-      setMonth(dayjs().startOf('month'));
-      changeSelectDate(dayjs());
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const isLoading =
     selectDateMonthActivitiesIsLoading ||
@@ -238,7 +246,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
             overflow="auto"
             gap="20px"
           >
-            {isLoading ? (
+            {selectDateMonthActivitiesIsLoading ? (
               <Box
                 display="flex"
                 alignItems="center"
