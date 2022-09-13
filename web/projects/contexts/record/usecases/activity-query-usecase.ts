@@ -25,6 +25,11 @@ export interface ActivityQuery {
     userId: string;
     date: Date;
   }): Promise<ActivityWithCategoryAndTrainingEventDto[]>;
+
+  queryDetailOfmaxRM(prop: {
+    userId: string;
+    trainingEventId: string;
+  }): Promise<(ActivityDto & { maxRM: number }) | null>;
 }
 
 interface ConstructorProp {
@@ -50,5 +55,9 @@ export class ActivityQueryUsecase {
     prop: Omit<ActivityFullId, 'activityId'>
   ) {
     return await this.prop.activityQuery.queryDetailOfLastTrainingEvent(prop);
+  }
+
+  async queryDetailOfmaxRM(prop: { userId: string; trainingEventId: string }) {
+    return await this.prop.activityQuery.queryDetailOfmaxRM(prop);
   }
 }

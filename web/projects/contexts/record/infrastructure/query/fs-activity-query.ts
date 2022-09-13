@@ -351,4 +351,24 @@ export class FSActivityQuery implements ActivityQuery {
       )
     ).filter((activity) => activity) as any[];
   }
+
+  async queryDetailOfmaxRM(prop: {
+    userId: string;
+    trainingEventId: string;
+  }): Promise<(ActivityDto & { maxRM: number }) | null> {
+    const activityCollectionRef = fsActivityCollection(prop);
+    const querymaxRM = query(
+      activityCollectionRef,
+      where('trainingEventId', '==', prop.trainingEventId),
+      orderBy('maxRM', 'desc'),
+      limit(1)
+    );
+
+    const activitymaxRM = await getDocsManagedCache(querymaxRM);
+    if (activitymaxRM.empty) {
+      return null;
+    }
+
+    return activitymaxRM.docs[0].data() as ActivityDto & { maxRM: number };
+  }
 }

@@ -12,6 +12,12 @@ import {
 import { fbDb } from '../../../../utils/firebase';
 import { Activity, ActivityFullId } from '../../domains/activity/activity';
 import { ActivityRepository } from '../../usecases/activity-command-usecase';
+import {
+  fsActivityDoc,
+  fsRecordDoc,
+  fsRecordsCollection,
+  getDocsManagedCache,
+} from '../firestore-utils';
 
 export class FSActivityRepository implements ActivityRepository {
   async delete(activity: Activity): Promise<void> {
@@ -37,56 +43,53 @@ export class FSActivityRepository implements ActivityRepository {
         'activities',
         activityDto.activityId
       ),
-      activityDto
+      {
+        ...activityDto,
+        maxRM: 0,
+        maxLoad: 0,
+      }
     );
   }
 
   async save(activity: Activity) {
     const { records, ...activityInfo } = activity.toDto();
 
-    const recordsCollectionRef = collection(
-      fbDb,
-      'users',
-      activityInfo.userId,
-      'activities',
-      activityInfo.activityId,
-      'records'
+    const [maxRM, maxLoad] = records.reduce(
+      ([prevmaxRM, prevMaxLoad], record) => {
+        const rm = record.load * (1 + record.value / 40);
+        return [
+          rm > prevmaxRM ? rm : prevmaxRM,
+          record.load > prevMaxLoad ? record.load : prevMaxLoad,
+        ];
+      },
+      [0, 0]
     );
 
-    const recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
+    const recordsCollectionRef = fsRecordsCollection(activityInfo);
+    const recordsSnapshot = await getDocsManagedCache(recordsCollectionRef);
     if (!recordsSnapshot.empty) {
-      Promise.all(
+      await Promise.all(
         recordsSnapshot.docs.map((document) =>
-          deleteDoc(
-            doc(
-              fbDb,
-              'users',
-              activityInfo.userId,
-              'activities',
-              activityInfo.activityId,
-              'records',
-              document.id
-            )
-          )
+          deleteDoc(fsRecordDoc({ ...activityInfo, recordId: document.id }))
         )
       );
     }
 
-    await Promise.all(
-      records.map((record, index) =>
-        addDoc(
-          collection(
-            fbDb,
-            'users',
-            activityInfo.userId,
-            'activities',
-            activityInfo.activityId,
-            'records'
-          ),
-          { ...activityInfo, ...record, index }
-        )
-      )
-    );
+    await Promise.all([
+      setDoc(fsActivityDoc(activityInfo), {
+        ...activityInfo,
+        records: [],
+        maxRM,
+        maxLoad,
+      }),
+      ...records.map((record, index) =>
+        addDoc(fsRecordsCollection(activityInfo), {
+          ...activityInfo,
+          ...record,
+          index,
+        })
+      ),
+    ]);
   }
 
   async findOne(prop: ActivityFullId): Promise<Activity | null> {

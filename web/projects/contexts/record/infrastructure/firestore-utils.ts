@@ -54,6 +54,12 @@ export const fsActivityCollection = (
   return collection(fbDb, 'users', prop.userId, 'activities');
 };
 
+export const fsActivityDoc = (
+  prop: Omit<ActivityFullId, 'trainingEventId' | 'categoryId'>
+) => {
+  return doc(fbDb, 'users', prop.userId, 'activities', prop.activityId);
+};
+
 export const fsRecordsCollection = (prop: {
   userId: string;
   activityId: string;
@@ -65,6 +71,22 @@ export const fsRecordsCollection = (prop: {
     'activities',
     prop.activityId,
     'records'
+  );
+};
+
+export const fsRecordDoc = (prop: {
+  userId: string;
+  activityId: string;
+  recordId: string;
+}) => {
+  return doc(
+    fbDb,
+    'users',
+    prop.userId,
+    'activities',
+    prop.activityId,
+    'records',
+    prop.recordId
   );
 };
 

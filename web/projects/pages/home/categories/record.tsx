@@ -14,6 +14,7 @@ import RecordCard from '@Components/domain/record-card';
 import { Activity } from '@Domains/activity/activity';
 import useActivityEdit from '@Hooks/useActivityEdit';
 import useActivityOfLastTrainingEvent from '@Hooks/useActivityOfLastTrainingEvent';
+import useActivityOfmaxRM from '@Hooks/useActivityOfmaxRM';
 import useProcessing from '@Hooks/useProcessing';
 import { ArrowForwardIosRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
@@ -66,6 +67,12 @@ const RecordEditPage: NextPage<PageInjection> = ({
     ...apiProp,
     date: new Date(router.query['date'] as string),
   });
+
+  const {
+    activity: activitymaxRM,
+    isLoading: activitymaxRMIsLoading,
+    isError: activitymaxRMIsError,
+  } = useActivityOfmaxRM(apiProp);
 
   useEffect(() => {
     if (typeof router.query.date !== 'string') {
@@ -169,6 +176,7 @@ const RecordEditPage: NextPage<PageInjection> = ({
               </Box>
             </CategoryLabel>
           </Box>
+          Max RM: {activitymaxRM?.maxRM ?? '-'}
         </SectionContainer>
         <SectionContainer>
           {lastActivity ? (
