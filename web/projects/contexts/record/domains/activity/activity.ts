@@ -1,5 +1,6 @@
 import { ParameterError } from '@Errors/parameter-error';
 import { generateId, isId, isUserId } from '@/utils/id';
+import { NegativeNumberError } from '@Errors/negative-number-error';
 
 export interface ActivityRecord {
   load: number;
@@ -70,6 +71,14 @@ export class Activity {
     }
 
     records.forEach((record) => {
+      if (record.load < 0) {
+        throw new NegativeNumberError('負荷');
+      }
+
+      if (record.value < 0) {
+        throw new NegativeNumberError('値');
+      }
+
       if (record.note.length > Activity.RECORD_NOTE_MAX_LENGTH) {
         throw new ParameterError(
           `備考は最大${Activity.RECORD_NOTE_MAX_LENGTH}文字です。`
