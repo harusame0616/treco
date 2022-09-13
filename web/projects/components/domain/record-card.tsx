@@ -16,12 +16,21 @@ interface Prop {
 }
 
 const RecordCard = (prop: Prop) => {
+  let rm =
+    parseInt(prop.record.load + '') *
+    (1 + parseInt(prop.record.value + '') / 40);
+
+  const rmString =
+    Number.isNaN(rm) || rm < 0 ? '-' : Math.floor(rm * 100) / 100 + '';
   return (
     <BaseCard>
       <Box display="flex" flexDirection="column" gap="5px">
         <Box display="flex">
           <Box flexGrow={1} display="flex" alignItems="center">
-            {prop.label}
+            {prop.label}{' '}
+          </Box>
+          <Box fontSize="0.85em" display="flex" alignItems="center">
+            RM: {rmString}
           </Box>
         </Box>
         <TextField
