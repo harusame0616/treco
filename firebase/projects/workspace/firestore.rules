@@ -46,7 +46,7 @@ service cloud.firestore {
     // アクティビティ書き込み
     match /users/{userId}/activities/{activityId} {
       function isValidActivitySchema(activity){
-        return ( activity.keys().size() == 8
+        return ( activity.keys().size() == 9
           && hasIdKey(activity, 'activityId')
           && hasIdKey(activity, 'categoryId')
           && hasIdKey(activity, 'trainingEventId')
@@ -55,6 +55,7 @@ service cloud.firestore {
           && hasListKey(activity, 'records', {'lt': 30})
           && hasKey(activity, 'maxRM', 'number')
           && hasKey(activity, 'maxLoad', 'number')
+          && hasKey(activity, 'createdAt', 'timestamp')
         );
       }
 
@@ -69,7 +70,7 @@ service cloud.firestore {
       // レコードの更新
       // - 認証済み && 自身のリソース
       // - レコード以外のデータが既存のデータと一致する(スキーマ更新時変更が必要)
-      allow update: if activityWriteCommonRule() && isNoChange('categoryId') && isNoChange('trainingEventId') && isNoChange('activityId') && isNoChange('userId') && isNoChange('date');
+      allow update: if activityWriteCommonRule() && isNoChange('categoryId') && isNoChange('trainingEventId') && isNoChange('activityId') && isNoChange('userId') && isNoChange('date') && isNoChange('createdAt');
 
       allow delete: if isMyResource(userId);
 

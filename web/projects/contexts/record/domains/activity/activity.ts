@@ -18,11 +18,14 @@ export interface ActivityFullId {
 export interface ActivityProperty {
   records: ActivityRecord[];
   date: Date;
+  createdAt?: Date;
 }
 
 export type ActivityDto = ActivityFullId & ActivityProperty;
-type ConstructorProp = ActivityDto;
-export type CreateProp = Omit<ConstructorProp, 'activityId' | 'records'>;
+export type CreateProp = Omit<
+  ActivityDto,
+  'activityId' | 'records' | 'createdAt'
+>;
 export const isCreateProp = (value: any): value is CreateProp => {
   return (
     typeof value.userId === 'string' &&
@@ -36,7 +39,7 @@ export class Activity {
   static readonly RECORD_NOTE_MAX_LENGTH = 1024;
   static readonly RECORDS_MAX_LENGTH = 30;
 
-  constructor(private prop: ConstructorProp) {}
+  constructor(private prop: ActivityDto) {}
 
   static create(prop: CreateProp) {
     [
@@ -101,6 +104,7 @@ export class Activity {
         note,
       })),
       date: this.prop.date,
+      createdAt: this.prop.createdAt,
     };
   }
 

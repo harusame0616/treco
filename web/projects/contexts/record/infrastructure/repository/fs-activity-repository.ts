@@ -7,6 +7,7 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
+  serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
@@ -35,20 +36,12 @@ export class FSActivityRepository implements ActivityRepository {
 
   async insert(activity: Activity) {
     const activityDto = activity.toDto();
-    await setDoc(
-      doc(
-        fbDb,
-        'users',
-        activityDto.userId,
-        'activities',
-        activityDto.activityId
-      ),
-      {
-        ...activityDto,
-        maxRM: 0,
-        maxLoad: 0,
-      }
-    );
+    await setDoc(fsActivityDoc(activityDto), {
+      ...activityDto,
+      maxRM: 0,
+      maxLoad: 0,
+      createdAt: serverTimestamp(),
+    });
   }
 
   async save(activity: Activity) {
@@ -75,16 +68,21 @@ export class FSActivityRepository implements ActivityRepository {
       );
     }
 
+    const { createdAt, ...activityInfoExceptCreateAt } = activityInfo;
     await Promise.all([
-      setDoc(fsActivityDoc(activityInfo), {
-        ...activityInfo,
-        records: [],
-        maxRM,
-        maxLoad,
-      }),
+      setDoc(
+        fsActivityDoc(activityInfo),
+        {
+          ...activityInfo,
+          records: [],
+          maxRM,
+          maxLoad,
+        },
+        { merge: true }
+      ),
       ...records.map((record, index) =>
         addDoc(fsRecordsCollection(activityInfo), {
-          ...activityInfo,
+          ...activityInfoExceptCreateAt,
           ...record,
           index,
         })

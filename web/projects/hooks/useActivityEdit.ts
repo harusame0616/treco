@@ -60,7 +60,7 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
   );
 
   useEffect(() => {
-    if (records.length) {
+    if (activityIsLoading) {
       return;
     }
 
@@ -68,7 +68,7 @@ const useActivityEdit = (prop: UseActivityEditProp) => {
       activity?.records?.map((record) => ({ id: Math.random(), ...record })) ??
         generateEmptyRecords()
     );
-  }, [activity, activityIsLoading]);
+  }, [activityIsLoading]);
 
   const addNewRecord = () => {
     setRecords([...records, { ...EMPTY_RECORD, id: Math.random() }]);

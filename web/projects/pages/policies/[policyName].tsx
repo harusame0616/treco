@@ -171,7 +171,6 @@ const title: { [key in PolicyName]: string } = {
 const PrivacyPage: NextPage<PageInjection> = ({ pageTitle }) => {
   const router = useRouter();
   const policyName = router.query.policyName as string;
-  console.log(router.query.policyName);
 
   useEffect(() => {
     if (isPolicyName(policyName)) {

@@ -192,54 +192,22 @@ export class FSActivityQuery implements ActivityQuery {
     userId: string;
     month: Date;
   }): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
-    const activitiesCollectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'activities'
-    );
-    const categoriesCollectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'categories'
-    );
-    const trainingEventsCollectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'trainingEvents'
-    );
-    const recordsCollectionGroupRef = collectionGroup(fbDb, 'records');
+    const activitiesCollectionRef = fsActivityCollection(prop);
+    const categoriesCollectionRef = fsCategoryCollection(prop);
+    const trainingEventsCollectionRef = fsTrainingEventCollectionRef(prop);
 
     const activityOwnedUserInMonthQuery = query(
       activitiesCollectionRef,
       where('date', '>=', dayjs(prop.month).startOf('month').toDate()),
       where('date', '<=', dayjs(prop.month).endOf('month').toDate())
     );
-    const recordsOwnedUserInMOnthQuery = query(
-      recordsCollectionGroupRef,
-      where('userId', '==', prop.userId),
-      where('date', '>=', dayjs(prop.month).startOf('month').toDate()),
-      where('date', '<=', dayjs(prop.month).endOf('month').toDate())
-    );
 
-    let snapshot = await getDocsFromCache(activityOwnedUserInMonthQuery);
-    if (snapshot.empty) {
-      snapshot = await getDocs(activityOwnedUserInMonthQuery);
-    }
-
-    let categoriesSnapshot = await getDocsFromCache(categoriesCollectionRef);
-    if (categoriesSnapshot.empty) {
-      categoriesSnapshot = await getDocs(categoriesCollectionRef);
-    }
-
-    let trainingEventsSnapshot = await getDocsFromCache(
-      trainingEventsCollectionRef
-    );
-    if (trainingEventsSnapshot.empty) {
-      trainingEventsSnapshot = await getDocs(trainingEventsCollectionRef);
-    }
+    let [snapshot, categoriesSnapshot, trainingEventsSnapshot] =
+      await Promise.all([
+        getDocsManagedCache(activityOwnedUserInMonthQuery),
+        getDocsManagedCache(categoriesCollectionRef),
+        getDocsManagedCache(trainingEventsCollectionRef),
+      ]);
 
     const categoryMappedCategoryId = Object.fromEntries(
       categoriesSnapshot.docs.map((doc) => {
@@ -262,19 +230,8 @@ export class FSActivityQuery implements ActivityQuery {
           const categoryInfo = categoryMappedCategoryId[activity.categoryId];
           const trainingEventInfo =
             trainingEventMappedTrainingEventId[activity.trainingEventId];
-          // const records = recordsAggregatedActivityId[activity.activityId];
-          const recordsCollection = collection(
-            fbDb,
-            'users',
-            activity.userId,
-            'activities',
-            activity.activityId,
-            'records'
-          );
-          let recordsSnapshot = await getDocsFromCache(recordsCollection);
-          if (recordsSnapshot.empty) {
-            recordsSnapshot = await getDocs(recordsCollection);
-          }
+          const recordsCollection = fsRecordsCollection(activity as any);
+          let recordsSnapshot = await getDocsManagedCache(recordsCollection);
 
           return activity && categoryInfo && trainingEventInfo
             ? {
@@ -291,7 +248,9 @@ export class FSActivityQuery implements ActivityQuery {
             : undefined;
         })
       )
-    ).filter((activity) => activity) as any[];
+    )
+      .filter((activity) => activity)
+      .sort((a, b) => a.createdAt - b.createdAt) as any[];
   }
 
   async queryListOnDate(prop: {
