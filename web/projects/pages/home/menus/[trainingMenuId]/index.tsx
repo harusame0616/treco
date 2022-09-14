@@ -7,7 +7,7 @@ import SecondaryButton from '@Components/case/secondary-button';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import useTrainingMenu from '@Hooks/training-menu/useTrainingMenu';
-import useActivities from '@Hooks/useActivities';
+import useActivities from '@Hooks/activity/useActivities';
 import { CheckRounded, EditRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
 import dayjs from 'dayjs';

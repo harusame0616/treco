@@ -21,7 +21,7 @@ import TrainingCalender, {
 } from '../../components/domain/training-calender/training-calender';
 import { ActivityDto } from '../../contexts/record/domains/activity/activity';
 import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
-import useActivities from '../../hooks/useActivities';
+import useActivities from '../../hooks/activity/useActivities';
 import useActivityDelete from '../../hooks/useActivityDelete';
 import useDialog from '../../hooks/useDialog';
 import useIsClient from '../../hooks/useIsClient';

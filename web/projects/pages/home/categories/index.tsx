@@ -14,7 +14,7 @@ import CategoryEditPopup, {
   CategoryEditInfo,
 } from '@Components/domain/category/category-edit-dialog';
 import { CategoryDto } from '@Domains/category/category';
-import useCategories from '@Hooks/useCategories';
+import useCategories from '@Hooks/category/useCategories';
 import useDialog from '@Hooks/useDialog';
 import useProcessing from '@Hooks/useProcessing';
 import { EditRounded } from '@mui/icons-material';
