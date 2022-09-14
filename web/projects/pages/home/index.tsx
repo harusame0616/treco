@@ -1,30 +1,29 @@
 import BaseCircleButton from '@Components/base/base-circle-button';
 import BaseDatePicker from '@Components/base/base-month-picker';
+import BaseProgress from '@Components/base/base-progress';
+import AddButton from '@Components/case/add-button';
+import DeleteConfirmDialog from '@Components/case/delete-confirm-dialog';
+import DeleteSlideAction from '@Components/case/delete-slide-action';
 import ReadErrorTemplate from '@Components/case/read-error-template';
-import TextButton from '@Components/case/text-button';
+import PageContainer from '@Components/container/page-container';
+import ActivityListItem from '@Components/domain/activity-list-item';
+import TrainingCalender, {
+  ActivityColorsDateMap,
+} from '@Components/domain/training-calender/training-calender';
+import { ActivityDto } from '@Domains/activity/activity';
+import useActivities from '@Hooks/activity/useActivities';
+import useActivityDelete from '@Hooks/activity/useActivityDelete';
+import useDialog from '@Hooks/useDialog';
+import useIsClient from '@Hooks/useIsClient';
 import useProcessing from '@Hooks/useProcessing';
 import { FormatListBulletedRounded, ShareRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
+import { ActivityWithCategoryAndTrainingEventDto } from '@Usecases/activity-query-usecase';
 import dayjs, { Dayjs } from 'dayjs';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
-import BaseProgress from '../../components/base/base-progress';
-import AddButton from '../../components/case/add-button';
-import DeleteConfirmDialog from '../../components/case/delete-confirm-dialog';
-import DeleteSlideAction from '../../components/case/delete-slide-action';
-import PageContainer from '../../components/container/page-container';
-import ActivityListItem from '../../components/domain/activity-list-item';
-import TrainingCalender, {
-  ActivityColorsDateMap,
-} from '../../components/domain/training-calender/training-calender';
-import { ActivityDto } from '../../contexts/record/domains/activity/activity';
-import { ActivityWithCategoryAndTrainingEventDto } from '../../contexts/record/usecases/activity-query-usecase';
-import useActivities from '../../hooks/activity/useActivities';
-import useActivityDelete from '../../hooks/useActivityDelete';
-import useDialog from '../../hooks/useDialog';
-import useIsClient from '../../hooks/useIsClient';
 import { PageInjection } from '../_app';
 
 const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {

@@ -11,7 +11,7 @@ import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import CategoryLabel from '@Components/domain/category-label';
 import CategoryEditPopup, {
-  CategoryEditInfo,
+  CategoryEditInfo
 } from '@Components/domain/category/category-edit-dialog';
 import { CategoryDto } from '@Domains/category/category';
 import useCategories from '@Hooks/category/useCategories';

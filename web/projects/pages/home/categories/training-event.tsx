@@ -10,13 +10,13 @@ import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import CategoryLabel from '@Components/domain/category-label';
 import TrainingEventEditPopup, {
-  TrainingEventEditInfo,
+  TrainingEventEditInfo
 } from '@Components/domain/training-event/training-event-edit-popup';
 import { TrainingEventDto } from '@Domains/training-event/training-event';
-import useCategory from '@Hooks/useCategory';
+import useCategory from '@Hooks/category/useCategory';
+import useTrainingEvents from '@Hooks/training-event/useTrainingEvents';
 import useDialog from '@Hooks/useDialog';
 import useProcessing from '@Hooks/useProcessing';
-import useTrainingEvents from '@Hooks/useTrainingEvents';
 import { EditRounded } from '@mui/icons-material';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';

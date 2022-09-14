@@ -1,7 +1,7 @@
 import { RequireError } from '@Errors/require-error';
 import useSWR from 'swr';
-import { FSTrainingEventQuery } from '../contexts/record/infrastructure/query/fs-training-event-query';
-import { TrainingEventQueryUsecase } from '../contexts/record/usecases/training-event-query-usecase';
+import { FSTrainingEventQuery } from '@Queries/fs-training-event-query';
+import { TrainingEventQueryUsecase } from '@Usecases/training-event-query-usecase';
 
 interface UseTrainingEventsProp {
   userId?: string | null;

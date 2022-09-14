@@ -4,14 +4,13 @@ import {
   ActivityRecord,
 } from '@Domains/activity/activity';
 import { ParameterError } from '@Errors/parameter-error';
+import useTrainingEvent from '@Hooks/training-event/useTrainingEvent';
 import { FSActivityRepository } from '@Repositories/fs-activity-repository';
 import { FSCategoryRepository } from '@Repositories/fs-category-repository';
 import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
 import { ActivityCommandUsecase } from '@Usecases/activity-command-usecase';
-import { TrainingEventWithCategoryDto } from '@Usecases/training-event-query-usecase';
 import { useEffect, useState } from 'react';
 import useActivity from './useActivity';
-import useTrainingEvent from './useTrainingEvent';
 
 // ---------- types ----------
 type UseActivityEditProp = Partial<Omit<ActivityDto, 'records'>>;

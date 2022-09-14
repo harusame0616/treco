@@ -1,14 +1,14 @@
+import CenteredProgress from '@Components/case/centered-progress';
+import PrimaryButton from '@Components/case/primary-button';
+import SecondaryButton from '@Components/case/secondary-button';
+import TextButton from '@Components/case/text-button';
+import PageContainer from '@Components/container/page-container';
+import SectionContainer from '@Components/container/section-container';
 import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import CenteredProgress from '../../components/case/centered-progress';
-import PrimaryButton from '../../components/case/primary-button';
-import SecondaryButton from '../../components/case/secondary-button';
-import TextButton from '../../components/case/text-button';
-import PageContainer from '../../components/container/page-container';
-import SectionContainer from '../../components/container/section-container';
 import { PageInjection } from '../_app';
 
 const SingoutConfirmPage: NextPage<PageInjection> = ({ auth, pageTitle }) => {

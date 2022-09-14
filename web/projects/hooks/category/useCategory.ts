@@ -1,9 +1,8 @@
 import { CategoryDto } from '@Domains/category/category';
 import { RequireError } from '@Errors/require-error';
+import { FSCategoryQuery } from '@Queries/fs-category-query';
+import { CategoryQueryUsecase } from '@Usecases/category-query-usecase';
 import useSWR from 'swr';
-import { FSCategoryQuery } from '../contexts/record/infrastructure/query/fs-category-query';
-import { CategoryQueryUsecase } from '../contexts/record/usecases/category-query-usecase';
-import { ParameterError } from '../custom-error/parameter-error';
 
 const categoryQueryUsecase = new CategoryQueryUsecase({
   categoryQuery: new FSCategoryQuery(),

@@ -1,8 +1,7 @@
+import { ParameterError } from '@Errors/parameter-error';
+import { FSTrainingEventQuery } from '@Queries/fs-training-event-query';
+import { TrainingEventQueryUsecase } from '@Usecases/training-event-query-usecase';
 import useSWR from 'swr';
-import { FSCategoryQuery } from '../../contexts/record/infrastructure/query/fs-category-query';
-import { FSTrainingEventQuery } from '../../contexts/record/infrastructure/query/fs-training-event-query';
-import { TrainingEventQueryUsecase } from '../../contexts/record/usecases/training-event-query-usecase';
-import { ParameterError } from '../../custom-error/parameter-error';
 
 interface UseTrainingEventProp {
   userId?: string | null;
