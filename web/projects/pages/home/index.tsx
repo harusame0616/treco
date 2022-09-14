@@ -3,7 +3,7 @@ import BaseDatePicker from '@Components/base/base-month-picker';
 import ReadErrorTemplate from '@Components/case/read-error-template';
 import TextButton from '@Components/case/text-button';
 import useProcessing from '@Hooks/useProcessing';
-import { FormatListBulletedRounded } from '@mui/icons-material';
+import { FormatListBulletedRounded, ShareRounded } from '@mui/icons-material';
 import { Box, Collapse } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { NextPage } from 'next';
@@ -216,6 +216,36 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     open();
   };
 
+  const shareActivities =
+    'share' in navigator
+      ? async () => {
+          const title = 'TRECo - BESIDE YOUR WORKOUT-';
+          const url = `${location.protocol}//${location.hostname}/`;
+
+          await navigator.share({
+            title,
+            text:
+              selectDate.format('YYYY-MM-DD') +
+              ' のトレーニング\n\n' +
+              selectDateActivities
+                .map((activity) =>
+                  [
+                    activity.trainingEventName,
+                    activity.records
+                      .map(
+                        (record) =>
+                          `・${record.load}${activity.loadUnit} / ${record.value}${activity.valueUnit}`
+                      )
+                      .join('\n'),
+                  ].join('\n')
+                )
+                .join('\n') +
+              `\n\nRecorded by TRECo\n${url}`,
+            // url,
+          });
+        }
+      : undefined;
+
   return (
     <PageContainer>
       {/* サーバーとクライアントでタイムゾーンが異なることにより、
@@ -298,6 +328,13 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
         onSecondaryClick={close}
         isLoading={isProcessing}
       />
+      {shareActivities ? (
+        <Box position="fixed" right="20px" bottom="160px" zIndex="1">
+          <BaseCircleButton onClick={shareActivities}>
+            <ShareRounded />
+          </BaseCircleButton>
+        </Box>
+      ) : undefined}
       <Box position="fixed" right="20px" bottom="110px" zIndex="1">
         <BaseCircleButton
           onClick={() => {
