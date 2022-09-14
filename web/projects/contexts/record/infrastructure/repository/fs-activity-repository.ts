@@ -40,6 +40,9 @@ export class FSActivityRepository implements ActivityRepository {
       ...activityDto,
       maxRM: 0,
       maxLoad: 0,
+      maxValue: 0,
+      totalLoad: 0,
+      totalValue: 0,
       createdAt: serverTimestamp(),
     });
   }
@@ -47,15 +50,21 @@ export class FSActivityRepository implements ActivityRepository {
   async save(activity: Activity) {
     const { records, ...activityInfo } = activity.toDto();
 
-    const [maxRM, maxLoad] = records.reduce(
-      ([prevmaxRM, prevMaxLoad], record) => {
+    const [maxRM, maxLoad, maxValue, totalLoad, totalValue] = records.reduce(
+      (
+        [prevmaxRM, prevMaxLoad, prevMaxValue, prevTotalLoad, prevTotalValue],
+        record
+      ) => {
         const rm = record.load * (1 + record.value / 40);
         return [
           rm > prevmaxRM ? rm : prevmaxRM,
           record.load > prevMaxLoad ? record.load : prevMaxLoad,
+          record.value > prevMaxValue ? record.value : prevMaxValue,
+          prevTotalLoad + record.load * record.value,
+          prevTotalValue + record.value,
         ];
       },
-      [0, 0]
+      [0, 0, 0, 0, 0]
     );
 
     const recordsCollectionRef = fsRecordsCollection(activityInfo);
@@ -77,6 +86,9 @@ export class FSActivityRepository implements ActivityRepository {
           records: [],
           maxRM,
           maxLoad,
+          maxValue,
+          totalLoad,
+          totalValue,
         },
         { merge: true }
       ),

@@ -46,7 +46,7 @@ service cloud.firestore {
     // アクティビティ書き込み
     match /users/{userId}/activities/{activityId} {
       function isValidActivitySchema(activity){
-        return ( activity.keys().size() == 9
+        return ( activity.keys().size() == 12
           && hasIdKey(activity, 'activityId')
           && hasIdKey(activity, 'categoryId')
           && hasIdKey(activity, 'trainingEventId')
@@ -55,6 +55,9 @@ service cloud.firestore {
           && hasListKey(activity, 'records', {'lt': 30})
           && hasKey(activity, 'maxRM', 'number')
           && hasKey(activity, 'maxLoad', 'number')
+          && hasKey(activity, 'maxValue', 'number')
+          && hasKey(activity, 'totalLoad', 'number')
+          && hasKey(activity, 'totalValue', 'number')
           && hasKey(activity, 'createdAt', 'timestamp')
         );
       }
