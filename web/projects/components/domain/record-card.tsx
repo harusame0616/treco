@@ -1,7 +1,7 @@
 import { Box, TextField } from '@mui/material';
 import { ChangeEventHandler, ReactNode } from 'react';
-import { ActivityRecordWork } from '../../hooks/useActivityEdit';
-import BaseCard from '../base/base-card';
+import { ActivityRecordWork } from '@Hooks/activity/useActivityEdit';
+import BaseCard from '@Components/base/base-card';
 
 interface Prop {
   record: ActivityRecordWork;
