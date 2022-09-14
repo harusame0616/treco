@@ -16,7 +16,7 @@ const fecher = (_: string, userId: string, trainingEventId: string) => {
   return activityQueryUsecase.queryDetailOfmaxRM({ userId, trainingEventId });
 };
 
-const useActivityOfmaxRM = (
+const useActivityOfMaxRM = (
   prop: Partial<Omit<ActivityFullId, 'activityId'>>
 ) => {
   const { data, error } = useSWR(
@@ -48,4 +48,4 @@ const useActivityOfmaxRM = (
   };
 };
 
-export default useActivityOfmaxRM;
+export default useActivityOfMaxRM;
