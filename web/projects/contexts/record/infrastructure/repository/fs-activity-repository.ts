@@ -7,7 +7,6 @@ import {
   getDocFromCache,
   getDocs,
   getDocsFromCache,
-  serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
 import { fbDb } from '../../../../utils/firebase';
@@ -43,7 +42,6 @@ export class FSActivityRepository implements ActivityRepository {
       maxValue: 0,
       totalLoad: 0,
       totalValue: 0,
-      createdAt: serverTimestamp(),
     });
   }
 

@@ -5,6 +5,7 @@
 import { Activity } from '@Domains/activity/activity';
 import { generateId } from '@/utils/id';
 import { ParameterError } from '@/custom-error/parameter-error';
+import { NegativeNumberError } from '@Errors/negative-number-error';
 
 describe('正常系', () => {
   const userId = 'a'.repeat(28);
@@ -40,6 +41,7 @@ describe('正常系', () => {
       activityId: expect.any(String),
       date,
       records,
+      createdAt: expect.any(Date),
     });
   });
 });
@@ -97,6 +99,36 @@ describe('異常系', () => {
             .map(() => ({ load: 0, value: 0, note: '' }))
         )
       ).toThrow();
+    });
+
+    test('負荷が負数', () => {
+      const prop = {
+        userId,
+        categoryId,
+        trainingEventId,
+        date,
+      };
+
+      const activity = Activity.create(prop);
+
+      expect(() =>
+        activity.updateRecords([{ load: -1, value: 0, note: 'a'.repeat(1025) }])
+      ).toThrow(new NegativeNumberError('負荷'));
+    });
+
+    test('値が負数', () => {
+      const prop = {
+        userId,
+        categoryId,
+        trainingEventId,
+        date,
+      };
+
+      const activity = Activity.create(prop);
+
+      expect(() =>
+        activity.updateRecords([{ load: 0, value: -1, note: 'a'.repeat(1025) }])
+      ).toThrow(new NegativeNumberError('値'));
     });
 
     test('備考文字数オーバー', () => {
