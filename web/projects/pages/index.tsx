@@ -1,6 +1,8 @@
 import BaseLink from '@Components/base/base-link';
 import CenteredProgress from '@Components/case/centered-progress';
+import PrimaryButton from '@Components/case/primary-button';
 import TextButton from '@Components/case/text-button';
+import PageContainer from '@Components/container/page-container';
 import { OAuthProviderName } from '@Hooks/useAuth';
 import useProcessing from '@Hooks/useProcessing';
 import { Facebook, Google, Twitter } from '@mui/icons-material';
@@ -9,8 +11,6 @@ import type { NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect } from 'react';
-import PrimaryButton from '../components/case/primary-button';
-import PageContainer from '../components/container/page-container';
 import { PageInjection } from './_app';
 
 type ProviderSettings = [OAuthProviderName, ReactNode];

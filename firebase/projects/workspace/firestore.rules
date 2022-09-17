@@ -85,9 +85,9 @@ service cloud.firestore {
             && hasIdKey(data, 'trainingEventId')
             && hasUserIdKey(data)
             && hasKey(data, 'date', 'timestamp')
-            && hasKey(data, 'index', 'number')
-            && hasKey(data, 'load', 'int') && data.load >= 0
-            && hasKey(data, 'value', 'int') && data.value >= 0
+            && hasKey(data, 'index', 'int')
+            && hasKey(data, 'load', 'number') && data.load >= 0
+            && hasKey(data, 'value', 'number') && data.value >= 0
             && hasStringKey(data, 'note', {'lt':1025})
           );
         }

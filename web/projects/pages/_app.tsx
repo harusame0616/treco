@@ -1,25 +1,19 @@
+import MainHeader from '@Components/domain/main-header';
+import UserMenu from '@Components/domain/user/user-menu';
+import useAuth from '@Hooks/useAuth';
+import useMyTheme from '@Hooks/useMyTheme';
+import usePopMessage from '@Hooks/usePopMessage';
 import useProcessing from '@Hooks/useProcessing';
-import {
-  Alert,
-  CssBaseline,
-  Link,
-  Snackbar,
-  ThemeProvider,
-} from '@mui/material';
+import useTitle from '@Hooks/useTitle';
+import { Alert, CssBaseline, Snackbar, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
+import { FSCategoryRepository } from '@Repositories/fs-category-repository';
+import { FSTrainigEventRepository } from '@Repositories/fs-training-event-repository';
+import { CategoryCommandUsecase } from '@Usecases/category-command-usecase';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { createContext, useEffect, useState } from 'react';
-import MainHeader from '../components/domain/main-header';
-import UserMenu from '../components/domain/user/user-menu';
-import { FSCategoryRepository } from '../contexts/record/infrastructure/repository/fs-category-repository';
-import { FSTrainigEventRepository } from '../contexts/record/infrastructure/repository/fs-training-event-repository';
-import { CategoryCommandUsecase } from '../contexts/record/usecases/category-command-usecase';
-import useAuth from '../hooks/useAuth';
-import useMyTheme from '../hooks/useMyTheme';
-import usePopMessage from '../hooks/usePopMessage';
-import useTitle from '../hooks/useTitle';
 import '../styles/globals.css';
 
 const defaultAuthContext = {

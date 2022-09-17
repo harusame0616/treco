@@ -1,6 +1,6 @@
-import { FSActivityQuery } from '@Queries/fs-activity-query';
 import { ActivityFullId } from '@Domains/activity/activity';
 import { ParameterError } from '@Errors/parameter-error';
+import { FSActivityQuery } from '@Queries/fs-activity-query';
 import { ActivityQueryUsecase } from '@Usecases/activity-query-usecase';
 import useSWR from 'swr';
 

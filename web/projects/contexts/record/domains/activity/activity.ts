@@ -1,6 +1,9 @@
 import { ParameterError } from '@Errors/parameter-error';
 import { generateId, isId, isUserId } from '@/utils/id';
 import { NegativeNumberError } from '@Errors/negative-number-error';
+import { RequireError } from '@Errors/require-error';
+import { OverflowError } from '@Errors/overflow-error';
+import { TextOverflowError } from '@Errors/text-overflow-error';
 
 export interface ActivityRecord {
   load: number;
@@ -18,7 +21,7 @@ export interface ActivityFullId {
 export interface ActivityProperty {
   records: ActivityRecord[];
   date: Date;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export type ActivityDto = ActivityFullId & ActivityProperty;
@@ -59,18 +62,21 @@ export class Activity {
       throw new ParameterError('日付が不正です。');
     }
 
-    return new Activity({ ...prop, activityId: generateId(), records: [] });
+    return new Activity({
+      ...prop,
+      activityId: generateId(),
+      records: [],
+      createdAt: new Date(),
+    });
   }
 
   updateRecords(records: ActivityRecord[]) {
     if (!records.length) {
-      throw new ParameterError(`レコードは必須です。`);
+      throw new RequireError(`レコード`);
     }
 
     if (records.length > Activity.RECORDS_MAX_LENGTH) {
-      throw new ParameterError(
-        `レコードは最大${Activity.RECORDS_MAX_LENGTH}レコードまでです。`
-      );
+      throw new OverflowError(`レコード`, Activity.RECORDS_MAX_LENGTH);
     }
 
     records.forEach((record) => {
@@ -83,9 +89,7 @@ export class Activity {
       }
 
       if (record.note.length > Activity.RECORD_NOTE_MAX_LENGTH) {
-        throw new ParameterError(
-          `備考は最大${Activity.RECORD_NOTE_MAX_LENGTH}文字です。`
-        );
+        throw new TextOverflowError(`備考`, Activity.RECORD_NOTE_MAX_LENGTH);
       }
     });
 

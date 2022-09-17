@@ -1,8 +1,7 @@
+import { RequireError } from '@Errors/require-error';
 import { FSActivityQuery } from '@Queries/fs-activity-query';
-import { ParameterError } from '@Errors/parameter-error';
 import { ActivityQueryUsecase } from '@Usecases/activity-query-usecase';
 import useSWR from 'swr';
-import { RequireError } from '@Errors/require-error';
 
 const activityQueryUsecase = new ActivityQueryUsecase({
   activityQuery: new FSActivityQuery(),

@@ -3,6 +3,13 @@ import { CategoryDto } from '../domains/category/category';
 import { TrainingEventDto } from '../domains/training-event/training-event';
 
 export type TrainingEventWithCategoryDto = TrainingEventDto & CategoryDto;
+export type ActivityQueryDetail = ActivityWithCategoryAndTrainingEventDto & {
+  maxRM: number;
+  maxLoad: number;
+  maxValue: number;
+  totalLoad: number;
+  totalValue: number;
+};
 
 export type ActivityWithCategoryAndTrainingEventDto = CategoryDto &
   TrainingEventDto &
@@ -19,12 +26,12 @@ export interface ActivityQuery {
   queryListInMonth(prop: {
     userId: string;
     month: Date;
-  }): Promise<ActivityWithCategoryAndTrainingEventDto[]>;
+  }): Promise<ActivityQueryDetail[]>;
 
   queryListOnDate(prop: {
     userId: string;
     date: Date;
-  }): Promise<ActivityWithCategoryAndTrainingEventDto[]>;
+  }): Promise<ActivityQueryDetail[]>;
 
   queryDetailOfmaxRM(prop: {
     userId: string;

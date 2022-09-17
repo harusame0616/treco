@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import {
   collection,
-  collectionGroup,
   doc,
   getDoc,
   getDocFromCache,
@@ -22,6 +21,7 @@ import { CategoryDto } from '../../domains/category/category';
 import { TrainingEventDto } from '../../domains/training-event/training-event';
 import {
   ActivityQuery,
+  ActivityQueryDetail,
   ActivityWithCategoryAndTrainingEventDto,
 } from '../../usecases/activity-query-usecase';
 import {
@@ -191,7 +191,7 @@ export class FSActivityQuery implements ActivityQuery {
   async queryListInMonth(prop: {
     userId: string;
     month: Date;
-  }): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
+  }): Promise<ActivityQueryDetail[]> {
     const activitiesCollectionRef = fsActivityCollection(prop);
     const categoriesCollectionRef = fsCategoryCollection(prop);
     const trainingEventsCollectionRef = fsTrainingEventCollectionRef(prop);
@@ -256,7 +256,7 @@ export class FSActivityQuery implements ActivityQuery {
   async queryListOnDate(prop: {
     userId: string;
     date: Date;
-  }): Promise<ActivityWithCategoryAndTrainingEventDto[]> {
+  }): Promise<ActivityQueryDetail[]> {
     const activitiesCollectionRef = fsActivityCollection(prop);
     const categoriesCollectionRef = fsCategoryCollection(prop);
     const trainingEventsCollectionRef = fsTrainingEventCollectionRef(prop);

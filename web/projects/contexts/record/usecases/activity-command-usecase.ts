@@ -46,7 +46,7 @@ export class ActivityCommandUsecase {
   async updateActivityRecord({
     records,
     ...fullId
-  }: Omit<ActivityDto, 'date'>): Promise<ActivityDto> {
+  }: Omit<ActivityDto, 'date' | 'createdAt'>): Promise<ActivityDto> {
     const activity = await this.prop.activityRepository.findOne(fullId);
     if (!activity) {
       throw new NotFoundError('アクティビティが見つかりません。');

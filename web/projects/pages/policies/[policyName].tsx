@@ -1,13 +1,12 @@
 import BaseCard from '@Components/base/base-card';
 import BaseLink from '@Components/base/base-link';
-import CenteredProgress from '@Components/case/centered-progress';
 import ReadErrorTemplate from '@Components/case/read-error-template';
 import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import { Box } from '@mui/material';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { PageInjection } from '../_app';
 
 const policyNames = ['privacy-policy', 'term-of-service'] as const;
