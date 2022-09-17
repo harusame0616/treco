@@ -8,6 +8,7 @@ import useProcessing from '@Hooks/useProcessing';
 import { Facebook, Google, Twitter } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect } from 'react';
@@ -49,6 +50,9 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
 
   return (
     <PageContainer>
+      <Head>
+        <link rel="preload" href="/media/splash.svg" as="image"></link>
+      </Head>
       <main>
         <Box marginTop="-40px" display="flex" justifyContent="center">
           <Box maxWidth="500px" width="100%">

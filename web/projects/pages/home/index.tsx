@@ -215,35 +215,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     open();
   };
 
-  const shareActivities =
-    'share' in navigator
-      ? async () => {
-          const title = 'TRECo - BESIDE YOUR WORKOUT-';
-          const url = `${location.protocol}//${location.hostname}/`;
-
-          await navigator.share({
-            title,
-            text:
-              selectDate.format('YYYY-MM-DD') +
-              ' のトレーニング\n\n' +
-              selectDateActivities
-                .map((activity) =>
-                  [
-                    activity.trainingEventName,
-                    activity.records
-                      .map(
-                        (record) =>
-                          `・${record.load}${activity.loadUnit} / ${record.value}${activity.valueUnit}`
-                      )
-                      .join('\n'),
-                  ].join('\n')
-                )
-                .join('\n') +
-              `\n\nRecorded by TRECo\n${url}`,
-            // url,
-          });
-        }
-      : undefined;
+  const canShare = 'share' in navigator;
 
   return (
     <PageContainer>
@@ -327,12 +299,12 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
         onSecondaryClick={close}
         isLoading={isProcessing}
       />
-      {shareActivities ? (
+      {canShare ? (
         <Box position="fixed" right="20px" bottom="160px" zIndex="1">
           <BaseCircleButton
             onClick={() => {
               router.push(
-                '/home/share?date=${selectDate.toDate().toUTCString()}'
+                `/home/share?date=${selectDate.toDate().toUTCString()}`
               );
             }}
           >
