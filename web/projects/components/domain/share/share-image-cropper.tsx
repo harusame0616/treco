@@ -16,7 +16,7 @@ interface Prop {
 }
 
 const ShareImageCropper = (prop: Prop) => {
-  const [image, setImage] = useState(prop.src ?? '/media/splash.svg');
+  const [image, setImage] = useState(prop.src ?? '/splash_grey.svg');
   const [zoom, setZoom] = useState(1);
   const [croppedInfo, setCroppedInfo] = useState<Area | undefined>();
   const [crop, setCrop] = useState({
@@ -26,7 +26,7 @@ const ShareImageCropper = (prop: Prop) => {
   const { isProcessing, startProcessing } = useProcessing();
 
   useEffect(() => {
-    setImage(prop.src ?? '/media/splash.svg');
+    setImage(prop.src ?? '/splash_grey.svg');
   }, [prop.src]);
 
   const loadImageHandler: ChangeEventHandler<HTMLInputElement> = async (e) => {
