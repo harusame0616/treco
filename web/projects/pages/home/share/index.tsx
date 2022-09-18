@@ -13,6 +13,7 @@ import { Blob } from 'buffer';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import SecondaryButton from '@Components/case/secondary-button';
 const ShareImageEdit = dynamic(
   () => import('../../../components/domain/share/share-image-edit'),
   {
@@ -55,7 +56,7 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
 
     await navigator.share({
       title,
-      url: url,
+      url,
       files: [
         new File([blob as any], `treco-${new Date().getTime()}.png`, {
           type: blob.type,
@@ -74,6 +75,7 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
             src={selectedImage}
             activities={activities}
             onOk={shareActivities}
+            onCancel={reselect}
           />
         ) : (
           <ShareImageCropper
@@ -85,13 +87,13 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
           />
         )}
       </Box>
-      {status == 'edit' ? (
-        <TextButton onClick={reselect}>画像選び直す</TextButton>
-      ) : (
-        <TextButton onClick={() => router.push(`/home?${router.query.date}`)}>
-          シェアをキャンセルする
-        </TextButton>
-      )}
+      <Box display="flex" flexDirection="column" gap="10px" paddingTop="10px">
+        {status == 'select' ? (
+          <TextButton onClick={() => router.push(`/home?${router.query.date}`)}>
+            シェアをキャンセルする
+          </TextButton>
+        ) : undefined}
+      </Box>
     </PageContainer>
   );
 };
