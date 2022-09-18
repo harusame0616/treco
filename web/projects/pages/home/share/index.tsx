@@ -56,13 +56,14 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
     await navigator.share({
       title,
       url: url,
-      text: 'test, #treco.fit',
       files: [
         new File([blob as any], `treco-${new Date().getTime()}.png`, {
           type: blob.type,
         }),
       ],
     });
+
+    await router.push(`/home?date=${router.query.date}`);
   };
 
   return (

@@ -302,6 +302,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
       {canShare ? (
         <Box position="fixed" right="20px" bottom="160px" zIndex="1">
           <BaseCircleButton
+            disabled={!activities?.length}
             onClick={() => {
               router.push(
                 `/home/share?date=${selectDate.toDate().toUTCString()}`
