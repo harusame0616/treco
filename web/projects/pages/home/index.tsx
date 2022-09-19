@@ -299,7 +299,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
         onSecondaryClick={close}
         isLoading={isProcessing}
       />
-      {canShare ? (
+      {!canShare ? (
         <Box position="fixed" right="20px" bottom="160px" zIndex="1">
           <BaseCircleButton
             disabled={!activities?.length}
