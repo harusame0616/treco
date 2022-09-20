@@ -48,6 +48,12 @@ export const fsCategoryCollection = (
   return collection(fbDb, 'users', prop.userId, 'categories');
 };
 
+export const fsCategoryDoc = (
+  prop: CategoryFullId
+) => {
+  return doc(fbDb, 'users', prop.userId, 'categories', prop.categoryId);
+};
+
 export const fsActivityCollection = (
   prop: Omit<ActivityFullId, 'trainingEventId' | 'categoryId' | 'activityId'>
 ) => {

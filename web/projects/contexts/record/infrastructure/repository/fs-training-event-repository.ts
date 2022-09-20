@@ -1,49 +1,35 @@
 import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocFromCache,
-  getDocs,
-  getDocsFromCache,
-  limit,
+  deleteDoc, limit,
   orderBy,
   query,
   setDoc,
-  where,
+  where
 } from 'firebase/firestore';
-import { fbDb } from '../../../../utils/firebase';
 import {
   TrainingEvent,
-  TrainingEventFullId,
+  TrainingEventFullId
 } from '../../domains/training-event/training-event';
 import { TrainingEventRepository } from '../../usecases/training-event-command-usecase';
+import {
+  fsTrainingEventCollectionRef,
+  fsTrainingEventDocRef,
+  getDocManagedCache,
+  getDocsManagedCache
+} from '../firestore-utils';
 
 export class FSTrainigEventRepository implements TrainingEventRepository {
   async save(trainingEvent: TrainingEvent) {
     const dto = trainingEvent.toDto();
 
-    await setDoc(
-      doc(fbDb, 'users', dto.userId, 'trainingEvents', dto.trainingEventId),
-      dto
-    );
+    await setDoc(fsTrainingEventDocRef(dto), dto);
   }
 
   async findOneByTrainingEventId(
     prop: TrainingEventFullId
   ): Promise<TrainingEvent | null> {
-    const docRef = doc(
-      fbDb,
-      'users',
-      prop.userId,
-      'trainingEvents',
-      prop.trainingEventId
+    const trainigEventDto = await getDocManagedCache(
+      fsTrainingEventDocRef(prop)
     );
-
-    let trainigEventDto = await getDocFromCache(docRef);
-    if (!trainigEventDto.exists()) {
-      trainigEventDto = await getDoc(docRef);
-    }
 
     return trainigEventDto.exists()
       ? TrainingEvent.fromDto(trainigEventDto.data() as any)
@@ -55,22 +41,12 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
     categoryId: string;
     trainingEventName: string;
   }): Promise<TrainingEvent | null> {
-    const collectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'trainingEvents'
+    let trainingEvents = await getDocsManagedCache(
+      query(
+        fsTrainingEventCollectionRef(prop),
+        where('trainingEventName', '==', prop.trainingEventName)
+      )
     );
-
-    const trainingEventNameQuery = query(
-      collectionRef,
-      where('trainingEventName', '==', prop.trainingEventName)
-    );
-
-    let trainingEvents = await getDocsFromCache(trainingEventNameQuery);
-    if (!trainingEvents.empty) {
-      trainingEvents = await getDocs(trainingEventNameQuery);
-    }
 
     return trainingEvents.empty
       ? null
@@ -81,19 +57,13 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
     userId: string;
     categoryId: string;
   }): Promise<TrainingEvent | null> {
-    const collectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'trainingEvents'
+    let trainingEvents = await getDocsManagedCache(
+      query(
+        fsTrainingEventCollectionRef(prop),
+        orderBy('order', 'desc'),
+        limit(1)
+      )
     );
-
-    const orderQuery = query(collectionRef, orderBy('order', 'desc'), limit(1));
-
-    let trainingEvents = await getDocsFromCache(orderQuery);
-    if (!trainingEvents.empty) {
-      trainingEvents = await getDocs(orderQuery);
-    }
 
     return trainingEvents.empty
       ? null
@@ -101,16 +71,6 @@ export class FSTrainigEventRepository implements TrainingEventRepository {
   }
 
   async deleteTrainingEvent(trainingEvent: TrainingEvent): Promise<void> {
-    const trainingEventDto = trainingEvent.toDto();
-
-    const trainingEventDocRef = doc(
-      fbDb,
-      'users',
-      trainingEventDto.userId,
-      'trainingEvents',
-      trainingEventDto.trainingEventId
-    );
-
-    await deleteDoc(trainingEventDocRef);
+    await deleteDoc(fsTrainingEventDocRef(trainingEvent.toDto()));
   }
 }
