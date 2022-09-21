@@ -2,21 +2,15 @@ import CenteredProgress from '@Components/case/centered-progress';
 import PrimaryButton from '@Components/case/primary-button';
 import useProcessing from '@Hooks/useProcessing';
 import { Box } from '@mui/material';
-import {
-  ChangeEventHandler,
-  MouseEventHandler,
-  useEffect,
-  useState,
-} from 'react';
+import { MouseEventHandler, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
 interface Prop {
-  src?: string;
+  src: string;
   onOk: (imageDataUrl: string) => void | Promise<void>;
 }
 
 const ShareImageCropper = (prop: Prop) => {
-  const [image, setImage] = useState(prop.src ?? '/splash_grey.svg');
   const [zoom, setZoom] = useState(1);
   const [croppedInfo, setCroppedInfo] = useState<Area | undefined>();
   const [crop, setCrop] = useState({
@@ -24,32 +18,6 @@ const ShareImageCropper = (prop: Prop) => {
     y: 0,
   });
   const { isProcessing, startProcessing } = useProcessing();
-
-  useEffect(() => {
-    setImage(prop.src ?? '/splash_grey.svg');
-  }, [prop.src]);
-
-  const loadImageHandler: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    startProcessing(async () => {
-      const file = e?.target?.files?.[0];
-      if (!file) {
-        return;
-      }
-
-      const fileReader = new FileReader();
-      const imageDataUrl: string = await new Promise((resolve, inject) => {
-        fileReader.onload = () => {
-          resolve(fileReader.result as string);
-        };
-        fileReader.onerror = (e) => {
-          inject(e);
-        };
-        fileReader.readAsDataURL(file);
-      });
-
-      setImage(imageDataUrl);
-    });
-  };
 
   const okHandler: MouseEventHandler<Element> = async () => {
     if (!croppedInfo) {
@@ -65,7 +33,7 @@ const ShareImageCropper = (prop: Prop) => {
     }
 
     const src = new Image();
-    src.src = image;
+    src.src = prop.src;
     context.drawImage(
       src,
       croppedInfo.x,
@@ -100,7 +68,7 @@ const ShareImageCropper = (prop: Prop) => {
           <CenteredProgress />
         ) : (
           <Cropper
-            image={image}
+            image={prop.src}
             crop={crop}
             zoom={zoom}
             aspect={1}
@@ -114,8 +82,9 @@ const ShareImageCropper = (prop: Prop) => {
           />
         )}
       </Box>
-      <input type="file" accept="image/*" onChange={loadImageHandler}></input>
-      <PrimaryButton onClick={okHandler}>プレビュー</PrimaryButton>
+      <PrimaryButton onClick={okHandler}>
+        背景を決定してプレビュー
+      </PrimaryButton>
     </Box>
   );
 };

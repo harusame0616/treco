@@ -2,7 +2,7 @@ import PageContainer from '@Components/container/page-container';
 import ShareImageCropper from '@Components/domain/share/share-image-cropper';
 
 import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 
 import { PageInjection } from '@/pages/_app';
 import CenteredProgress from '@Components/case/centered-progress';
@@ -13,6 +13,7 @@ import { Blob } from 'buffer';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import useProcessing from '@Hooks/useProcessing';
 const ShareImageEdit = dynamic(
   () => import('../../../components/domain/share/share-image-edit'),
   {
@@ -20,11 +21,14 @@ const ShareImageEdit = dynamic(
   }
 );
 
+const PRESET_IMAGE = '/splash_grey.svg';
+
 const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
   const [selectedImage, setSelectedImage] = useState<string | undefined>();
   const [status, setStatus] = useState('select');
   const router = useRouter();
   const date = new Date(router.query.date as string);
+  const { isProcessing, startProcessing } = useProcessing();
 
   const { activities, isLoading, isError } = useActivities({
     date,
@@ -55,7 +59,7 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
 
     await navigator.share({
       title,
-      url: url,
+      url,
       files: [
         new File([blob as any], `treco-${new Date().getTime()}.png`, {
           type: blob.type,
@@ -66,32 +70,62 @@ const ShareIndex: NextPage<PageInjection> = ({ auth, pageTitle }) => {
     await router.push(`/home?date=${router.query.date}`);
   };
 
+  const loadImageHandler: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    startProcessing(async () => {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      const fileReader = new FileReader();
+      const imageDataUrl: string = await new Promise((resolve, inject) => {
+        fileReader.onload = () => {
+          resolve(fileReader.result as string);
+        };
+        fileReader.onerror = (e) => {
+          inject(e);
+        };
+        fileReader.readAsDataURL(file);
+      });
+
+      setSelectedImage(imageDataUrl);
+    });
+  };
+
   return (
     <PageContainer>
       <Box marginTop="-20px" marginX="-20px">
-        {status == 'edit' && selectedImage ? (
+        {status == 'edit' ? (
           <ShareImageEdit
-            src={selectedImage}
+            src={selectedImage ?? PRESET_IMAGE}
             activities={activities}
             onOk={shareActivities}
+            onCancel={reselect}
           />
         ) : (
           <ShareImageCropper
-            src={selectedImage}
+            src={selectedImage ?? PRESET_IMAGE}
             onOk={(x) => {
               setStatus('edit');
-              setSelectedImage(x);
+              if (selectedImage) {
+                setSelectedImage(x);
+              }
             }}
           />
         )}
       </Box>
-      {status == 'edit' ? (
-        <TextButton onClick={reselect}>画像選び直す</TextButton>
-      ) : (
-        <TextButton onClick={() => router.push(`/home?${router.query.date}`)}>
-          シェアをキャンセルする
-        </TextButton>
-      )}
+      <Box display="flex" flexDirection="column" gap="10px" paddingTop="10px">
+        {status == 'select' ? (
+          <Box>
+            <input type="file" accept="image/*" onChange={loadImageHandler} />
+            <TextButton
+              onClick={() => router.push(`/home?${router.query.date}`)}
+            >
+              シェアをキャンセルする
+            </TextButton>
+          </Box>
+        ) : undefined}
+      </Box>
     </PageContainer>
   );
 };

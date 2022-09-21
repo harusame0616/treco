@@ -8,7 +8,7 @@ interface TextButtonProp {
 
 const TextButton = (prop: TextButtonProp) => {
   return (
-    <Button variant="text" onClick={prop.onClick}>
+    <Button variant="text" onClick={prop.onClick} sx={{ width: '100%' }}>
       {prop.children}
     </Button>
   );

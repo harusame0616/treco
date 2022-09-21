@@ -4,6 +4,7 @@ import {
   TrainingMenuDto,
   TrainingMenuFullId,
 } from '@Domains/training-menu/training-menu';
+import { TrainingEventWithCategoryDto } from '@Usecases/training-event-query-usecase';
 import {
   TrainingMenuCollectionQuery,
   TrainingMenuWithTrainingEventsDto,
@@ -31,10 +32,9 @@ export class FSTrainingMenuCollectionQuery
       ]);
 
     const trainingMenuMappedTrainingMenuId = Object.fromEntries(
-      trainingMenusSnapshot.docs.map((doc) => [
-        doc.id,
-        doc.data() as TrainingMenuDto,
-      ])
+      trainingMenusSnapshot.docs
+        .filter((doc) => doc.exists())
+        .map((doc) => [doc.id, doc.data() as TrainingMenuDto])
     );
 
     return {
@@ -60,14 +60,16 @@ export class FSTrainingMenuCollectionQuery
     const categoryMappedCategoryId = Object.fromEntries(
       categoriesSnapshot.docs.map((doc) => [doc.id, doc.data()])
     );
-    return {
-      ...trainingMenuDto,
-      trainingEvents: await Promise.all(
-        trainingMenuDto.trainingEventIds?.map(async (trainingEventId) => {
+    const trainingEvents = (
+      await Promise.all(
+        trainingMenuDto.trainingEventIds.map(async (trainingEventId) => {
           const trainingEventSnapshot = await getDocManagedCache(
             fsTrainingEventDocRef({ userId: prop.userId, trainingEventId })
           );
 
+          if (!trainingEventSnapshot.exists()) {
+            return null;
+          }
           const trainingEventDto =
             trainingEventSnapshot.data() as TrainingEventDto;
 
@@ -77,7 +79,18 @@ export class FSTrainingMenuCollectionQuery
             ] as CategoryDto),
             ...trainingEventDto,
           };
-        }) ?? []
+        })
+      )
+    ).filter(
+      (trainingEvent): trainingEvent is TrainingEventWithCategoryDto =>
+        !!trainingEvent
+    );
+
+    return {
+      ...trainingMenuDto,
+      trainingEvents,
+      trainingEventIds: trainingEvents.map(
+        (trainingEvent) => trainingEvent.trainingEventId
       ),
     };
   }
