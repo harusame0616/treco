@@ -7,11 +7,7 @@ import {
   collection,
   doc,
   DocumentReference,
-  getDoc,
-  getDocFromCache,
-  getDocs,
-  getDocsFromCache,
-  Query,
+  getDoc, getDocs, Query
 } from 'firebase/firestore';
 
 export const fsTrainingMenusCollectionRef = (
@@ -101,21 +97,13 @@ export const fsConfigDocRef = (prop: { userId: string; configId: string }) => {
 };
 
 export const getDocsManagedCache = async <T>(query: Query<T>) => {
-  let snapshot = await getDocsFromCache(query);
-  if (snapshot.empty) {
-    snapshot = await getDocs(query);
-  }
+  let snapshot = await getDocs(query);
 
   return snapshot;
 };
 
 export const getDocManagedCache = async <T>(ref: DocumentReference<T>) => {
-  let snapshot;
-  try {
-    snapshot = await getDocFromCache(ref);
-  } catch {
-    snapshot = await getDoc(ref);
-  }
+  let snapshot = await getDoc(ref);
 
   return snapshot || null;
 };
