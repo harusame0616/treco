@@ -1,0 +1,53 @@
+name: deploy
+
+on:
+  push:
+    - main
+    - develop
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      DEPLOY_TO: ${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+      IMAGE_NAME: treco-${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+    environment:
+      name: ${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Copy Firebase staging setting
+        if: env.DEPLOY_TO == 'stg'
+        run: cp -f web/projects/utils/settings/firebase-config-stg.json web/projects/utils/settings/firebase-config.json
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: github-actions@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Build image
+        run: docker build ./web/ -t $IMAGE_NAME:latest
+
+      - name: Tagging
+        run: docker tag $IMAGE_NAME:latest asia.gcr.io/${{secrets.GCP_PROJECT_ID}}/$IMAGE_NAME:${{ github.sha }}
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Push Docker image
+        run: docker push asia.gcr.io/${{secrets.GCP_PROJECT_ID}}/$IMAGE_NAME:${{ github.sha }}
+
+      - name: Deploy to Cloud Run
+        run: |-
+          gcloud run deploy $SERVICE_NAME \
+            --project=${{secrets.GCP_PROJECT_ID}} \
+            --image=asia.gcr.io/${{secrets.GCP_PROJECT_ID}}/$IMAGE_NAME:${{ github.sha }} \
+            --region="asia-northeast1" \
+            --service-account=github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com \
+            --allow-unauthenticated \
