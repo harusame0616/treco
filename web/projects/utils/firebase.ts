@@ -7,15 +7,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyBx_Dzg_wXFZSWxiDDMBtRk8ctOP1mctTQ',
-  authDomain: 'treco-prd.firebaseapp.com',
-  projectId: 'treco-prd',
-  storageBucket: 'treco-prd.appspot.com',
-  messagingSenderId: '299620451484',
-  appId: '1:299620451484:web:de888b048022822dc35959',
-  measurementId: 'G-DG54W3D395',
-};
+const firebaseConfig = require('./settings/firebase-config.json');
 
 const app = initializeApp(firebaseConfig);
 
