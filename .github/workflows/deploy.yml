@@ -2,11 +2,11 @@ name: deploy
 
 on:
   push:
-    # branches:
-    #   - main
-    #   - develop
+    branches:
+      - main
+      - develop
     paths:
-      - ./web/**
+      - web/**
 
 jobs:
   build:
