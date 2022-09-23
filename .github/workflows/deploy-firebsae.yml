@@ -1,6 +1,10 @@
 name: deploy-firebase
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   deploy:
@@ -8,10 +12,7 @@ jobs:
       contents: read
       id-token: write
     env:
-      # DEPLOY_TO: ${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
-      DEPLOY_TO: stg
-      # IMAGE_NAME: treco-${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
-      # IMAGE_NAME: treco-${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+      DEPLOY_TO: ${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
     environment:
       name: stg
     runs-on: ubuntu-latest
@@ -34,5 +35,5 @@ jobs:
         run: npm install -g n firebase-tools
 
       - name: deploy
-        run: firebase --project treco-stg deploy
+        run: firebase --project treco-${DEPLOY_TO} deploy
         working-directory: ./firebase/projects/workspace/
