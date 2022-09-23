@@ -1,0 +1,38 @@
+name: deploy-firebase
+
+on: [push]
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # DEPLOY_TO: ${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+      DEPLOY_TO: stg
+      # IMAGE_NAME: treco-${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+      # IMAGE_NAME: treco-${{ endsWith(github.ref, 'develop') && 'stg' || 'prd' }}
+    environment:
+      name: stg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: github-actions@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: install firebase-tools
+        run: npm install -g n firebase-tools
+
+      - name: deploy
+        run: firebase --project treco-stg deploy
+        working-directory: ./firebase/projects/workspace/
