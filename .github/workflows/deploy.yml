@@ -50,5 +50,5 @@ jobs:
             --project=${{secrets.GCP_PROJECT_ID}} \
             --image=asia.gcr.io/${{secrets.GCP_PROJECT_ID}}/$IMAGE_NAME:${{ github.sha }} \
             --region="asia-northeast1" \
-            --service-account=github-actions@${{secrets.PROJECT_ID}}.iam.gserviceaccount.com \
+            --service-account=github-actions@${{secrets.GCP_PROJECT_ID}}.iam.gserviceaccount.com \
             --allow-unauthenticated \
