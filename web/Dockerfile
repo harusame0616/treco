@@ -6,6 +6,7 @@ RUN apk update && apk add git
 CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
 # ---------- BUILD ----------
 FROM node:18-alpine3.15 AS BUILD
+ARG BUILD_ENV
 
 WORKDIR /treco/web/projects
 COPY ./projects /treco/web/projects

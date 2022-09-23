@@ -121,6 +121,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8857110954304323"
           crossOrigin="anonymous"
         />
+        <link rel="preload" as="image" href="/media/splash.svg" />
       </Head>
       <CssBaseline />
       <ThemeProvider theme={theme}>

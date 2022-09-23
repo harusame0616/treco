@@ -1,34 +1,18 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocFromCache,
-  getDocs,
-  getDocsFromCache,
-  setDoc,
-} from 'firebase/firestore';
-import { fbDb } from '../../../../utils/firebase';
+import { addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { Activity, ActivityFullId } from '../../domains/activity/activity';
 import { ActivityRepository } from '../../usecases/activity-command-usecase';
 import {
   fsActivityDoc,
   fsRecordDoc,
   fsRecordsCollection,
+  getDocManagedCache,
   getDocsManagedCache,
 } from '../firestore-utils';
 
 export class FSActivityRepository implements ActivityRepository {
   async delete(activity: Activity): Promise<void> {
     const activityDto = activity.toDto();
-    const activityDocRef = doc(
-      fbDb,
-      'users',
-      activityDto.userId,
-      'activities',
-      activityDto.activityId
-    );
+    const activityDocRef = fsActivityDoc(activityDto);
 
     return deleteDoc(activityDocRef);
   }
@@ -101,31 +85,13 @@ export class FSActivityRepository implements ActivityRepository {
   }
 
   async findOne(prop: ActivityFullId): Promise<Activity | null> {
-    const activityDocRef = doc(
-      fbDb,
-      'users',
-      prop.userId,
-      'activities',
-      prop.activityId
-    );
-    const recordsCollectionRef = collection(
-      fbDb,
-      'users',
-      prop.userId,
-      'activities',
-      prop.activityId,
-      'records'
-    );
+    const activityDocRef = fsActivityDoc(prop);
+    const recordsCollectionRef = fsRecordsCollection(prop);
 
-    let activity = await getDocFromCache(activityDocRef);
-    if (!activity.exists()) {
-      activity = await getDoc(activityDocRef);
-    }
-
-    let recordsSnapshot = await getDocsFromCache(recordsCollectionRef);
-    if (recordsSnapshot.empty) {
-      recordsSnapshot = await getDocs(recordsCollectionRef);
-    }
+    let [activity, recordsSnapshot] = await Promise.all([
+      getDocManagedCache(activityDocRef),
+      getDocsManagedCache(recordsCollectionRef),
+    ]);
 
     return activity.exists()
       ? Activity.fromDto({
