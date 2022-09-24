@@ -55,7 +55,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
       </Head>
       <main>
         <Box marginTop="-40px" display="flex" justifyContent="center">
-          <Box maxWidth="500px" width="100%">
+          <Box maxWidth="500px" width="100%" marginTop="-2%" marginBottom="-2%">
             <Image
               src="/media/splash.svg"
               width={500}
@@ -72,7 +72,7 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          marginBottom="60px"
+          marginBottom="40px"
           gap="8px"
         >
           <Box>トレーニングをもっと楽しくする</Box>
@@ -105,19 +105,31 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
           </Box>
         </Box>
         <Box
-          sx={{ fontSize: '0.75rem', width: '100%' }}
+          sx={{ fontSize: '0.7rem', width: '100%' }}
           display="flex"
           flexDirection="column"
           alignItems="center"
-          paddingTop="30px"
         >
-          <Box>本サービスはモバイル端末向けに最適化されています。</Box>
-          <Box>
+          <Box marginBottom="20px">
             <BaseLink href="/policies/term-of-service">利用規約</BaseLink>、
             <BaseLink href="/policies/privacy-policy">
               プライバシーポリシー
             </BaseLink>
-            に同意の上でご利用ください。
+            に同意の上ご利用ください。
+          </Box>
+          <Box textAlign={'center'} marginBottom="5px">
+            本サービスはモバイル端末向けに最適化されています。
+            <br />
+            以下のQRコードからモバイル端末でご利用ください。
+          </Box>
+          <Box width="min(50px, 80%)">
+            <Image
+              src="/qr.png"
+              width="208"
+              height="208"
+              layout="responsive"
+              alt="TRECo URL QR Code"
+            />
           </Box>
         </Box>
       </main>

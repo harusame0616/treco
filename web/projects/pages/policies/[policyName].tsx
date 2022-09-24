@@ -191,7 +191,9 @@ const PrivacyPage: NextPage<PageInjection> = ({ pageTitle }) => {
               sx={{
                 whiteSpace: 'pre-wrap',
                 fontSize: '12px',
-                overflow: 'scroll',
+                overflowY: 'scroll',
+                marginRight: '-20px',
+                paddingRight: '20px',
               }}
               height="100%"
             >
