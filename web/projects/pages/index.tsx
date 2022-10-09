@@ -62,6 +62,8 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
               height={500}
               layout="responsive"
               alt="TRECo Splash Image"
+              priority={true}
+              loading="eager"
             />
           </Box>
         </Box>
@@ -97,7 +99,12 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle }) => {
                 </PrimaryButton>
               </Box>
             ))}
-            <Box display="flex" justifyContent="flex-end" marginRight="5px">
+            <Box
+              display="flex"
+              justifyContent="flex-end"
+              marginRight="5px"
+              className="sign-in-anonymously-button-container"
+            >
               <TextButton onClick={signInAnonymously}>
                 登録せず開始する
               </TextButton>

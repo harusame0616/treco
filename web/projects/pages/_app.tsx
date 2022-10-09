@@ -85,6 +85,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           // 既にカテゴリが作成済みの場合はエラーが返ってくるが何もしない
           /* do nothing*/
         });
+
       router.push('/home');
     } else if (!auth.isAuthenticated && router.pathname != '/') {
       router.push('/');

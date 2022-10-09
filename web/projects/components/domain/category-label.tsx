@@ -48,9 +48,10 @@ const CategoryLabel = (prop: Prop) => {
       alignItems="center"
       gap={space}
       width="100%"
+      className="category-label"
     >
       <TrainingMark color={prop.color} size={markSize} />
-      {prop.children}
+      <span className="label">{prop.children}</span>
     </Box>
   );
 };

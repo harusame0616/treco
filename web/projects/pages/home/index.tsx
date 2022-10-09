@@ -173,27 +173,6 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
-  const isLoading =
-    selectDateMonthActivitiesIsLoading ||
-    prevMonthActivitiesIsLoading ||
-    currentMonthActivitiesIsLoading ||
-    nextMonthActivitiesIsLoading;
-
-  if (
-    selectDateMonthActivitiesIsError ||
-    prevMonthActivitiesIsError ||
-    currentMonthActivitiesIsError ||
-    nextMonthActivitiesIsError
-  ) {
-    console.error({
-      selectDateMonthActivitiesError,
-      prevMonthActivitiesError,
-      currentMonthActivitiesError,
-      nextMonthActivitiesError,
-    });
-    return <ReadErrorTemplate />;
-  }
-
   const deleteActivity = async () => {
     await startProcessing(async () => {
       try {
@@ -325,7 +304,13 @@ const Home: NextPage<PageInjection> = ({ auth, pageTitle, popMessage }) => {
           <FormatListBulletedRounded />
         </BaseCircleButton>
       </Box>
-      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
+      <Box
+        position="fixed"
+        right="20px"
+        bottom="60px"
+        zIndex="1"
+        className="new-activity-button-container"
+      >
         <AddButton
           onClick={() => {
             router.push({

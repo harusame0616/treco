@@ -23,6 +23,7 @@ const BaseSlideAction = (prop: Prop) => {
       }}
       gap="10px"
       display="flex"
+      className="base-slide-action"
     >
       <Box
         sx={{

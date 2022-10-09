@@ -1,17 +1,23 @@
-import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import {
   connectFirestoreEmulator,
-  enableMultiTabIndexedDbPersistence,
-  getFirestore,
+  enableMultiTabIndexedDbPersistence, initializeFirestore
 } from 'firebase/firestore';
 
 const firebaseConfig = require('./settings/firebase-config.json');
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig, {});
 
-const fbDb = getFirestore();
+
+const fbDb = initializeFirestore(app, {
+  experimentalForceLongPolling:
+    typeof window == 'object' && (window as any)?.Cypress ? true : false,
+});
+// const fbDb = getFirestore();
+
+
 const fbAuth = getAuth();
 
 if (process.env.NODE_ENV === 'development' && typeof location == 'object') {

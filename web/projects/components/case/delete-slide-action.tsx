@@ -10,15 +10,19 @@ interface Prop {
 
 const DeleteSlideAction = (prop: Prop) => {
   return (
-    <BaseSlideAction
-      action={
-        <PrimaryButton height="100%" onClick={prop.onDeleteClick}>
-          <DeleteForeverRounded sx={{ fontSize: '3rem' }} />
-        </PrimaryButton>
-      }
-    >
-      {prop.children}
-    </BaseSlideAction>
+    <div className="delete-slide-action">
+      <BaseSlideAction
+        action={
+          <div className="delete-button">
+            <PrimaryButton height="100%" onClick={prop.onDeleteClick}>
+              <DeleteForeverRounded sx={{ fontSize: '3rem' }} />
+            </PrimaryButton>
+          </div>
+        }
+      >
+        {prop.children}
+      </BaseSlideAction>
+    </div>
   );
 };
 export default DeleteSlideAction;

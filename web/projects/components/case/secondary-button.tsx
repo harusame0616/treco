@@ -15,6 +15,7 @@ const SecondaryButton = (prop: Prop) => {
       color="primary"
       onClick={prop.onClick}
       disabled={prop.disabled}
+      className="secondary-button"
     >
       {prop.children}
     </Button>

@@ -22,7 +22,12 @@ interface Prop {
 
 const BaseDialog = (prop: Prop) => {
   return (
-    <Dialog open={prop.open ?? false} onClose={prop.onClose} fullWidth>
+    <Dialog
+      open={prop.open ?? false}
+      onClose={prop.onClose}
+      fullWidth
+      className="base-dialog"
+    >
       <BaseCard>
         <Box marginY="20px" width="100%">
           {prop.children}
@@ -33,6 +38,7 @@ const BaseDialog = (prop: Prop) => {
           flexDirection="column"
           gap="10px"
           width="100%"
+          className="actions-container"
         >
           <SecondaryButton
             onClick={prop.onSecondaryClick}

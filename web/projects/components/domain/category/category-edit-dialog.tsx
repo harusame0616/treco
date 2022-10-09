@@ -56,7 +56,7 @@ const CategoryEditPopup = (prop: Prop) => {
       isLoading={prop.isLoading}
     >
       <BaseDialogTitle>カテゴリ作成</BaseDialogTitle>
-      <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" className="category-color-button-container">
         <IconButton
           onClick={() => {
             // PCだとclick、スマホだとfocusでカラーピッカーが表示される
@@ -77,6 +77,7 @@ const CategoryEditPopup = (prop: Prop) => {
             opacity: '0',
           }}
           disabled={prop.isLoading}
+          className="category-color-input"
         />
         <TextField
           autoFocus
@@ -88,6 +89,7 @@ const CategoryEditPopup = (prop: Prop) => {
           onChange={(e) => setCategoryName(e.target.value)}
           fullWidth
           disabled={prop.isLoading}
+          className="category-name-textfield"
         />
       </Box>
     </BaseDialog>

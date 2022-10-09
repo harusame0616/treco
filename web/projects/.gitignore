@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+treco/e2e/projects/cypress/screenshot
+treco/e2e/projects/cypress/videos

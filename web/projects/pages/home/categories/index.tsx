@@ -11,7 +11,7 @@ import PageContainer from '@Components/container/page-container';
 import SectionContainer from '@Components/container/section-container';
 import CategoryLabel from '@Components/domain/category-label';
 import CategoryEditPopup, {
-  CategoryEditInfo
+  CategoryEditInfo,
 } from '@Components/domain/category/category-edit-dialog';
 import { CategoryDto } from '@Domains/category/category';
 import useCategories from '@Hooks/category/useCategories';
@@ -159,7 +159,11 @@ const CategoriesPage: NextPage<PageInjection> = ({
         ) : (
           <TransitionGroup>
             {categories.map((category) => (
-              <Collapse key={category.categoryId} sx={{ marginBottom: '5px' }}>
+              <Collapse
+                key={category.categoryId}
+                sx={{ marginBottom: '5px' }}
+                className={`category-item category-item-${category.categoryName}`}
+              >
                 <DeleteSlideAction
                   onDeleteClick={() => {
                     openDeleteConfirm(category);
@@ -173,7 +177,11 @@ const CategoriesPage: NextPage<PageInjection> = ({
                         {category.categoryName}
                       </CategoryLabel>
                     </Box>
-                    <Box flexGrow={0} flexShrink={1}>
+                    <Box
+                      flexGrow={0}
+                      flexShrink={1}
+                      className="edit-button-container"
+                    >
                       <IconButton
                         color="primary"
                         onClick={(e) => {
@@ -214,7 +222,13 @@ const CategoriesPage: NextPage<PageInjection> = ({
         onError={(err) => popMessage.error(err)}
         isLoading={isProcessing}
       />
-      <Box position="fixed" right="20px" bottom="60px" zIndex="1">
+      <Box
+        position="fixed"
+        right="20px"
+        bottom="60px"
+        zIndex="1"
+        className="new-category-button-container"
+      >
         <AddButton onClick={() => openCategoryEditPopup()} />
       </Box>
     </PageContainer>

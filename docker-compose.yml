@@ -31,3 +31,10 @@ services:
       - 60000:60000 # Emulator Suite UI
       - 8080:8080 # firestore
       - 9099:9099 # auth
+  e2e:
+    build:
+        context: ./e2e
+    volumes:
+      - ./:/treco
+    working_dir: /treco/e2e/projects
+    command: ["npx", "cypress", "run", "--", "--watch"]

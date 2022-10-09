@@ -18,6 +18,7 @@ const PrimaryButton = (prop: PrimaryButtonProp) => {
       color="primary"
       onClick={prop.isLoading ? undefined : prop.onClick}
       disabled={prop.disabled || prop.isLoading}
+      className="primary-button"
     >
       {prop.isLoading ? (
         <BaseProgress size="1.5rem" color="white" />
