@@ -53,8 +53,11 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply h-full;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground h-full;
   }
   a {
     @apply text-primary underline underline-offset-2;
