@@ -57,6 +57,6 @@
     @apply bg-background text-foreground;
   }
   a {
-    @apply text-primary;
+    @apply text-primary underline underline-offset-2;
   }
 }
