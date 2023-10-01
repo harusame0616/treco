@@ -1,8 +1,11 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { M_PLUS_Rounded_1c } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+const baseFont = M_PLUS_Rounded_1c({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 export const metadata: Metadata = {
   title: 'TRECo - BESIDE YOUR WORKOUT',
@@ -17,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={inter.className}>{children}</body>
+      <body className={`${baseFont.className} dark`}>{children}</body>
     </html>
   );
 }
