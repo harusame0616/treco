@@ -2,10 +2,19 @@ import Image from 'next/image';
 import SplashImage from './splash.svg';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { LoginButtonList } from '../login-button-list';
+import { isAuthenticated } from '@/lib/auth/auth';
+import { redirect } from 'next/navigation';
+import { LoginCheck } from '../login-check';
 
-export default function Home() {
+export default async function Home() {
+  if (await isAuthenticated()) {
+    redirect('/home');
+  }
+
   return (
     <main className="flex flex-col w-full items-center px-4 py-14 gap-10">
+      <LoginCheck />
       <Image
         priority
         src={SplashImage}
@@ -17,12 +26,7 @@ export default function Home() {
         <span className="block">シンプルなトレーニング記録サービス</span>
       </p>
       <div className="flex flex-col gap-2">
-        <Button>Google でログイン</Button>
-        <Button>Twitter でログイン</Button>
-        <Button>Facebook でログイン</Button>
-        <Button variant="ghost" className="text-primary">
-          登録せず開始する
-        </Button>
+        <LoginButtonList />
       </div>
       <div className="text-xs">
         <Link href="/policies/term-of-service">利用規約</Link>、
