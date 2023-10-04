@@ -1,6 +1,8 @@
-import './globals.css';
+import { AuthProvider } from '@/lib/auth';
 import type { Metadata } from 'next';
 import { M_PLUS_Rounded_1c } from 'next/font/google';
+import { PropsWithChildren } from 'react';
+import './globals.css';
 
 const baseFont = M_PLUS_Rounded_1c({
   subsets: ['latin'],
@@ -13,14 +15,12 @@ export const metadata: Metadata = {
     'トレーニングをもっと楽しくするシンプルなトレーニング記録サービス',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ja">
-      <body className={`${baseFont.className} dark`}>{children}</body>
+      <body className={`${baseFont.className} dark`}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
