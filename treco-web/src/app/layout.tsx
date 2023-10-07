@@ -6,7 +6,7 @@ import './globals.css';
 
 const baseFont = M_PLUS_Rounded_1c({
   subsets: ['latin'],
-  weight: '400',
+  weight: ['300', '700', '900'],
 });
 
 export const metadata: Metadata = {

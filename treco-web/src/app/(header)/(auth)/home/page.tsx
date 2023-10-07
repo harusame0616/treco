@@ -1,7 +1,14 @@
-import { auth } from '@/lib/firebase/admin';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import dayjs from 'dayjs';
+import { Calendar } from './_component/calendar';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default async function Home() {
-  return <div className="text-center">HOME</div>;
+export default async function HomePage() {
+  return (
+    <div>
+      <div className="calendar p-4 bg-muted">
+        <Calendar />
+      </div>
+    </div>
+  );
 }
