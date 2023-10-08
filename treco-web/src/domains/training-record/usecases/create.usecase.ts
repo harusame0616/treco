@@ -46,6 +46,7 @@ export class TrainingRecordCreateUsecase {
 
     const trainingRecord = TrainingRecord.create({
       trainingEventId,
+      traineeId,
     });
 
     await this.trainingRecordRepository.save(trainingRecord);
