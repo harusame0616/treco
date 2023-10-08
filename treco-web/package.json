@@ -24,9 +24,11 @@
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "valibot": "^0.18.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.38.1",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
