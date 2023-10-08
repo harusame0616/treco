@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 export default function HeaderLayout({ children }: PropsWithChildren) {
   return (
     <div className="w-full h-full">
-      <header className="fixed pt-2 px-4 w-full bg-background items-center">
+      <header className="fixed pt-2 px-4 w-full bg-background items-center h-11">
         <div className="flex max-w-5xl mx-auto">
           <Link href="/">
             <div className="sr-only">TRECo ホームへのリンク</div>
@@ -25,7 +25,7 @@ export default function HeaderLayout({ children }: PropsWithChildren) {
           </div>
         </div>
       </header>
-      <div className="py-12 h-full">{children}</div>
+      <div className="pt-11 h-full">{children}</div>
     </div>
   );
 }
