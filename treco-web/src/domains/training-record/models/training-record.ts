@@ -21,6 +21,18 @@ export class TrainingRecord {
     this.dto.sets.push({ value, load, note });
   }
 
+  editSet({ value, load, note, index }: TrainingSet & { index: number }) {
+    if (this.dto.sets.length <= index) {
+      console.error('edit set index is out ouf range', {
+        setLength: this.dto.sets.length,
+        index,
+      });
+      throw new Error('edit set index is out of range', {});
+    }
+
+    this.dto.sets.splice(index, 1, { value, load, note });
+  }
+
   static create({
     trainingEventId,
     traineeId,
