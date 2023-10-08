@@ -28,6 +28,7 @@
     "valibot": "^0.18.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.38.1",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
