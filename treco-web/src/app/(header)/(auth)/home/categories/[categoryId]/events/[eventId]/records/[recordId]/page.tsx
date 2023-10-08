@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import { TrashIcon } from '@radix-ui/react-icons';
 
 export default function TrainingRecordEditPage() {
   const trainingCategory = {

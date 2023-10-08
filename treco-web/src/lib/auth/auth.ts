@@ -3,18 +3,22 @@ import { auth } from '../firebase/admin';
 import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
 import { cache } from 'react';
 
-async function getSession() {
+export async function getSession() {
   const sessionId = cookies().get(SESSION_ID_COOKIE_NAME)?.value;
 
   if (!sessionId) {
-    return null;
+    throw new Error('No session ID cookie found');
   }
 
-  return await auth.verifySessionCookie(sessionId).catch(() => null);
+  try {
+    return await auth.verifySessionCookie(sessionId);
+  } catch (e) {
+    throw new Error('Invalid session ID cookie');
+  }
 }
 
 async function isAuthenticatedRaw() {
-  return !!(await getSession());
+  return !!(await getSession().catch(() => null));
 }
 
 export const isAuthenticated = cache(isAuthenticatedRaw);
