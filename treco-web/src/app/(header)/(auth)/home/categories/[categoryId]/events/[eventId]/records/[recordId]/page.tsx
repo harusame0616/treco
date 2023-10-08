@@ -1,11 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { TrashIcon } from '@radix-ui/react-icons';
-import { addSetAction } from './actions';
+import { IMTrainingRecordRepository } from '@/domains/training-record/infrastructures/im.repository';
 import { generateId } from '@/lib/id';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { IMTrainingRecordRepository } from '@/domains/training-record/infrastructures/im.repository';
+import { TrashIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
+import { addSetAction, editSetAction } from './actions';
+import { CancelButton } from './cancel-button';
 import { SubmitButton } from './submit-button';
 
 async function queryTrainingRecordEdit(trainingRecordId: string) {
@@ -41,12 +43,31 @@ type Props = {
     eventId: string;
     recordId: string;
   };
+  searchParams: {
+    edit?: string;
+  };
 };
 
-export default async function TrainingRecordEditPage({ params }: Props) {
+export default async function TrainingRecordEditPage({
+  params,
+  searchParams,
+}: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
   const { trainingCategory, trainingEvent, sets } =
     await queryTrainingRecordEdit(params.recordId);
+  const activeSetIndex = searchParams.edit
+    ? parseInt(searchParams.edit, 10)
+    : null;
+
+  const {
+    load: loadDefaultValue,
+    value: valueDefaultValue,
+    note: noteDefaultValue,
+  } = activeSetIndex != null
+    ? sets[activeSetIndex]
+    : { load: '', value: '', note: '' };
+
+  const isEditing = activeSetIndex != null;
 
   return (
     <div className="w-full flex flex-col h-full">
@@ -72,20 +93,35 @@ export default async function TrainingRecordEditPage({ params }: Props) {
                 key={index}
                 className="flex border-b border-b-muted-foreground border-solid last:border-b-0 h-16"
               >
-                <div className="w-4 text-xs flex justify-end items-center text-muted-foreground mr-1">
-                  {index + 1}
-                </div>
-                <div className="w-12 flex items-center justify-end mr-1">
-                  {load}
-                </div>
-                <div className="w-12 flex items-center justify-end mr-8">
-                  {value}
-                </div>
-                <div className="flex items-center grow">
-                  <div className="w-12 flex-grow text-xs whitespace-pre p-3 max-h-10 overflow-y-auto">
-                    {note || '-'}
+                <Link
+                  href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
+                  className={`flex w-full no-underline text-foreground ${
+                    activeSetIndex === index
+                      ? 'text-primary rounded-sm font-bold important'
+                      : ''
+                  }`}
+                >
+                  <div
+                    className={`w-4 text-xs flex justify-end items-center  mr-1 ${
+                      activeSetIndex === index
+                        ? 'text-primary text-bold'
+                        : 'text-muted-foreground'
+                    }`}
+                  >
+                    {index + 1}
                   </div>
-                </div>
+                  <div className="w-12 flex items-center justify-end mr-1">
+                    {load}
+                  </div>
+                  <div className="w-12 flex items-center justify-end mr-8">
+                    {value}
+                  </div>
+                  <div className="flex items-center grow">
+                    <div className="w-12 flex-grow text-xs whitespace-pre p-3 max-h-10 overflow-y-auto">
+                      {note || '-'}
+                    </div>
+                  </div>
+                </Link>
                 <div className="flex items-center">
                   <Button variant="ghost" size="icon">
                     <TrashIcon />
@@ -103,7 +139,10 @@ export default async function TrainingRecordEditPage({ params }: Props) {
           </p>
         )}
       </div>
-      <form action={addSetAction} className="shrink-0 p-4 gap-1 flex flex-col">
+      <form
+        action={isEditing ? editSetAction : addSetAction}
+        className="shrink-0 p-4 gap-1 flex flex-col"
+      >
         <input
           type="hidden"
           name="trainingCategoryId"
@@ -112,6 +151,9 @@ export default async function TrainingRecordEditPage({ params }: Props) {
         <input type="hidden" name="trainingEventId" value={params.eventId} />
         <input type="hidden" name="trainingRecordId" value={params.recordId} />
         <input type="hidden" name="traineeId" value={signedInTraineeId} />
+        {isEditing && (
+          <input type="hidden" name="index" value={activeSetIndex} />
+        )}
         <div className="flex gap-4">
           <label className="flex items-center">
             <div className="mr-2 shrink-0">負荷</div>
@@ -122,6 +164,7 @@ export default async function TrainingRecordEditPage({ params }: Props) {
               name="load"
               autoFocus
               required
+              defaultValue={loadDefaultValue}
             />
           </label>
           <label className="flex items-center">
@@ -132,15 +175,21 @@ export default async function TrainingRecordEditPage({ params }: Props) {
               name="value"
               required
               step="0.01"
+              defaultValue={valueDefaultValue}
             />
           </label>
         </div>
         <label className="flex">
           <div className="shrink-0 mr-2">備考</div>
-          <Textarea className="grow h-1" name="note" />
+          <Textarea
+            className="grow h-1"
+            name="note"
+            defaultValue={noteDefaultValue}
+          />
         </label>
-        <div className="flex justify-end">
-          <SubmitButton />
+        <div className="flex justify-end gap-2">
+          {isEditing && <CancelButton />}
+          <SubmitButton>{isEditing ? '変更する' : '追加する'}</SubmitButton>
         </div>
       </form>
     </div>

@@ -1,5 +1,7 @@
 import { TrainingRecordAddSetUsecase } from '@/domains/training-record/usecases/add-set.usecase';
+import { TrainingRecordEditSetUsecase } from '@/domains/training-record/usecases/edit-set.usecase';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import {
   coerce,
   maxLength,
@@ -18,19 +20,22 @@ const inputSchema = object({
   value: coerce(number(), Number),
   load: coerce(number(), Number),
   note: string([maxLength(255)]),
+  index: coerce(number(), Number),
 });
 
-const addSetUsecase = new TrainingRecordAddSetUsecase();
+const editSetUsecase = new TrainingRecordEditSetUsecase();
 
-export async function addSetAction(formData: FormData) {
+export async function editSetAction(formData: FormData) {
   'use server';
 
   let input;
+  console.log('index', formData.get('index'));
   try {
     input = parse(inputSchema, {
       ...Object.fromEntries(formData.entries()),
-      value: formData.get('value'),
-      load: formData.get('load'),
+      value: formData.get('value') || undefined,
+      load: formData.get('load') || undefined,
+      index: formData.get('index') || undefined,
     });
   } catch (e: any) {
     console.error('validation error', {
@@ -41,9 +46,12 @@ export async function addSetAction(formData: FormData) {
     throw new Error('validatin error');
   }
 
-  const trainingRecord = await addSetUsecase.execute(input);
+  const trainingRecord = await editSetUsecase.execute(input);
 
   revalidatePath(
+    `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${trainingRecord.trainingRecordId}`
+  );
+  redirect(
     `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${trainingRecord.trainingRecordId}`
   );
 }
