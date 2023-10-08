@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { getSession } from '@/lib/auth/auth';
 import { generateId } from '@/lib/id';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { createNewRecordAction } from './actions';
+import { getSignedInTraineeId } from '@/lib/trainee';
 
 export default async function TrainingEventPage() {
-  const session = await getSession();
+  const signedInTraineeId = await getSignedInTraineeId();
   const category = {
     id: generateId(),
     name: '胸',
@@ -41,7 +41,6 @@ export default async function TrainingEventPage() {
               action={createNewRecordAction}
               className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16"
             >
-              <input type="hidden" value={session.sub} />
               <input
                 type="hidden"
                 name="trainingCategoryId"
@@ -52,7 +51,7 @@ export default async function TrainingEventPage() {
                 name="trainingEventId"
                 value={trainingEventId}
               />
-              <input type="hidden" name="traineeId" value={trainingEventId} />
+              <input type="hidden" name="traineeId" value={signedInTraineeId} />
               <button className="text-foreground block w-full no-underline text-left whitespace-nowrap overflow-x-hidden text-ellipsis">
                 <span className="text-xl grow ">{name}</span>
               </button>

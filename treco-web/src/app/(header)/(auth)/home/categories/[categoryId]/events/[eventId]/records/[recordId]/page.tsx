@@ -2,37 +2,51 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TrashIcon } from '@radix-ui/react-icons';
+import { addSetAction } from './actions';
+import { generateId } from '@/lib/id';
+import { getSignedInTraineeId } from '@/lib/trainee';
+import { IMTrainingRecordRepository } from '@/domains/training-record/infrastructures/im.repository';
+import { SubmitButton } from './submit-button';
 
-export default function TrainingRecordEditPage() {
-  const trainingCategory = {
-    id: 1,
-    name: '胸',
-    color: '#db4d6d',
-  };
-  const trainingEvent = {
-    id: 1,
-    name: 'ベンチプレス',
-  };
+async function queryTrainingRecordEdit(trainingRecordId: string) {
+  // TODO: not implemented
+  const trainingRecordRepository = new IMTrainingRecordRepository();
 
-  const records = [
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考\nテスト' },
-    { id: '1', load: '100', value: '10', note: '備考\nテスト\nテスト' },
-    { id: '1', load: '100', value: '10', note: '備考\nテスト\nテスト\nテスト' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-    { id: '1', load: '100', value: '10', note: '備考' },
-  ];
+  const trainingRecord = await trainingRecordRepository.findOneById(
+    trainingRecordId
+  );
+  if (!trainingRecord) {
+    throw new Error('not found');
+  }
+
+  await new Promise((r) => setTimeout(r, 1000));
+
+  return {
+    trainingCategory: {
+      id: generateId(),
+      name: '胸',
+      color: '#db4d6d',
+    },
+    trainingEvent: {
+      id: generateId(),
+      name: 'ベンチプレス',
+    },
+    sets: trainingRecord.toDto().sets,
+  };
+}
+
+type Props = {
+  params: {
+    categoryId: string;
+    eventId: string;
+    recordId: string;
+  };
+};
+
+export default async function TrainingRecordEditPage({ params }: Props) {
+  const signedInTraineeId = await getSignedInTraineeId();
+  const { trainingCategory, trainingEvent, sets } =
+    await queryTrainingRecordEdit(params.recordId);
 
   return (
     <div className="w-full flex flex-col h-full">
@@ -50,55 +64,85 @@ export default function TrainingRecordEditPage() {
         <div className="w-10 ml-4">値</div>
         <div className="flex-grow">備考</div>
       </div>
-      <div className="bg-muted px-4 h-full overflow-y-scroll">
-        <ul className="">
-          {records.map(({ id, load, value, note }, index) => (
-            <li
-              key={id}
-              className="flex border-b border-b-muted-foreground border-dashed last:border-b-0 h-20"
-            >
-              <div className="w-4 text-xs flex justify-end items-center text-muted-foreground mr-1">
-                {index + 1}
-              </div>
-              <div className="w-12 flex items-center justify-end mr-1">
-                {load}
-              </div>
-              <div className="w-12 flex items-center justify-end mr-8">
-                {value}
-              </div>
-              <div className="flex items-center grow">
-                <div className="w-12 flex-grow text-xs whitespace-pre text-ellipsis line-clamp-3 max-h-12">
-                  {note}
+      <div className="bg-muted px-4 h-full overflow-y-scroll py-4">
+        {sets.length ? (
+          <ul className="">
+            {sets.map(({ load, value, note }, index) => (
+              <li
+                key={index}
+                className="flex border-b border-b-muted-foreground border-solid last:border-b-0 h-16"
+              >
+                <div className="w-4 text-xs flex justify-end items-center text-muted-foreground mr-1">
+                  {index + 1}
                 </div>
-              </div>
-              <div className="flex items-center">
-                <Button variant="ghost" size="icon">
-                  <TrashIcon />
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                <div className="w-12 flex items-center justify-end mr-1">
+                  {load}
+                </div>
+                <div className="w-12 flex items-center justify-end mr-8">
+                  {value}
+                </div>
+                <div className="flex items-center grow">
+                  <div className="w-12 flex-grow text-xs whitespace-pre p-3 max-h-10 overflow-y-auto">
+                    {note || '-'}
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <Button variant="ghost" size="icon">
+                    <TrashIcon />
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="break-word">
+            <span className="block">まだ記録がありません。</span>
+            <span className="block">
+              下部のフォームから記録を追加してください。
+            </span>
+          </p>
+        )}
       </div>
-      <div className="shrink-0 p-4 gap-1 flex flex-col">
+      <form action={addSetAction} className="shrink-0 p-4 gap-1 flex flex-col">
+        <input
+          type="hidden"
+          name="trainingCategoryId"
+          value={params.categoryId}
+        />
+        <input type="hidden" name="trainingEventId" value={params.eventId} />
+        <input type="hidden" name="trainingRecordId" value={params.recordId} />
+        <input type="hidden" name="traineeId" value={signedInTraineeId} />
         <div className="flex gap-4">
           <label className="flex items-center">
             <div className="mr-2 shrink-0">負荷</div>
-            <Input inputMode="decimal" type="number" />
+            <Input
+              inputMode="decimal"
+              type="number"
+              step="0.01"
+              name="load"
+              autoFocus
+              required
+            />
           </label>
           <label className="flex items-center">
             <div className="mr-2 shrink-0">値</div>
-            <Input inputMode="decimal" type="number" />
+            <Input
+              inputMode="decimal"
+              type="number"
+              name="value"
+              required
+              step="0.01"
+            />
           </label>
         </div>
         <label className="flex">
           <div className="shrink-0 mr-2">備考</div>
-          <Textarea className="grow h-1" />
+          <Textarea className="grow h-1" name="note" />
         </label>
         <div className="flex justify-end">
-          <Button>追加</Button>
+          <SubmitButton />
         </div>
-      </div>
+      </form>
     </div>
   );
 }
