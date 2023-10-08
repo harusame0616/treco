@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: 'TRECo - BESIDE YOUR WORKOUT',
   description:
     'トレーニングをもっと楽しくするシンプルなトレーニング記録サービス',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
