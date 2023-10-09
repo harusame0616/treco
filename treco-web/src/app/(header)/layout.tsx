@@ -1,31 +1,28 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactElement } from 'react';
 import Icon from './icon.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
-// ...
+import { FilePlusIcon, HomeIcon, PersonIcon } from '@radix-ui/react-icons';
 
 <Image src={Icon} alt="TRECo アイコン" width={100} height={100} />;
 
 export default function HeaderLayout({ children }: PropsWithChildren) {
   return (
-    <div className="w-full h-full">
-      <header className="fixed pt-2 px-4 w-full bg-background items-center h-11">
-        <div className="flex max-w-5xl mx-auto">
-          <Link href="/">
-            <div className="sr-only">TRECo ホームへのリンク</div>
-            <Image src={Icon} alt="TRECo アイコン" width="32" height="32" />
-          </Link>
-          <div className="flex-grow"></div>
-          <div className="flex-grow-0 flex items-center">
-            <form method="GET" action="/auth/signout">
-              <Button variant="link">ログアウト</Button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <div className="pt-11 h-full">{children}</div>
+    <div className="w-full h-full flex flex-col max-w-5xl mx-auto border-x border-x-accent">
+      <MainHeader />
+      <div className="grow">{children}</div>
     </div>
+  );
+}
+
+function MainHeader() {
+  return (
+    <header className="px-4 py-2 bg-background items-center flex border-b border-b-accent shadow-md">
+      <Link href="/">
+        <div className="sr-only">TRECo ホームへのリンク</div>
+        <Image src={Icon} alt="TRECo アイコン" width="32" height="32" />
+      </Link>
+    </header>
   );
 }

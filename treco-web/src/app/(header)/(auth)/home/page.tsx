@@ -5,10 +5,8 @@ import { useRouter } from 'next/navigation';
 
 export default async function HomePage() {
   return (
-    <div>
-      <div className="calendar p-4 bg-muted">
-        <Calendar />
-      </div>
+    <div className="calendar p-4 bg-muted">
+      <Calendar />
     </div>
   );
 }
