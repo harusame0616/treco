@@ -4,6 +4,7 @@ import { TrainingRecord } from '../models/training-record';
 type Props = {
   trainingEventId: string;
   traineeId: string;
+  trainingDate: Date;
 };
 
 export class TrainingRecordCreateUsecase {
@@ -24,7 +25,7 @@ export class TrainingRecordCreateUsecase {
   constructor() {
     this.trainingRecordRepository = new IMTrainingRecordRepository();
   }
-  async execute({ trainingEventId, traineeId }: Props) {
+  async execute({ trainingEventId, traineeId, trainingDate }: Props) {
     const trainingEvent = await this.trainingEventRepository.findOneById({
       trainingEventId,
     });
@@ -47,6 +48,7 @@ export class TrainingRecordCreateUsecase {
     const trainingRecord = TrainingRecord.create({
       trainingEventId,
       traineeId,
+      trainingDate,
     });
 
     await this.trainingRecordRepository.save(trainingRecord);

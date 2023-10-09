@@ -6,6 +6,7 @@ import { getSignedInTraineeId } from '@/lib/trainee';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { notFound } from 'next/navigation';
+import dayjs from 'dayjs';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const signedInTraineeId = await getSignedInTraineeId();
@@ -33,12 +34,20 @@ type Props = {
   params: {
     categoryId: string;
   };
+  searchParams: {
+    date: string;
+  };
 };
-export default async function TrainingEventPage({ params }: Props) {
+export default async function TrainingEventPage({
+  params,
+  searchParams,
+}: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
 
   const category = await queryCategory(params.categoryId);
   const trainingEvents = await queryTrainingEvents(params.categoryId);
+
+  const selectDate = dayjs(searchParams.date);
 
   if (!category) {
     return notFound();
@@ -64,6 +73,11 @@ export default async function TrainingEventPage({ params }: Props) {
               action={createNewRecordAction}
               className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16"
             >
+              <input
+                name="trainingDate"
+                type="hidden"
+                value={selectDate.toISOString().slice(0, -8)}
+              />
               <input
                 type="hidden"
                 name="trainingCategoryId"

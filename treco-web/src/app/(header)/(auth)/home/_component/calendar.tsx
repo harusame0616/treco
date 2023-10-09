@@ -6,6 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import { CalendarMonth } from './calendar-month';
 import { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const createViewMonths = (month: Dayjs, startIndex: number) => {
   // 0 は現在表示中の月、 1 は次の月、 -1 は前の月を表す。
@@ -27,8 +28,19 @@ export function Calendar() {
   const [viewMonth, setViewMonth] = useState(dayjs());
 
   const [slideIndex, setSlideIndex] = useState(0);
+  const router = useRouter();
 
   const months = createViewMonths(viewMonth, slideIndex);
+  const selectDateHandler = useCallback(
+    (date: Date) => {
+      setSelectDate(dayjs(date));
+      const searchParams = new URLSearchParams({
+        date: dayjs(date).format('YYYY-MM-DD'),
+      });
+      router.push(`/home?${searchParams.toString()}`, {});
+    },
+    [router]
+  );
 
   const afterChangeMemo = useCallback(
     (index: number) => {
@@ -60,7 +72,7 @@ export function Calendar() {
         {months.map((month) => (
           <CalendarMonth
             selectDate={selectDate.toDate()}
-            onSelectDate={(date) => setSelectDate(dayjs(date))}
+            onSelectDate={selectDateHandler}
             year={month.year()}
             month={month.month() + 1}
             key={month.toISOString()}
