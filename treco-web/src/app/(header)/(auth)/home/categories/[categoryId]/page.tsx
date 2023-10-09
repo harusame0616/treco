@@ -3,23 +3,46 @@ import { generateId } from '@/lib/id';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { createNewRecordAction } from './actions';
 import { getSignedInTraineeId } from '@/lib/trainee';
+import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
+import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
+import { notFound } from 'next/navigation';
 
-export default async function TrainingEventPage() {
+async function queryTrainingEvents(trainingCategoryId: string) {
   const signedInTraineeId = await getSignedInTraineeId();
-  const category = {
-    id: generateId(),
-    name: '胸',
-    color: '#db4d6d',
+
+  const query = new TrainingEventQueryByTrainingCategoryId();
+  return (await query.execute({ trainingCategoryId })).filter(
+    (trainingEvent) => trainingEvent.traineeId === signedInTraineeId
+  );
+}
+
+async function queryCategory(trainingCategoryId: string) {
+  const signedInTraineeId = await getSignedInTraineeId();
+
+  const query = new TrainingCategoryQueryByTraineeIdUsecase();
+  const categories = await query.execute({ traineeId: signedInTraineeId });
+
+  const category = categories.find(
+    (category) => category.trainingCategoryId === trainingCategoryId
+  );
+
+  return category;
+}
+
+type Props = {
+  params: {
+    categoryId: string;
   };
-  const trainingEvents = [
-    { id: generateId(), name: 'ベンチプレス' },
-    { id: generateId(), name: 'ダンベルフライ' },
-    { id: generateId(), name: 'チェストプレス' },
-    { id: generateId(), name: 'チェストフライ' },
-    { id: generateId(), name: 'ケーブルクロスオーバーロー' },
-    { id: generateId(), name: 'ケーブルフライ' },
-    { id: generateId(), name: 'プッシュアップ' },
-  ];
+};
+export default async function TrainingEventPage({ params }: Props) {
+  const signedInTraineeId = await getSignedInTraineeId();
+
+  const category = await queryCategory(params.categoryId);
+  const trainingEvents = await queryTrainingEvents(params.categoryId);
+
+  if (!category) {
+    return notFound();
+  }
 
   return (
     <div className="px-4">
@@ -30,7 +53,7 @@ export default async function TrainingEventPage() {
       </nav>
 
       <ul aria-label={`${category.name}のトレーニング種目`} className="w-full">
-        {trainingEvents.map(({ id: trainingEventId, name }) => (
+        {trainingEvents.map(({ trainingEventId, name }) => (
           <li
             key={trainingEventId}
             data-before="●"
@@ -44,7 +67,7 @@ export default async function TrainingEventPage() {
               <input
                 type="hidden"
                 name="trainingCategoryId"
-                value={category.id}
+                value={params.categoryId}
               />
               <input
                 type="hidden"
