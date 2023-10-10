@@ -29,7 +29,6 @@ export async function editSetAction(formData: FormData) {
   'use server';
 
   let input;
-  console.log('index', formData.get('index'));
   try {
     input = parse(inputSchema, {
       ...Object.fromEntries(formData.entries()),

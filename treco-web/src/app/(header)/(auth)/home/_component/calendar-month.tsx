@@ -37,32 +37,27 @@ export function CalendarMonth({
     .map((_, index) => calenderStart.add(index, 'day'));
 
   return (
-    <div>
-      {month}
-      <div className="p-4 bg-muted">
-        <div className="grid grid-cols-7">
-          {daysOfWeek.map((day) => (
-            <div
-              key={day.label}
-              className={`${day.color} text-xs text-center mb-1`}
-            >
-              {day.label}
-            </div>
-          ))}
-          {days.map((day) => {
-            return (
-              <Day
-                key={day.format('YYYY-MM-DD')}
-                date={day.toDate()}
-                mute={!day.isSame(firstDate, 'month')}
-                highlight={day.isSame(selectDate, 'day')}
-                active={dayjs().isSame(day, 'day')}
-                onSelectDate={onSelectDate}
-              />
-            );
-          })}
+    <div className="bg-muted grid grid-cols-7">
+      {daysOfWeek.map((day) => (
+        <div
+          key={day.label}
+          className={`${day.color} text-xs text-center mb-1`}
+        >
+          {day.label}
         </div>
-      </div>
+      ))}
+      {days.map((day) => {
+        return (
+          <Day
+            key={day.format('YYYY-MM-DD')}
+            date={day.toDate()}
+            mute={!day.isSame(firstDate, 'month')}
+            highlight={day.isSame(selectDate, 'day')}
+            active={dayjs().isSame(day, 'day')}
+            onSelectDate={onSelectDate}
+          />
+        );
+      })}
     </div>
   );
 }

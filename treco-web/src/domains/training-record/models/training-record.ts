@@ -10,7 +10,7 @@ export type TrainingRecordDto = {
   trainingRecordId: string;
   trainingEventId: string;
   traineeId: string;
-  recordedAt: Date;
+  trainingDate: Date;
   sets: TrainingSet[];
 };
 
@@ -36,15 +36,17 @@ export class TrainingRecord {
   static create({
     trainingEventId,
     traineeId,
+    trainingDate,
   }: {
     trainingEventId: string;
     traineeId: string;
+    trainingDate: Date;
   }) {
     return new TrainingRecord({
       traineeId,
       trainingRecordId: generateId(),
       trainingEventId,
-      recordedAt: new Date(),
+      trainingDate,
       sets: [],
     });
   }

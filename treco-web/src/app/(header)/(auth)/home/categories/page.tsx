@@ -3,15 +3,23 @@ import { TrainingCategory } from '@/domains/training-category/models/training-ca
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 
 async function queryCategories(props: { traineeId: string }) {
   const queryByTraineeIdUsecase = new TrainingCategoryQueryByTraineeIdUsecase();
   return await queryByTraineeIdUsecase.execute(props);
 }
-export default async function CategoryPage() {
+
+type Props = {
+  searchParams: {
+    date: string;
+  };
+};
+export default async function CategoryPage({ searchParams }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
   const categories = await queryCategories({ traineeId: signedInTraineeId });
+  const selectDate = dayjs(searchParams.date);
 
   return (
     <div>
@@ -20,13 +28,12 @@ export default async function CategoryPage() {
           categories.map(({ trainingCategoryId, name, color }) => (
             <li
               key={trainingCategoryId}
-              data-before="●"
               className={`flex m-2 text-lg  snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
               aria-label={name}
             >
               <div className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16">
                 <Link
-                  href={`/home/categories/${trainingCategoryId}`}
+                  href={`/home/categories/${trainingCategoryId}?date=${selectDate.toISOString()}`}
                   className="text-foreground block w-full no-underline"
                 >
                   <span

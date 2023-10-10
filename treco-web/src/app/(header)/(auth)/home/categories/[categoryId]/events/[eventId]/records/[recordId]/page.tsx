@@ -21,8 +21,6 @@ async function queryTrainingRecordEdit(trainingRecordId: string) {
     throw new Error('not found');
   }
 
-  await new Promise((r) => setTimeout(r, 1000));
-
   return {
     trainingCategory: {
       id: generateId(),

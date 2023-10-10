@@ -1,10 +1,12 @@
 import { TrainingRecordCreateUsecase } from '@/domains/training-record/usecases/create.usecase';
+import dayjs from 'dayjs';
 import { redirect } from 'next/navigation';
-import { object, parse, string, uuid } from 'valibot';
+import { ValiError, object, parse, string, uuid } from 'valibot';
 
 const inputSchema = object({
   trainingEventId: string([uuid()]),
   trainingCategoryId: string([uuid()]),
+  trainingDate: string(),
   traineeId: string([uuid()]),
 });
 
@@ -17,12 +19,32 @@ export async function createNewRecordAction(formData: FormData) {
   try {
     input = parse(inputSchema, Object.fromEntries(formData.entries()));
   } catch (e) {
-    throw new Error('validatin error');
+    if (e instanceof ValiError) {
+      console.error(
+        'validation error',
+        JSON.stringify({
+          func: 'createNewRecordAction',
+          error: e,
+        })
+      );
+      throw new Error('validation error');
+    }
+    console.error('unknown error', {
+      func: 'createNewRecordAction',
+    });
+    throw new Error('unknown error');
   }
 
-  const newRecord = await createUsecase.execute(input);
+  const newRecord = await createUsecase.execute({
+    ...input,
+    trainingDate: new Date(input.trainingDate),
+  });
 
   redirect(
-    `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${newRecord.trainingRecordId}`
+    `/home/categories/${input.trainingCategoryId}/events/${
+      input.trainingEventId
+    }/records/${newRecord.trainingRecordId}?date=${dayjs(
+      newRecord.trainingDate
+    ).toISOString()}`
   );
 }
