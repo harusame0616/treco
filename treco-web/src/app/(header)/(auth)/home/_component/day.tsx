@@ -1,7 +1,6 @@
 'use client';
 
 import dayjs from 'dayjs';
-import TrainingMark from '../training-mark';
 import { memo, useCallback } from 'react';
 
 type Props = {

@@ -76,7 +76,7 @@ export default async function TrainingEventPage({
               <input
                 name="trainingDate"
                 type="hidden"
-                value={selectDate.toISOString().slice(0, -8)}
+                value={selectDate.toISOString()}
               />
               <input
                 type="hidden"

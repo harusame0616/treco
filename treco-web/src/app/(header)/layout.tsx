@@ -12,7 +12,7 @@ export default function HeaderLayout({ children }: PropsWithChildren) {
   return (
     <div className="w-full h-full flex flex-col max-w-5xl mx-auto border-x border-x-accent">
       <MainHeader />
-      <div className="grow">{children}</div>
+      <div className="grow overflow-hidden">{children}</div>
     </div>
   );
 }

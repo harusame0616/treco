@@ -1,11 +1,12 @@
 import { TrainingRecordCreateUsecase } from '@/domains/training-record/usecases/create.usecase';
+import dayjs from 'dayjs';
 import { redirect } from 'next/navigation';
-import { ValiError, isoDateTime, object, parse, string, uuid } from 'valibot';
+import { ValiError, object, parse, string, uuid } from 'valibot';
 
 const inputSchema = object({
   trainingEventId: string([uuid()]),
   trainingCategoryId: string([uuid()]),
-  trainingDate: string([isoDateTime()]),
+  trainingDate: string(),
   traineeId: string([uuid()]),
 });
 
@@ -40,6 +41,10 @@ export async function createNewRecordAction(formData: FormData) {
   });
 
   redirect(
-    `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${newRecord.trainingRecordId}`
+    `/home/categories/${input.trainingCategoryId}/events/${
+      input.trainingEventId
+    }/records/${newRecord.trainingRecordId}?date=${dayjs(
+      newRecord.trainingDate
+    ).toISOString()}`
   );
 }

@@ -26,6 +26,7 @@ export class TrainingRecordCreateUsecase {
     this.trainingRecordRepository = new IMTrainingRecordRepository();
   }
   async execute({ trainingEventId, traineeId, trainingDate }: Props) {
+    console.log(trainingDate);
     const trainingEvent = await this.trainingEventRepository.findOneById({
       trainingEventId,
     });

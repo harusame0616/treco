@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 
 export function MainMenu() {
   const searchParams = useSearchParams();
-  const selectedDate = dayjs(searchParams.get('date'));
+  const selectedDate = dayjs(searchParams.get('date') || new Date());
 
   const menus = [
     {
@@ -18,7 +18,7 @@ export function MainMenu() {
     {
       label: 'トレーニング記録',
       icon: FilePlusIcon,
-      path: `/home/categories?date=${selectedDate.format('YYYY-MM-DD')}`,
+      path: `/home/categories?date=${selectedDate.toISOString()}`,
     },
     {
       label: 'アカウント',

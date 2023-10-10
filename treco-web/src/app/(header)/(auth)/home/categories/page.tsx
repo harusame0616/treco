@@ -28,15 +28,12 @@ export default async function CategoryPage({ searchParams }: Props) {
           categories.map(({ trainingCategoryId, name, color }) => (
             <li
               key={trainingCategoryId}
-              data-before="●"
               className={`flex m-2 text-lg  snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
               aria-label={name}
             >
               <div className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16">
                 <Link
-                  href={`/home/categories/${trainingCategoryId}?date=${selectDate.format(
-                    'YYYY-MM-DD'
-                  )}`}
+                  href={`/home/categories/${trainingCategoryId}?date=${selectDate.toISOString()}`}
                   className="text-foreground block w-full no-underline"
                 >
                   <span
