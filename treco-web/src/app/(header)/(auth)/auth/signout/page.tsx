@@ -14,7 +14,7 @@ export default function SignOutPage() {
       return;
     }
 
-    fetch('http://localhost:3000/api/session/clear', { method: 'POST' }).then(
+    fetch('/api/session/clear', { method: 'POST' }).then(
       () => {
         signOut().then(() => {
           setIsPushed(true);

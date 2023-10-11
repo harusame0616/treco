@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function LoginCheck() {
-  const { isLoading, isAuthenticated, getIdToken } = useAuth();
+  const { isLoading, isAuthenticated, getIdToken, signOut } = useAuth();
   const [isPushed, setIsPushed] = useState(false); // 開発環境で２重で遷移するのを避ける
   const router = useRouter();
 
@@ -20,10 +20,14 @@ export function LoginCheck() {
         body: JSON.stringify({
           id: idToken,
         }),
-      }).then(() => {
-        setIsPushed(true);
-        router.push('/home');
-      });
+      })
+        .then(() => {
+          setIsPushed(true);
+          router.refresh();
+        })
+        .catch(() => {
+          signOut();
+        });
     });
   }, [isLoading, isAuthenticated, isPushed, getIdToken, router]);
 
