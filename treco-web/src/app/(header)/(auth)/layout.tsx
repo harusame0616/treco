@@ -12,14 +12,14 @@ type Props = {
 export default async function AuthLayout({
   children,
 }: PropsWithChildren<Props>) {
-  if (await isAuthenticated()) {
-    return (
-      <div className="flex flex-col h-full">
-        <main className="overflow-scroll grow">{children}</main>
-        <MainMenu />
-      </div>
-    );
+  if (!(await isAuthenticated())) {
+    redirect('/');
   }
 
-  redirect('/');
+  return (
+    <div className="flex flex-col h-full">
+      <main className="overflow-scroll grow">{children}</main>
+      <MainMenu />
+    </div>
+  );
 }

@@ -27,6 +27,8 @@ services:
       - ./:/treco
       - firebase-dot_cache:/root/.cache/firebase/emulators/
     command: ['--only', 'firestore,auth']
+    environment:
+      HOST: 0.0.0.0
     ports:
       - 60000:60000 # Emulator Suite UI
       - 8080:8080 # firestore
