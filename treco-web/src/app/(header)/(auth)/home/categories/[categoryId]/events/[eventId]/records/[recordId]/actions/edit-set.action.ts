@@ -1,3 +1,4 @@
+import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordAddSetUsecase } from '@/domains/training-record/usecases/add-set.usecase';
 import { TrainingRecordEditSetUsecase } from '@/domains/training-record/usecases/edit-set.usecase';
 import { revalidatePath } from 'next/cache';
@@ -23,7 +24,9 @@ const inputSchema = object({
   index: coerce(number(), Number),
 });
 
-const editSetUsecase = new TrainingRecordEditSetUsecase();
+const editSetUsecase = new TrainingRecordEditSetUsecase(
+  new PrismaTrainingRecordRepository()
+);
 
 export async function editSetAction(formData: FormData) {
   'use server';
@@ -42,7 +45,7 @@ export async function editSetAction(formData: FormData) {
       stack: e.stack,
       issue: JSON.stringify(e, null, 4),
     });
-    throw new Error('validatin error');
+    throw new Error('validation error');
   }
 
   const trainingRecord = await editSetUsecase.execute(input);

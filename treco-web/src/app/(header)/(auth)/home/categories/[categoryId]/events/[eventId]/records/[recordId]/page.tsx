@@ -9,30 +9,15 @@ import Link from 'next/link';
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
 import { SubmitButton } from './submit-button';
+import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
+import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 
 async function queryTrainingRecordEdit(trainingRecordId: string) {
-  // TODO: not implemented
-  const trainingRecordRepository = new IMTrainingRecordRepository();
-
-  const trainingRecord = await trainingRecordRepository.findOneById(
-    trainingRecordId
+  const queryUsecase = new TrainingRecordQueryOneForTrainingRecordEditUsecase(
+    new PrismaTrainingRecordQuery()
   );
-  if (!trainingRecord) {
-    throw new Error('not found');
-  }
 
-  return {
-    trainingCategory: {
-      id: generateId(),
-      name: '胸',
-      color: '#db4d6d',
-    },
-    trainingEvent: {
-      id: generateId(),
-      name: 'ベンチプレス',
-    },
-    sets: trainingRecord.toDto().sets,
-  };
+  return await queryUsecase.execute(trainingRecordId);
 }
 
 type Props = {

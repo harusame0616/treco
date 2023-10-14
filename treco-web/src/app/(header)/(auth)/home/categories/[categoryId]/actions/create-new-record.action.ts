@@ -1,3 +1,4 @@
+import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordCreateUsecase } from '@/domains/training-record/usecases/create.usecase';
 import dayjs from 'dayjs';
 import { redirect } from 'next/navigation';
@@ -10,7 +11,9 @@ const inputSchema = object({
   traineeId: string([uuid()]),
 });
 
-const createUsecase = new TrainingRecordCreateUsecase();
+const createUsecase = new TrainingRecordCreateUsecase(
+  new PrismaTrainingRecordRepository()
+);
 
 export async function createNewRecordAction(formData: FormData) {
   'use server';

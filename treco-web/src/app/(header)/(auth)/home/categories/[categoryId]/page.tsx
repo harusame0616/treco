@@ -1,26 +1,27 @@
 import { Button } from '@/components/ui/button';
-import { generateId } from '@/lib/id';
-import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
-import { createNewRecordAction } from './actions';
-import { getSignedInTraineeId } from '@/lib/trainee';
-import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
+import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
-import { notFound } from 'next/navigation';
+import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
+import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
+import { getSignedInTraineeId } from '@/lib/trainee';
+import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
+import { notFound } from 'next/navigation';
+import { createNewRecordAction } from './actions';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
-  const signedInTraineeId = await getSignedInTraineeId();
-
-  const query = new TrainingEventQueryByTrainingCategoryId();
-  return (await query.execute({ trainingCategoryId })).filter(
-    (trainingEvent) => trainingEvent.traineeId === signedInTraineeId
+  const query = new TrainingEventQueryByTrainingCategoryId(
+    new PrismaTrainingEventQuery()
   );
+  return await query.execute({ trainingCategoryId });
 }
 
 async function queryCategory(trainingCategoryId: string) {
   const signedInTraineeId = await getSignedInTraineeId();
 
-  const query = new TrainingCategoryQueryByTraineeIdUsecase();
+  const query = new TrainingCategoryQueryByTraineeIdUsecase(
+    new PrismaTrainingCategoryQuery()
+  );
   const categories = await query.execute({ traineeId: signedInTraineeId });
 
   const category = categories.find(
