@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import { PolicyContainer } from "../PolicyContainer";
 
 export const metadata: Metadata = {

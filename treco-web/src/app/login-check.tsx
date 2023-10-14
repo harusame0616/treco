@@ -5,21 +5,28 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function LoginCheck() {
-  const { isLoading, isAuthenticated, getIdToken, signOut } = useAuth();
+  const { getIdToken, isAuthenticated, isLoading, signOut } = useAuth();
   const [isPushed, setIsPushed] = useState(false); // 開発環境で２重で遷移するのを避ける
   const router = useRouter();
 
   useEffect(() => {
-    if (isPushed || !router || !getIdToken || isLoading || !isAuthenticated) {
+    if (
+      isPushed ||
+      !router ||
+      !getIdToken ||
+      isLoading ||
+      !isAuthenticated ||
+      !signOut
+    ) {
       return;
     }
 
     getIdToken().then((idToken) => {
       fetch("/api/session/start", {
-        method: "POST",
         body: JSON.stringify({
           id: idToken,
         }),
+        method: "POST",
       })
         .then(() => {
           setIsPushed(true);
@@ -29,7 +36,7 @@ export function LoginCheck() {
           signOut();
         });
     });
-  }, [isLoading, isAuthenticated, isPushed, getIdToken, router]);
+  }, [isLoading, isAuthenticated, isPushed, getIdToken, router, signOut]);
 
   return null;
 }

@@ -1,6 +1,7 @@
 import { isAuthenticated } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
+
 import { MainMenu } from "./main-menu";
 
 type Props = {

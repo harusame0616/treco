@@ -25,19 +25,19 @@ export function LoginButtonList() {
   return (
     <ul aria-label="ソーシャルログイン" className="flex flex-col gap-1">
       {providers.map(({ id, label }) => (
-        <li key={id} aria-label={label}>
+        <li aria-label={label} key={id}>
           <Button
-            onClick={() => auth.signInWith(id)}
             className="w-48 font-bold"
+            onClick={() => auth.signInWith(id)}
           >
             {label} でログイン
           </Button>
         </li>
       ))}
       <Button
-        variant="ghost"
         className="text-primary text-xs"
         onClick={() => auth.signInAnonymously()}
+        variant="ghost"
       >
         登録せず開始する
       </Button>

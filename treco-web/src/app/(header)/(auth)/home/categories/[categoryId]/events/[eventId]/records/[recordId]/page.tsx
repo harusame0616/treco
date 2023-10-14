@@ -2,15 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IMTrainingRecordRepository } from "@/domains/training-record/infrastructures/im.repository";
+import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
+import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from "@/domains/training-record/usecases/query-one-for-training-record-edit.usecase";
 import { generateId } from "@/lib/id";
 import { getSignedInTraineeId } from "@/lib/trainee";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+
 import { addSetAction, editSetAction } from "./actions";
 import { CancelButton } from "./cancel-button";
 import { SubmitButton } from "./submit-button";
-import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from "@/domains/training-record/usecases/query-one-for-training-record-edit.usecase";
-import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
 
 async function queryTrainingRecordEdit(trainingRecordId: string) {
   const queryUsecase = new TrainingRecordQueryOneForTrainingRecordEditUsecase(
@@ -36,7 +37,7 @@ export default async function TrainingRecordEditPage({
   searchParams,
 }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
-  const { trainingCategory, trainingEvent, sets } =
+  const { sets, trainingCategory, trainingEvent } =
     await queryTrainingRecordEdit(params.recordId);
   const activeSetIndex = searchParams.edit
     ? parseInt(searchParams.edit, 10)
@@ -44,18 +45,18 @@ export default async function TrainingRecordEditPage({
 
   const {
     load: loadDefaultValue,
-    value: valueDefaultValue,
     note: noteDefaultValue,
+    value: valueDefaultValue,
   } = activeSetIndex != null
     ? sets[activeSetIndex]
-    : { load: "", value: "", note: "" };
+    : { load: "", note: "", value: "" };
 
   const isEditing = activeSetIndex != null;
 
   return (
     <div className="w-full flex flex-col h-full">
       <div className="w-full px-4 shrink-0">
-        <span style={{ color: trainingCategory.color }} className="mr-2">
+        <span className="mr-2" style={{ color: trainingCategory.color }}>
           ●
         </span>
         <span>{trainingCategory.name}</span>
@@ -71,18 +72,18 @@ export default async function TrainingRecordEditPage({
       <div className="bg-muted px-4 h-full overflow-y-scroll py-4">
         {sets.length ? (
           <ul className="">
-            {sets.map(({ load, value, note }, index) => (
+            {sets.map(({ load, note, value }, index) => (
               <li
-                key={index}
                 className="flex border-b border-b-muted-foreground border-solid last:border-b-0 h-16"
+                key={index}
               >
                 <Link
-                  href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
                   className={`flex w-full no-underline text-foreground ${
                     activeSetIndex === index
                       ? "text-primary rounded-sm font-bold important"
                       : ""
                   }`}
+                  href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
                 >
                   <div
                     className={`w-4 text-xs flex justify-end items-center  mr-1 ${
@@ -106,7 +107,7 @@ export default async function TrainingRecordEditPage({
                   </div>
                 </Link>
                 <div className="flex items-center">
-                  <Button variant="ghost" size="icon">
+                  <Button size="icon" variant="ghost">
                     <TrashIcon />
                   </Button>
                 </div>
@@ -127,38 +128,38 @@ export default async function TrainingRecordEditPage({
         className="shrink-0 p-4 gap-1 flex flex-col"
       >
         <input
-          type="hidden"
           name="trainingCategoryId"
+          type="hidden"
           value={params.categoryId}
         />
-        <input type="hidden" name="trainingEventId" value={params.eventId} />
-        <input type="hidden" name="trainingRecordId" value={params.recordId} />
-        <input type="hidden" name="traineeId" value={signedInTraineeId} />
+        <input name="trainingEventId" type="hidden" value={params.eventId} />
+        <input name="trainingRecordId" type="hidden" value={params.recordId} />
+        <input name="traineeId" type="hidden" value={signedInTraineeId} />
         {isEditing && (
-          <input type="hidden" name="index" value={activeSetIndex} />
+          <input name="index" type="hidden" value={activeSetIndex} />
         )}
         <div className="flex gap-4">
           <label className="flex items-center">
             <div className="mr-2 shrink-0">負荷</div>
             <Input
-              inputMode="decimal"
-              type="number"
-              step="0.01"
-              name="load"
               autoFocus
-              required
               defaultValue={loadDefaultValue}
+              inputMode="decimal"
+              name="load"
+              required
+              step="0.01"
+              type="number"
             />
           </label>
           <label className="flex items-center">
             <div className="mr-2 shrink-0">値</div>
             <Input
+              defaultValue={valueDefaultValue}
               inputMode="decimal"
-              type="number"
               name="value"
               required
               step="0.01"
-              defaultValue={valueDefaultValue}
+              type="number"
             />
           </label>
         </div>
@@ -166,8 +167,8 @@ export default async function TrainingRecordEditPage({
           <div className="shrink-0 mr-2">備考</div>
           <Textarea
             className="grow h-1"
-            name="note"
             defaultValue={noteDefaultValue}
+            name="note"
           />
         </label>
         <div className="flex justify-end gap-2">

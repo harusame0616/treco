@@ -1,8 +1,9 @@
 "use client";
 
 import { PropsWithChildren } from "react";
-import { useAuthContext } from "./useAuthContext";
+
 import { AuthContext } from "./context";
+import { useAuthContext } from "./useAuthContext";
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const auth = useAuthContext();

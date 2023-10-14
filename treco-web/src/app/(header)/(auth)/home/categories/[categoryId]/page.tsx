@@ -7,6 +7,7 @@ import { getSignedInTraineeId } from "@/lib/trainee";
 import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import { notFound } from "next/navigation";
+
 import { createNewRecordAction } from "./actions";
 
 async function queryTrainingEvents(trainingCategoryId: string) {
@@ -63,12 +64,12 @@ export default async function TrainingEventPage({
       </nav>
 
       <ul aria-label={`${category.name}のトレーニング種目`} className="w-full">
-        {trainingEvents.map(({ trainingEventId, name }) => (
+        {trainingEvents.map(({ name, trainingEventId }) => (
           <li
-            key={trainingEventId}
-            data-before="●"
-            className={`flex m-2 snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
             aria-label={name}
+            className={`flex m-2 snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
+            data-before="●"
+            key={trainingEventId}
           >
             <form
               action={createNewRecordAction}
@@ -80,29 +81,29 @@ export default async function TrainingEventPage({
                 value={selectDate.toISOString()}
               />
               <input
-                type="hidden"
                 name="trainingCategoryId"
+                type="hidden"
                 value={params.categoryId}
               />
               <input
-                type="hidden"
                 name="trainingEventId"
+                type="hidden"
                 value={trainingEventId}
               />
-              <input type="hidden" name="traineeId" value={signedInTraineeId} />
+              <input name="traineeId" type="hidden" value={signedInTraineeId} />
               <button className="text-foreground block w-full no-underline text-left whitespace-nowrap overflow-x-hidden text-ellipsis">
                 <span className="text-xl grow ">{name}</span>
               </button>
-              <Button variant={"ghost"} aria-label="トレーニング種目名編集">
-                <Pencil2Icon className="w-6 h-6" aria-hidden="true" />
+              <Button aria-label="トレーニング種目名編集" variant={"ghost"}>
+                <Pencil2Icon aria-hidden="true" className="w-6 h-6" />
               </Button>
             </form>
             <Button
+              aria-label="削除"
               className="ml-4 snap-start w-16 h-16"
               size="icon"
-              aria-label="削除"
             >
-              <TrashIcon className="w-14 h-12" aria-hidden="true" />
+              <TrashIcon aria-hidden="true" className="w-14 h-12" />
             </Button>
           </li>
         ))}

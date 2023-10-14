@@ -12,13 +12,13 @@ import {
 } from 'valibot';
 
 const inputSchema = object({
-  trainingRecordId: string([uuid()]),
+  load: coerce(number(), Number),
+  note: string([maxLength(255)]),
   traineeId: string(),
   trainingCategoryId: string([uuid()]),
   trainingEventId: string([uuid()]),
+  trainingRecordId: string([uuid()]),
   value: coerce(number(), Number),
-  load: coerce(number(), Number),
-  note: string([maxLength(255)]),
 });
 
 const addSetUsecase = new TrainingRecordAddSetUsecase(
@@ -32,14 +32,14 @@ export async function addSetAction(formData: FormData) {
   try {
     input = parse(inputSchema, {
       ...Object.fromEntries(formData.entries()),
-      value: formData.get('value'),
       load: formData.get('load'),
+      value: formData.get('value'),
     });
   } catch (e: any) {
     console.error('validation error', {
+      issue: JSON.stringify(e, null, 4),
       message: e.message,
       stack: e.stack,
-      issue: JSON.stringify(e, null, 4),
     });
     throw new Error('validatin error');
   }

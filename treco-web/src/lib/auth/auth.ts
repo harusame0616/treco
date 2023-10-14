@@ -1,7 +1,8 @@
-import { cookies } from 'next/headers';
-import { auth } from '../firebase/admin';
 import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
+import { cookies } from 'next/headers';
 import { cache } from 'react';
+
+import { auth } from '../firebase/admin';
 
 export async function getSession() {
   const sessionId = cookies().get(SESSION_ID_COOKIE_NAME)?.value;

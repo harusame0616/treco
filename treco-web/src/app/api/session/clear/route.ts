@@ -1,8 +1,8 @@
 import type { NextApiRequest as Req, NextApiResponse as Res } from 'next';
 
 import { auth } from '@/lib/firebase/admin';
-import { NextRequest, NextResponse } from 'next/server';
 import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const response = new NextResponse();

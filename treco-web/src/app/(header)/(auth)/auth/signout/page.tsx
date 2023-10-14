@@ -10,7 +10,7 @@ export default function SignOutPage() {
   const { signOut } = useAuth();
 
   useEffect(() => {
-    if (isPushed) {
+    if (isPushed || !router || !signOut) {
       return;
     }
 
@@ -20,7 +20,7 @@ export default function SignOutPage() {
         router.push("/");
       });
     });
-  }, []);
+  }, [isPushed, router, signOut]);
 
   return <div className="text-center">サインアウト中です</div>;
 }

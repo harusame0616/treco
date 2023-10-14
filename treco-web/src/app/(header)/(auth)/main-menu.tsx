@@ -11,28 +11,28 @@ export function MainMenu() {
 
   const menus = [
     {
-      label: "ホーム",
       icon: HomeIcon,
+      label: "ホーム",
       path: "/home",
     },
     {
-      label: "トレーニング記録",
       icon: FilePlusIcon,
+      label: "トレーニング記録",
       path: `/home/categories?date=${selectedDate.toISOString()}`,
     },
     {
-      label: "アカウント",
       icon: PersonIcon,
+      label: "アカウント",
       path: "/home/account",
     },
   ];
 
   return (
     <nav
-      className="border-t-accent border-t px-4 py-2 bg-background"
       aria-label="メインメニュー"
+      className="border-t-accent border-t px-4 py-2 bg-background"
     >
-      <ul className="flex justify-evenly" aria-label="メニュー">
+      <ul aria-label="メニュー" className="flex justify-evenly">
         {menus.map((menu) => (
           <MenuItem {...menu} key={menu.path} />
         ))}
@@ -42,18 +42,18 @@ export function MainMenu() {
 }
 
 function MenuItem({
-  label,
   icon: Icon,
+  label,
   path,
 }: {
-  label: string;
   icon: React.ElementType;
+  label: string;
   path: string;
 }) {
   return (
     <li aria-label={label} key={path}>
-      <Link href={path} aria-label={`${label}へのリンク`}>
-        <Icon className="w-8 h-8" aria-hidden />
+      <Link aria-label={`${label}へのリンク`} href={path}>
+        <Icon aria-hidden className="w-8 h-8" />
       </Link>
     </li>
   );

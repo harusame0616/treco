@@ -1,12 +1,13 @@
 "use client";
 
 import dayjs, { Dayjs } from "dayjs";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
-import { CalendarMonth } from "./calendar-month";
-import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import { CalendarMonth } from "./calendar-month";
 
 const createViewMonths = (month: Dayjs, startIndex: number) => {
   // 0 は現在表示中の月、 1 は次の月、 -1 は前の月を表す。
@@ -63,19 +64,19 @@ export function Calendar() {
   return (
     <div className="w-full">
       <Slider
-        infinite={true}
-        dots={false}
-        arrows={false}
-        speed={200}
         afterChange={afterChangeMemo}
+        arrows={false}
+        dots={false}
+        infinite={true}
+        speed={200}
       >
         {months.map((month) => (
           <CalendarMonth
-            selectDate={selectDate.toDate()}
-            onSelectDate={selectDateHandler}
-            year={month.year()}
-            month={month.month() + 1}
             key={month.toISOString()}
+            month={month.month() + 1}
+            onSelectDate={selectDateHandler}
+            selectDate={selectDate.toDate()}
+            year={month.year()}
           />
         ))}
       </Slider>

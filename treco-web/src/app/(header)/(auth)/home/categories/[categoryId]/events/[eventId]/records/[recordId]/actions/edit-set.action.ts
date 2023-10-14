@@ -14,14 +14,14 @@ import {
 } from 'valibot';
 
 const inputSchema = object({
-  trainingRecordId: string([uuid()]),
+  index: coerce(number(), Number),
+  load: coerce(number(), Number),
+  note: string([maxLength(255)]),
   traineeId: string(),
   trainingCategoryId: string([uuid()]),
   trainingEventId: string([uuid()]),
+  trainingRecordId: string([uuid()]),
   value: coerce(number(), Number),
-  load: coerce(number(), Number),
-  note: string([maxLength(255)]),
-  index: coerce(number(), Number),
 });
 
 const editSetUsecase = new TrainingRecordEditSetUsecase(
@@ -35,15 +35,15 @@ export async function editSetAction(formData: FormData) {
   try {
     input = parse(inputSchema, {
       ...Object.fromEntries(formData.entries()),
-      value: formData.get('value') || undefined,
-      load: formData.get('load') || undefined,
       index: formData.get('index') || undefined,
+      load: formData.get('load') || undefined,
+      value: formData.get('value') || undefined,
     });
   } catch (e: any) {
     console.error('validation error', {
+      issue: JSON.stringify(e, null, 4),
       message: e.message,
       stack: e.stack,
-      issue: JSON.stringify(e, null, 4),
     });
     throw new Error('validation error');
   }

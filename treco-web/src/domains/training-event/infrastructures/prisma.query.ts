@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+
 import { TrainingEventDto } from '../models/training-event';
 import { TrainingEventQuery } from '../usecases/training-event.query';
 

@@ -1,10 +1,11 @@
+import dayjs from 'dayjs';
+
 import { trainingCategoryFixtures } from '../../../../fixtures/training-category.fixture';
 import { trainingEventFixtures } from '../../../../fixtures/training-event.fixture';
-import { TrainingRecord, TrainingRecordDto } from '../models/training-record';
-import { trainingRecordStore } from './im.store';
 import { trainingCategoryStore } from '../../training-category/infrastructures/im.store';
 import { trainingEventStore } from '../../training-event/infrastructures/im.store';
-import dayjs from 'dayjs';
+import { TrainingRecord, TrainingRecordDto } from '../models/training-record';
+import { trainingRecordStore } from './im.store';
 
 export class IMTrainingRecordQuery {
   constructor() {

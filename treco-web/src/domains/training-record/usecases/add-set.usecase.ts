@@ -2,26 +2,26 @@ import { TrainingSet } from '../models/training-record';
 import { TrainingRecordRepository } from './training-record.repository';
 
 type Props = {
-  trainingRecordId: string;
   traineeId: string;
+  trainingRecordId: string;
 } & TrainingSet;
 
 export class TrainingRecordAddSetUsecase {
-  trainingEventRepository = {
-    async findOneById({ trainingEventId }: { trainingEventId: string }) {
-      // TODO: not implemented
-      return true;
-    },
-  };
   traineeRepository = {
     async findOneById({ traineeId }: { traineeId: string }) {
       // TODO: not implemented
       return true;
     },
   };
+  trainingEventRepository = {
+    async findOneById({ trainingEventId }: { trainingEventId: string }) {
+      // TODO: not implemented
+      return true;
+    },
+  };
 
   constructor(private trainingRecordRepository: TrainingRecordRepository) {}
-  async execute({ trainingRecordId, traineeId, value, note, load }: Props) {
+  async execute({ load, note, traineeId, trainingRecordId, value }: Props) {
     const trainingRecord = await this.trainingRecordRepository.findOneById(
       trainingRecordId
     );
@@ -35,13 +35,13 @@ export class TrainingRecordAddSetUsecase {
 
     if (!trainingRecord.isByTrainee(traineeId)) {
       console.error('Record is not by trainee', {
-        trainingRecord,
         traineeId,
+        trainingRecord,
       });
       throw new Error('Record is not by trainee');
     }
 
-    trainingRecord.addSet({ value, note, load });
+    trainingRecord.addSet({ load, note, value });
     await this.trainingRecordRepository.save(trainingRecord);
     return trainingRecord.toDto();
   }

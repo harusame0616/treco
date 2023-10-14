@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+
 import { TrainingRecord } from '../models/training-record';
 import { TrainingRecordRepository } from '../usecases/training-record.repository';
 
@@ -23,52 +24,52 @@ export class PrismaTrainingRecordRepository
   }
 
   async save(trainingRecord: TrainingRecord): Promise<void> {
-    const { trainingRecordId, trainingDate, traineeId, trainingEventId, sets } =
+    const { sets, traineeId, trainingDate, trainingEventId, trainingRecordId } =
       trainingRecord.toDto();
     await prisma.trainingRecord.upsert({
-      where: {
-        trainingRecordId,
-      },
       create: {
-        trainingRecordId,
-        trainingDate,
-        traineeId,
-        trainingEventId,
         sets: {
           createMany: {
             data: sets.map(({ load, note, value }, order) => ({
               load,
               note,
-              value,
               order,
+              value,
             })),
           },
         },
+        traineeId,
+        trainingDate,
+        trainingEventId,
+        trainingRecordId,
       },
       update: {
-        trainingDate,
         sets: {
-          upsert: sets.map(({ value, load, note }, order) => ({
-            where: {
-              trainingRecordId_order: {
-                trainingRecordId,
-                order,
-              },
-            },
+          upsert: sets.map(({ load, note, value }, order) => ({
             create: {
-              value,
               load,
               note,
               order,
+              value,
             },
             update: {
-              value,
               load,
               note,
               order,
+              value,
+            },
+            where: {
+              trainingRecordId_order: {
+                order,
+                trainingRecordId,
+              },
             },
           })),
         },
+        trainingDate,
+      },
+      where: {
+        trainingRecordId,
       },
       // create: {
       //   ...dto,

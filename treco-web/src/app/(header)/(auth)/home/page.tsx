@@ -1,6 +1,7 @@
 import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
 import { TrainingRecordQueryListForHomeUsecase } from "@/domains/training-record/usecases/query-list-for-home.usecase";
 import { getSignedInTraineeId } from "@/lib/trainee";
+
 import { Calendar } from "./_component/calendar";
 
 async function queryTrainingRecord(traineeId: string, date: Date) {
@@ -29,7 +30,7 @@ export default async function HomePage({ searchParams }: Props) {
       </div>
       <div className="p-4 flex flex-col overflow-hidden">
         <div className="overflow-scroll">
-          <TrainingRecords traineeId={traineeId} date={selectedDate} />
+          <TrainingRecords date={selectedDate} traineeId={traineeId} />
         </div>
       </div>
     </div>
@@ -37,11 +38,11 @@ export default async function HomePage({ searchParams }: Props) {
 }
 
 async function TrainingRecords({
-  traineeId,
   date,
+  traineeId,
 }: {
-  traineeId: string;
   date: Date;
+  traineeId: string;
 }) {
   const trainingRecords = await queryTrainingRecord(traineeId, date);
 
@@ -51,9 +52,9 @@ async function TrainingRecords({
         <li key={record.trainingRecordId}>
           <div className="flex items-center mb-2">
             <span
+              aria-hidden="true"
               className="mr-1"
               style={{ color: record.trainingCategory.color }}
-              aria-hidden="true"
             >
               ●
             </span>
@@ -61,7 +62,7 @@ async function TrainingRecords({
           </div>
           <ul className="rounded-md bg-muted p-4">
             {record.sets.map((set, index) => (
-              <li key={index} className="flex gap-2">
+              <li className="flex gap-2" key={index}>
                 <div className="w-4 text-xs text-muted-foreground flex items-end justify-end mb-[3px]">
                   {index + 1}
                 </div>

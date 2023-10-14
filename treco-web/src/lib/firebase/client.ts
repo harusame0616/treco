@@ -1,5 +1,5 @@
-import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 
 const firebaseConfig = require('./settings/firebase-config.json');

@@ -2,20 +2,20 @@ import { TrainingRecord } from '../models/training-record';
 import { TrainingRecordRepository } from './training-record.repository';
 
 type Props = {
-  trainingEventId: string;
   traineeId: string;
   trainingDate: Date;
+  trainingEventId: string;
 };
 
 export class TrainingRecordCreateUsecase {
-  trainingEventRepository = {
-    async findOneById({ trainingEventId }: { trainingEventId: string }) {
+  traineeRepository = {
+    async findOneById({ traineeId }: { traineeId: string }) {
       // TODO: not implemented
       return true;
     },
   };
-  traineeRepository = {
-    async findOneById({ traineeId }: { traineeId: string }) {
+  trainingEventRepository = {
+    async findOneById({ trainingEventId }: { trainingEventId: string }) {
       // TODO: not implemented
       return true;
     },
@@ -23,7 +23,7 @@ export class TrainingRecordCreateUsecase {
 
   constructor(private trainingRecordRepository: TrainingRecordRepository) {}
 
-  async execute({ trainingEventId, traineeId, trainingDate }: Props) {
+  async execute({ traineeId, trainingDate, trainingEventId }: Props) {
     console.log(trainingDate);
     const trainingEvent = await this.trainingEventRepository.findOneById({
       trainingEventId,
@@ -45,9 +45,9 @@ export class TrainingRecordCreateUsecase {
     }
 
     const trainingRecord = TrainingRecord.create({
-      trainingEventId,
       traineeId,
       trainingDate,
+      trainingEventId,
     });
 
     await this.trainingRecordRepository.save(trainingRecord);

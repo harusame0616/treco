@@ -2,11 +2,11 @@
 
 import { fbAuth } from '@/lib/firebase/client';
 import {
+  signInAnonymously as _signInAnonymously,
   AuthProvider,
   FacebookAuthProvider,
   GoogleAuthProvider,
   TwitterAuthProvider,
-  signInAnonymously as _signInAnonymously,
   getIdToken,
   linkWithRedirect,
   onAuthStateChanged,
@@ -22,9 +22,9 @@ const isProviderName = (value: any): value is OAuthProviderName =>
 
 const providerMappedProviderName: { [key in OAuthProviderName]: AuthProvider } =
   {
+    facebook: new FacebookAuthProvider(),
     google: new GoogleAuthProvider(),
     twitter: new TwitterAuthProvider(),
-    facebook: new FacebookAuthProvider(),
   };
 
 interface Auth {
@@ -85,17 +85,7 @@ export function useAuthContext() {
   }, []);
 
   return {
-    isLoading,
-    isError,
     auth,
-    signInWith,
-    isAuthenticated,
-    signInAnonymously,
-    linkWith,
-    signOut: async () => {
-      await signOut(fbAuth);
-      setAuth({});
-    },
     getIdToken: async () => {
       const user = fbAuth.currentUser;
       if (!user) {
@@ -103,6 +93,16 @@ export function useAuthContext() {
       }
 
       return getIdToken(user);
+    },
+    isAuthenticated,
+    isError,
+    isLoading,
+    linkWith,
+    signInAnonymously,
+    signInWith,
+    signOut: async () => {
+      await signOut(fbAuth);
+      setAuth({});
     },
   };
 }

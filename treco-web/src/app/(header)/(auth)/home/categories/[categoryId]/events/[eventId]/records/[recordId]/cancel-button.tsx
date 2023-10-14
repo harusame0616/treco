@@ -9,9 +9,9 @@ export function CancelButton({}) {
 
   return (
     <Button
-      variant="secondary"
       onClick={() => router.push(pathname)}
       type="button"
+      variant="secondary"
     >
       変更をキャンセルする
     </Button>

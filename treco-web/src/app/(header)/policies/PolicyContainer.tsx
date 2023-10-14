@@ -3,8 +3,8 @@ import Link from "next/link";
 import { PropsWithChildren } from "react";
 
 export function PolicyContainer({
-  title,
   children,
+  title,
 }: PropsWithChildren<{ title: string }>) {
   return (
     <>

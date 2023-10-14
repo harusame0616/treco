@@ -1,8 +1,8 @@
 import type { NextApiRequest as Req, NextApiResponse as Res } from 'next';
 
 import { auth } from '@/lib/firebase/admin'; // 上記で実装したファイル
-import { NextRequest, NextResponse } from 'next/server';
 import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const expiresIn = 60 * 60 * 24 * 5 * 1000;
@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
   }
 
   const options = {
-    maxAge: expiresIn,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    maxAge: expiresIn,
     path: '/',
+    secure: process.env.NODE_ENV === 'production',
   };
 
   const response = new NextResponse();
