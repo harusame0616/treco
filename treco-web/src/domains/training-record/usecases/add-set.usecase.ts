@@ -1,5 +1,5 @@
-import { IMTrainingRecordRepository } from '../infrastructures/im.repository';
 import { TrainingSet } from '../models/training-record';
+import { TrainingRecordRepository } from './training-record.repository';
 
 type Props = {
   trainingRecordId: string;
@@ -19,11 +19,8 @@ export class TrainingRecordAddSetUsecase {
       return true;
     },
   };
-  private readonly trainingRecordRepository;
 
-  constructor() {
-    this.trainingRecordRepository = new IMTrainingRecordRepository();
-  }
+  constructor(private trainingRecordRepository: TrainingRecordRepository) {}
   async execute({ trainingRecordId, traineeId, value, note, load }: Props) {
     const trainingRecord = await this.trainingRecordRepository.findOneById(
       trainingRecordId

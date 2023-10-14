@@ -1,6 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { auth } from '../src/lib/firebase/admin';
-import { firebaseUsers } from './fixtures/firebase-user';
 
 const prisma = new PrismaClient();
 

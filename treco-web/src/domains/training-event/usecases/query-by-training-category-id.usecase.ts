@@ -1,16 +1,14 @@
-import { IMTrainingEventQuery } from '../infrastructures/im.query';
+import { TrainingEventQuery } from './training-event.query';
 
 type Props = {
   trainingCategoryId: string;
 };
 
 export class TrainingEventQueryByTrainingCategoryId {
-  trainingCategoryQuery = new IMTrainingEventQuery();
-
-  constructor() {}
+  constructor(private trainingEventQuery: TrainingEventQuery) {}
 
   async execute({ trainingCategoryId }: Props) {
-    return await this.trainingCategoryQuery.queryListByTrainingCategoryId(
+    return await this.trainingEventQuery.queryListByTrainingCategoryId(
       trainingCategoryId
     );
   }
