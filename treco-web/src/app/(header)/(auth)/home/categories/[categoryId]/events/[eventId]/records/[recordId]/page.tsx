@@ -1,20 +1,20 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { IMTrainingRecordRepository } from '@/domains/training-record/infrastructures/im.repository';
-import { generateId } from '@/lib/id';
-import { getSignedInTraineeId } from '@/lib/trainee';
-import { TrashIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
-import { addSetAction, editSetAction } from './actions';
-import { CancelButton } from './cancel-button';
-import { SubmitButton } from './submit-button';
-import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
-import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { IMTrainingRecordRepository } from "@/domains/training-record/infrastructures/im.repository";
+import { generateId } from "@/lib/id";
+import { getSignedInTraineeId } from "@/lib/trainee";
+import { TrashIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { addSetAction, editSetAction } from "./actions";
+import { CancelButton } from "./cancel-button";
+import { SubmitButton } from "./submit-button";
+import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from "@/domains/training-record/usecases/query-one-for-training-record-edit.usecase";
+import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
 
 async function queryTrainingRecordEdit(trainingRecordId: string) {
   const queryUsecase = new TrainingRecordQueryOneForTrainingRecordEditUsecase(
-    new PrismaTrainingRecordQuery()
+    new PrismaTrainingRecordQuery(),
   );
 
   return await queryUsecase.execute(trainingRecordId);
@@ -48,7 +48,7 @@ export default async function TrainingRecordEditPage({
     note: noteDefaultValue,
   } = activeSetIndex != null
     ? sets[activeSetIndex]
-    : { load: '', value: '', note: '' };
+    : { load: "", value: "", note: "" };
 
   const isEditing = activeSetIndex != null;
 
@@ -80,15 +80,15 @@ export default async function TrainingRecordEditPage({
                   href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
                   className={`flex w-full no-underline text-foreground ${
                     activeSetIndex === index
-                      ? 'text-primary rounded-sm font-bold important'
-                      : ''
+                      ? "text-primary rounded-sm font-bold important"
+                      : ""
                   }`}
                 >
                   <div
                     className={`w-4 text-xs flex justify-end items-center  mr-1 ${
                       activeSetIndex === index
-                        ? 'text-primary text-bold'
-                        : 'text-muted-foreground'
+                        ? "text-primary text-bold"
+                        : "text-muted-foreground"
                     }`}
                   >
                     {index + 1}
@@ -101,7 +101,7 @@ export default async function TrainingRecordEditPage({
                   </div>
                   <div className="flex items-center grow">
                     <div className="w-12 flex-grow text-xs whitespace-pre p-3 max-h-10 overflow-y-auto">
-                      {note || '-'}
+                      {note || "-"}
                     </div>
                   </div>
                 </Link>
@@ -172,7 +172,7 @@ export default async function TrainingRecordEditPage({
         </label>
         <div className="flex justify-end gap-2">
           {isEditing && <CancelButton />}
-          <SubmitButton>{isEditing ? '変更する' : '追加する'}</SubmitButton>
+          <SubmitButton>{isEditing ? "変更する" : "追加する"}</SubmitButton>
         </div>
       </form>
     </div>

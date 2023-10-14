@@ -1,10 +1,10 @@
-import { PropsWithChildren, ReactElement } from 'react';
-import Icon from './icon.png';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { FilePlusIcon, HomeIcon, PersonIcon } from '@radix-ui/react-icons';
-import { Title } from './title';
+import { PropsWithChildren, ReactElement } from "react";
+import Icon from "./icon.png";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { FilePlusIcon, HomeIcon, PersonIcon } from "@radix-ui/react-icons";
+import { Title } from "./title";
 
 <Image src={Icon} alt="TRECo アイコン" width={100} height={100} />;
 

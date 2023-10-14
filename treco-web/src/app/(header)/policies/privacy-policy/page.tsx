@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
-import { PolicyContainer } from '../PolicyContainer';
+import { Metadata } from "next";
+import { PolicyContainer } from "../PolicyContainer";
 
 export const metadata: Metadata = {
-  title: 'プライバシーポリシー | TRECo',
+  title: "プライバシーポリシー | TRECo",
 };
 
 const text = `根本将治（以下「当社」といいます。）は、当社がTRECo（以下「本サービス」といいます。）を提供するにあたり、ご利用される皆様（以下「利用者」といいます。）の個人に関する情報（以下「個人情報」といいます。）を取得します。

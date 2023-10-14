@@ -1,11 +1,11 @@
-import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
-import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
-import { getSignedInTraineeId } from '@/lib/trainee';
-import { Calendar } from './_component/calendar';
+import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
+import { TrainingRecordQueryListForHomeUsecase } from "@/domains/training-record/usecases/query-list-for-home.usecase";
+import { getSignedInTraineeId } from "@/lib/trainee";
+import { Calendar } from "./_component/calendar";
 
 async function queryTrainingRecord(traineeId: string, date: Date) {
   const query = new TrainingRecordQueryListForHomeUsecase(
-    new PrismaTrainingRecordQuery()
+    new PrismaTrainingRecordQuery(),
   );
 
   return await query.execute(traineeId, date);

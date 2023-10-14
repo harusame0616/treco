@@ -1,15 +1,15 @@
-import Image from 'next/image';
-import SplashImage from './splash.svg';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { LoginButtonList } from '../login-button-list';
-import { isAuthenticated } from '@/lib/auth/auth';
-import { redirect } from 'next/navigation';
-import { LoginCheck } from '../login-check';
+import Image from "next/image";
+import SplashImage from "./splash.svg";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { LoginButtonList } from "../login-button-list";
+import { isAuthenticated } from "@/lib/auth/auth";
+import { redirect } from "next/navigation";
+import { LoginCheck } from "../login-check";
 
 export default async function Home() {
   if (await isAuthenticated()) {
-    redirect('/home');
+    redirect("/home");
   }
 
   return (
