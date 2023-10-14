@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format:check": "prettier --check ./**/*.{tsx,ts,json}",
+    "format:write": "prettier --write ./**/*.{tsx,ts,json}",
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
@@ -44,7 +46,9 @@
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "eslint-config-prettier": "^9.0.0",
     "postcss": "latest",
+    "prettier": "^3.0.3",
     "tailwindcss": "latest",
     "ts-node": "^10.9.1",
     "typescript": "latest"
