@@ -2,8 +2,6 @@ import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 
-import firebaseConfig from './settings/firebase-config.json';
-
 const config = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
@@ -14,7 +12,7 @@ const config = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
 };
 
-const app = initializeApp(firebaseConfig || config);
+const app = initializeApp(config);
 
 declare global {
   // eslint-disable-next-line no-var
