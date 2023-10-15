@@ -17,7 +17,7 @@ export default function SignOutPage() {
     fetch('/api/session/clear', { method: 'POST' }).then(() => {
       signOut().then(() => {
         setIsPushed(true);
-        router.push('/');
+        router.refresh();
       });
     });
   }, [isPushed, router, signOut]);
