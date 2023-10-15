@@ -61,7 +61,7 @@ model TrainingEvent {
 
   trainingRecords TrainingRecord[]
 
-  @@unique([traineeId, order]) // おなじトレーニーで、おなじ順番のトレーニング種目は禁止
+  @@unique([traineeId, trainingCategoryId, order]) // おなじトレーニーで、おなじ順番のトレーニング種目は禁止
 }
 
 model TrainingRecord {
