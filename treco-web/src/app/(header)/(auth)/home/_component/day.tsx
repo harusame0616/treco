@@ -4,17 +4,17 @@ import dayjs from 'dayjs';
 import { memo, useCallback } from 'react';
 
 type Props = {
+  active?: boolean;
   date: Date;
   highlight?: boolean;
   mute?: boolean;
-  active?: boolean;
   onSelectDate: (date: Date) => void;
 };
 export const Day = memo(function Day({
+  active,
   date,
   highlight,
   mute,
-  active,
   onSelectDate,
 }: Props) {
   const dateDayjs = dayjs(date);

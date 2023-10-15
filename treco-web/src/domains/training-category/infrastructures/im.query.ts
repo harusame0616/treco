@@ -5,7 +5,7 @@ export class IMTrainingCategoryQuery {
 
   async queryListByTraineeId(traineeId: string) {
     return Array.from(trainingCategoryStore.values()).filter(
-      (category) => category.traineeId === traineeId
+      (category) => category.traineeId === traineeId,
     );
   }
 }

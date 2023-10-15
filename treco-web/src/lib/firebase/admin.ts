@@ -1,4 +1,4 @@
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
 function getFirebaseAdminConfig() {
@@ -9,7 +9,7 @@ function getFirebaseAdminConfig() {
   if (!projectId || !clientEmail || !privateKey) {
     throw new Error('Missing Firebase Admin Config');
   }
-  return { projectId, clientEmail, privateKey };
+  return { clientEmail, privateKey, projectId };
 }
 
 export const firebaseAdmin =

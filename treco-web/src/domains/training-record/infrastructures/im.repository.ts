@@ -1,4 +1,4 @@
-import { TrainingRecord, TrainingRecordDto } from '../models/training-record';
+import { TrainingRecord } from '../models/training-record';
 import { trainingRecordStore } from './im.store';
 
 export class IMTrainingRecordRepository {

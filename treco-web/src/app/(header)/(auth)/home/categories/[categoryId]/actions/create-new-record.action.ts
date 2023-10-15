@@ -5,14 +5,14 @@ import { redirect } from 'next/navigation';
 import { ValiError, object, parse, string, uuid } from 'valibot';
 
 const inputSchema = object({
-  trainingEventId: string([uuid()]),
+  traineeId: string([uuid()]),
   trainingCategoryId: string([uuid()]),
   trainingDate: string(),
-  traineeId: string([uuid()]),
+  trainingEventId: string([uuid()]),
 });
 
 const createUsecase = new TrainingRecordCreateUsecase(
-  new PrismaTrainingRecordRepository()
+  new PrismaTrainingRecordRepository(),
 );
 
 export async function createNewRecordAction(formData: FormData) {
@@ -26,9 +26,9 @@ export async function createNewRecordAction(formData: FormData) {
       console.error(
         'validation error',
         JSON.stringify({
-          func: 'createNewRecordAction',
           error: e,
-        })
+          func: 'createNewRecordAction',
+        }),
       );
       throw new Error('validation error');
     }
@@ -47,7 +47,7 @@ export async function createNewRecordAction(formData: FormData) {
     `/home/categories/${input.trainingCategoryId}/events/${
       input.trainingEventId
     }/records/${newRecord.trainingRecordId}?date=${dayjs(
-      newRecord.trainingDate
-    ).toISOString()}`
+      newRecord.trainingDate,
+    ).toISOString()}`,
   );
 }

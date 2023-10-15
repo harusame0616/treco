@@ -1,23 +1,21 @@
-import { generateId } from '@/lib/id';
-
 export type TrainingCategoryDto = {
-  trainingCategoryId: string;
-  name: string;
-  traineeId: string;
-  order: number;
   color: string;
+  name: string;
+  order: number;
+  traineeId: string;
+  trainingCategoryId: string;
 };
 
 export class TrainingCategory {
   private constructor(private dto: TrainingCategoryDto) {}
 
+  static fromDto(dto: TrainingCategoryDto) {
+    return new TrainingCategory(dto);
+  }
+
   toDto() {
     return {
       ...this.dto,
     };
-  }
-
-  static fromDto(dto: TrainingCategoryDto) {
-    return new TrainingCategory(dto);
   }
 }

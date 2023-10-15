@@ -9,7 +9,7 @@ export class TrainingEventQueryByTrainingCategoryId {
 
   async execute({ trainingCategoryId }: Props) {
     return await this.trainingEventQuery.queryListByTrainingCategoryId(
-      trainingCategoryId
+      trainingCategoryId,
     );
   }
 }

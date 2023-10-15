@@ -1,7 +1,9 @@
-import { AuthProvider } from '@/lib/auth';
 import type { Metadata } from 'next';
+
+import { AuthProvider } from '@/lib/auth';
 import { M_PLUS_Rounded_1c } from 'next/font/google';
 import { PropsWithChildren } from 'react';
+
 import './globals.css';
 
 const baseFont = M_PLUS_Rounded_1c({
@@ -10,13 +12,13 @@ const baseFont = M_PLUS_Rounded_1c({
 });
 
 export const metadata: Metadata = {
-  title: 'TRECo - BESIDE YOUR WORKOUT',
   description:
     'トレーニングをもっと楽しくするシンプルなトレーニング記録サービス',
+  title: 'TRECo - BESIDE YOUR WORKOUT',
   viewport: {
-    width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
+    width: 'device-width',
   },
 };
 

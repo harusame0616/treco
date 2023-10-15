@@ -1,4 +1,3 @@
-import { IMTrainingCategoryQuery } from '../infrastructures/im.query';
 import { TrainingCategoryQuery } from './training-category.query';
 
 type Props = {
@@ -7,6 +6,7 @@ type Props = {
 
 export class TrainingCategoryQueryByTraineeIdUsecase {
   constructor(private trainingCategoryQuery: TrainingCategoryQuery) {}
+
   async execute({ traineeId }: Props) {
     return await this.trainingCategoryQuery.queryListByTraineeId(traineeId);
   }

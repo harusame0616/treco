@@ -10,19 +10,17 @@ export default function SignOutPage() {
   const { signOut } = useAuth();
 
   useEffect(() => {
-    if (isPushed) {
+    if (isPushed || !router || !signOut) {
       return;
     }
 
-    fetch('/api/session/clear', { method: 'POST' }).then(
-      () => {
-        signOut().then(() => {
-          setIsPushed(true);
-          router.push('/');
-        });
-      }
-    );
-  }, []);
+    fetch('/api/session/clear', { method: 'POST' }).then(() => {
+      signOut().then(() => {
+        setIsPushed(true);
+        router.push('/');
+      });
+    });
+  }, [isPushed, router, signOut]);
 
   return <div className="text-center">サインアウト中です</div>;
 }

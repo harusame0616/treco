@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+
 import { TrainingCategoryDto } from '../models/training-cateogry';
 import { TrainingCategoryQuery } from '../usecases/training-category.query';
 

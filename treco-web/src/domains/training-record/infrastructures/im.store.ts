@@ -1,6 +1,7 @@
 import { TrainingRecordDto } from '../models/training-record';
 
 declare global {
+  // eslint-disable-next-line no-var
   var trainingRecordStore: Map<string, TrainingRecordDto> | undefined;
 }
 

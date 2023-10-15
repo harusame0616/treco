@@ -1,11 +1,11 @@
-import Image from 'next/image';
-import SplashImage from './splash.svg';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { LoginButtonList } from '../login-button-list';
 import { isAuthenticated } from '@/lib/auth/auth';
+import Image from 'next/image';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
+import { LoginButtonList } from '../login-button-list';
 import { LoginCheck } from '../login-check';
+import SplashImage from './splash.svg';
 
 export default async function Home() {
   if (await isAuthenticated()) {
@@ -16,9 +16,9 @@ export default async function Home() {
     <main className="flex flex-col w-full items-center px-4 py-14 gap-10">
       <LoginCheck />
       <Image
+        alt="TRECo BESIDE YOUR WORKOUT"
         priority
         src={SplashImage}
-        alt="TRECo BESIDE YOUR WORKOUT"
         width="500"
       />
       <p className="text-[min(5vw,28px)] text-center flex flex-col gap-2">
