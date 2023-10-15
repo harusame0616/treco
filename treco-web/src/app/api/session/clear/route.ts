@@ -1,5 +1,6 @@
 import { auth } from '@/lib/firebase/admin';
 import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
+import { SIGNED_IN_TRAINEE_ID_COOKIE_NAME } from '@/lib/trainee';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -19,5 +20,6 @@ export async function POST(request: NextRequest) {
   }
 
   response.cookies.delete(SESSION_ID_COOKIE_NAME);
+  response.cookies.delete(SIGNED_IN_TRAINEE_ID_COOKIE_NAME);
   return response;
 }
