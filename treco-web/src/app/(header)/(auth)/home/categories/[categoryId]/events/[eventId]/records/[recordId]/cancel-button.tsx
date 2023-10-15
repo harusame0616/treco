@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 
-export function CancelButton({}) {
+export function CancelButton() {
   const router = useRouter();
   const pathname = usePathname();
 

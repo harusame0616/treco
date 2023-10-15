@@ -1,10 +1,10 @@
-import { TrainingRecord, TrainingRecordDto } from '../models/training-record';
-import { trainingRecordStore } from './im.store';
+import { TrainingRecord } from "../models/training-record";
+import { trainingRecordStore } from "./im.store";
 
 export class IMTrainingRecordRepository {
   constructor() {
     if (trainingRecordStore === undefined) {
-      throw new Error('global.trainingRecordStore is undefined');
+      throw new Error("global.trainingRecordStore is undefined");
     }
   }
 

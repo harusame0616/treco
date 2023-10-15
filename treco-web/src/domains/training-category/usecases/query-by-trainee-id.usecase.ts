@@ -1,5 +1,4 @@
-import { IMTrainingCategoryQuery } from '../infrastructures/im.query';
-import { TrainingCategoryQuery } from './training-category.query';
+import { TrainingCategoryQuery } from "./training-category.query";
 
 type Props = {
   traineeId: string;

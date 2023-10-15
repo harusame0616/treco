@@ -1,5 +1,3 @@
-import { generateId } from '@/lib/id';
-
 export type TrainingCategoryDto = {
   color: string;
   name: string;

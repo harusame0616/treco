@@ -1,6 +1,5 @@
 "use client";
 import dayjs from "dayjs";
-import { memo } from "react";
 
 import { Day } from "./day";
 

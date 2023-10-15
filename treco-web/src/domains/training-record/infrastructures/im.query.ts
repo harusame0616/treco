@@ -1,16 +1,13 @@
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
-import { trainingCategoryFixtures } from '../../../../fixtures/training-category.fixture';
-import { trainingEventFixtures } from '../../../../fixtures/training-event.fixture';
-import { trainingCategoryStore } from '../../training-category/infrastructures/im.store';
-import { trainingEventStore } from '../../training-event/infrastructures/im.store';
-import { TrainingRecord, TrainingRecordDto } from '../models/training-record';
-import { trainingRecordStore } from './im.store';
+import { trainingCategoryStore } from "../../training-category/infrastructures/im.store";
+import { trainingEventStore } from "../../training-event/infrastructures/im.store";
+import { trainingRecordStore } from "./im.store";
 
 export class IMTrainingRecordQuery {
   constructor() {
     if (trainingRecordStore === undefined) {
-      throw new Error('global.trainingRecordStore is undefined');
+      throw new Error("global.trainingRecordStore is undefined");
     }
   }
 
@@ -19,24 +16,24 @@ export class IMTrainingRecordQuery {
       .filter(
         (record) =>
           record.traineeId === traineeId &&
-          dayjs(record.trainingDate).isSame(date, 'day')
+          dayjs(record.trainingDate).isSame(date, "day"),
       )
       .map((dto) => {
         const trainingEvent = Array.from(trainingEventStore.values()).find(
-          (event) => event.trainingEventId === dto.trainingEventId
+          (event) => event.trainingEventId === dto.trainingEventId,
         );
         if (!trainingEvent) {
-          throw new Error('event not found');
+          throw new Error("event not found");
         }
 
         const trainingCategory = Array.from(
-          trainingCategoryStore.values()
+          trainingCategoryStore.values(),
         ).find(
           (category) =>
-            category.trainingCategoryId === trainingEvent.trainingCategoryId
+            category.trainingCategoryId === trainingEvent.trainingCategoryId,
         );
         if (!trainingCategory) {
-          throw new Error('category not found');
+          throw new Error("category not found");
         }
 
         return {

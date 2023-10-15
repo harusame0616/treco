@@ -2,10 +2,10 @@
 
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 
 import { CalendarMonth } from "./calendar-month";
 

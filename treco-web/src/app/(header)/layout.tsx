@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { FilePlusIcon, HomeIcon, PersonIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
-import { PropsWithChildren, ReactElement } from "react";
+import { PropsWithChildren } from "react";
 
 import Icon from "./icon.png";
 import { Title } from "./title";

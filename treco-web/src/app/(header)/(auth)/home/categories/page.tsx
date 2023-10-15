@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { PrismaTrainingCategoryQuery } from "@/domains/training-category/infrastructures/prisma.query";
-import { TrainingCategory } from "@/domains/training-category/models/training-cateogry";
 import { TrainingCategoryQueryByTraineeIdUsecase } from "@/domains/training-category/usecases/query-by-trainee-id.usecase";
 import { getSignedInTraineeId } from "@/lib/trainee";
 import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";

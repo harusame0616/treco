@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { IMTrainingRecordRepository } from "@/domains/training-record/infrastructures/im.repository";
 import { PrismaTrainingRecordQuery } from "@/domains/training-record/infrastructures/prisma.query";
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from "@/domains/training-record/usecases/query-one-for-training-record-edit.usecase";
-import { generateId } from "@/lib/id";
 import { getSignedInTraineeId } from "@/lib/trainee";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Link from "next/link";

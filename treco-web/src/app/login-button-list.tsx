@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
-import { useState } from "react";
 
 export function LoginButtonList() {
   const auth = useAuth();

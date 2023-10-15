@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { isAuthenticated } from "@/lib/auth/auth";
 import Image from "next/image";
 import Link from "next/link";

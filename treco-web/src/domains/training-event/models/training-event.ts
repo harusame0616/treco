@@ -1,5 +1,3 @@
-import { generateId } from '@/lib/id';
-
 export type TrainingEventDto = {
   loadUnit: string;
   name: string;

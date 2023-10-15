@@ -1,8 +1,8 @@
-import { getAnalytics } from 'firebase/analytics';
-import { initializeApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
 
-const firebaseConfig = require('./settings/firebase-config.json');
+import firebaseConfig from "./settings/firebase-config.json";
 
 const app = initializeApp(firebaseConfig);
 
@@ -14,8 +14,8 @@ declare global {
 const fbAuth = getAuth();
 
 if (
-  process.env.NEXT_PUBLIC_AUTH_EMULATOR === 'use' &&
-  typeof location == 'object'
+  process.env.NEXT_PUBLIC_AUTH_EMULATOR === "use" &&
+  typeof location == "object"
 ) {
   if (!fbAuth.emulatorConfig) {
     connectAuthEmulator(fbAuth, `http://${location.hostname}:9099/`, {
@@ -25,9 +25,9 @@ if (
 }
 
 // エラーが発生するため
-if (typeof window == 'object') {
-  if (process.env.NODE_ENV === 'production') {
-    const analytics = getAnalytics(app);
+if (typeof window == "object") {
+  if (process.env.NODE_ENV === "production") {
+    getAnalytics(app);
   }
 }
 
