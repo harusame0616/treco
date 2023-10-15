@@ -1,6 +1,8 @@
-import { traineeFixtures } from '../../../fixtures/trainee.fixture';
+import { cookies } from 'next/headers';
+
+export const SIGNED_IN_TRAINEE_ID_COOKIE_NAME =
+  'SIGNED_IN_TRAINEE_ID_COOKIE_NAME';
 
 export async function getSignedInTraineeId() {
-  // TODO: not implemented
-  return traineeFixtures[0].traineeId;
+  return cookies().get(SIGNED_IN_TRAINEE_ID_COOKIE_NAME)?.value;
 }
