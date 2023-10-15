@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_NON_POLING")
+}
+
+model Trainee {
+  traineeId String @id @db.Uuid
+
+  name   String
+  authId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trainingCategories TrainingCategory[]
+  trainingEvents     TrainingEvent[]
+  trainingRecords    TrainingRecord[]
+}
+
+model TrainingCategory {
+  trainingCategoryId String @id @db.Uuid
+
+  name  String
+  order Int
+  color String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  traineeId String  @db.Uuid
+  trainee   Trainee @relation(fields: [traineeId], references: [traineeId])
+
+  trainingEvents TrainingEvent[]
+
+  @@unique([traineeId, order]) // おなじトレーニーで、おなじ順番のカテゴリは禁止
+}
+
+model TrainingEvent {
+  trainingEventId String @id @db.Uuid
+
+  name      String
+  order     Int
+  loadUnit  String
+  valueUnit String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  traineeId          String @db.Uuid
+  trainee          Trainee          @relation(fields: [traineeId], references: [traineeId])
+  trainingCategoryId String @db.Uuid
+  trainingCategory TrainingCategory @relation(fields: [trainingCategoryId], references: [trainingCategoryId])
+
+  trainingRecords TrainingRecord[]
+
+  @@unique([traineeId, trainingCategoryId, order]) // おなじトレーニーで、おなじ順番のトレーニング種目は禁止
+}
+
+model TrainingRecord {
+  trainingRecordId String @id @db.Uuid
+
+  trainingDate    DateTime
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  traineeId       String   @db.Uuid
+  trainee       Trainee       @relation(fields: [traineeId], references: [traineeId])
+  trainingEventId String   @db.Uuid
+  trainingEvent TrainingEvent @relation(fields: [trainingEventId], references: [trainingEventId])
+
+  sets TrainingSet[]
+}
+
+model TrainingSet {
+  trainingRecordId String @db.Uuid
+  order            Int
+
+  value     Int
+  load      Int
+  note      String   @db.VarChar(255)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trainingRecord TrainingRecord @relation(fields: [trainingRecordId], references: [trainingRecordId])
+
+  @@id([trainingRecordId, order])
+}
