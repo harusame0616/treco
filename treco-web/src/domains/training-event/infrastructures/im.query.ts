@@ -4,7 +4,7 @@ export class IMTrainingEventQuery {
 
   async queryListByTrainingCategoryId(trainingCategoryId: string) {
     return Array.from(trainingEventStore.values()).filter(
-      (event) => event.trainingCategoryId === trainingCategoryId
+      (event) => event.trainingCategoryId === trainingCategoryId,
     );
   }
 }

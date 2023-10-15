@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import dayjs, { Dayjs } from "dayjs";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+import dayjs, { Dayjs } from 'dayjs';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
-import { CalendarMonth } from "./calendar-month";
+import { CalendarMonth } from './calendar-month';
 
 const createViewMonths = (month: Dayjs, startIndex: number) => {
   // 0 は現在表示中の月、 1 は次の月、 -1 は前の月を表す。
@@ -19,10 +19,10 @@ const createViewMonths = (month: Dayjs, startIndex: number) => {
   ][startIndex];
 
   if (monthOrders == null) {
-    throw new RangeError("Not found monthOrders by startIndex");
+    throw new RangeError('Not found monthOrders by startIndex');
   }
 
-  return monthOrders.map((monthOrder) => month.add(monthOrder, "month"));
+  return monthOrders.map((monthOrder) => month.add(monthOrder, 'month'));
 };
 export function Calendar() {
   const [selectDate, setSelectDate] = useState(dayjs());
@@ -36,7 +36,7 @@ export function Calendar() {
     (date: Date) => {
       setSelectDate(dayjs(date));
       const searchParams = new URLSearchParams({
-        date: dayjs(date).format("YYYY-MM-DD"),
+        date: dayjs(date).format('YYYY-MM-DD'),
       });
       router.push(`/home?${searchParams.toString()}`, {});
     },
@@ -56,7 +56,7 @@ export function Calendar() {
         num = index < slideIndex ? -1 : 1;
       }
       setSlideIndex(index);
-      setViewMonth(viewMonth.add(num, "month"));
+      setViewMonth(viewMonth.add(num, 'month'));
     },
     [slideIndex, viewMonth],
   );

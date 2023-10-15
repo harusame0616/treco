@@ -1,5 +1,5 @@
-import { TrainingRecord } from "../models/training-record";
-import { TrainingRecordRepository } from "./training-record.repository";
+import { TrainingRecord } from '../models/training-record';
+import { TrainingRecordRepository } from './training-record.repository';
 
 type Props = {
   traineeId: string;
@@ -31,17 +31,17 @@ export class TrainingRecordCreateUsecase {
     const trainee = await this.traineeRepository.findOneById({ traineeId });
 
     if (!trainingEvent) {
-      console.error("TrainingEvent not found", {
+      console.error('TrainingEvent not found', {
         trainingEventId,
       });
-      throw new Error("TrainingEvent not found");
+      throw new Error('TrainingEvent not found');
     }
 
     if (!trainee) {
-      console.error("Trainee not found", {
+      console.error('Trainee not found', {
         traineeId,
       });
-      throw new Error("Trainee not found");
+      throw new Error('Trainee not found');
     }
 
     const trainingRecord = TrainingRecord.create({

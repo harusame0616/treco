@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/lib/auth";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useAuth } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function SignOutPage() {
   const [isPushed, setIsPushed] = useState(false);
@@ -14,10 +14,10 @@ export default function SignOutPage() {
       return;
     }
 
-    fetch("/api/session/clear", { method: "POST" }).then(() => {
+    fetch('/api/session/clear', { method: 'POST' }).then(() => {
       signOut().then(() => {
         setIsPushed(true);
-        router.push("/");
+        router.push('/');
       });
     });
   }, [isPushed, router, signOut]);

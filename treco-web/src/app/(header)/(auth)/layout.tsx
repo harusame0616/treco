@@ -1,8 +1,8 @@
-import { isAuthenticated } from "@/lib/auth/auth";
-import { redirect } from "next/navigation";
-import { PropsWithChildren } from "react";
+import { isAuthenticated } from '@/lib/auth/auth';
+import { redirect } from 'next/navigation';
+import { PropsWithChildren } from 'react';
 
-import { MainMenu } from "./main-menu";
+import { MainMenu } from './main-menu';
 
 type Props = {
   searchParams: {
@@ -14,7 +14,7 @@ export default async function AuthLayout({
   children,
 }: PropsWithChildren<Props>) {
   if (!(await isAuthenticated())) {
-    redirect("/");
+    redirect('/');
   }
 
   return (

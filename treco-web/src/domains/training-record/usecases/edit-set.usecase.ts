@@ -1,5 +1,5 @@
-import { TrainingSet } from "../models/training-record";
-import { TrainingRecordRepository } from "./training-record.repository";
+import { TrainingSet } from '../models/training-record';
+import { TrainingRecordRepository } from './training-record.repository';
 
 type Props = {
   index: number;
@@ -35,18 +35,18 @@ export class TrainingRecordEditSetUsecase {
       await this.trainingRecordRepository.findOneById(trainingRecordId);
 
     if (!trainingRecord) {
-      console.error("TrainingRecord not found", {
+      console.error('TrainingRecord not found', {
         trainingRecordId,
       });
-      throw new Error("TrainingRecord not found");
+      throw new Error('TrainingRecord not found');
     }
 
     if (!trainingRecord.isByTrainee(traineeId)) {
-      console.error("Record is not by trainee", {
+      console.error('Record is not by trainee', {
         traineeId,
         trainingRecord,
       });
-      throw new Error("Record is not by trainee");
+      throw new Error('Record is not by trainee');
     }
 
     trainingRecord.editSet({ index, load, note, value });

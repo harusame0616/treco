@@ -1,6 +1,6 @@
-import { PrismaTrainingRecordRepository } from "@/domains/training-record/infrastructures/prisma.repository";
-import { TrainingRecordAddSetUsecase } from "@/domains/training-record/usecases/add-set.usecase";
-import { revalidatePath } from "next/cache";
+import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
+import { TrainingRecordAddSetUsecase } from '@/domains/training-record/usecases/add-set.usecase';
+import { revalidatePath } from 'next/cache';
 import {
   coerce,
   maxLength,
@@ -9,7 +9,7 @@ import {
   parse,
   string,
   uuid,
-} from "valibot";
+} from 'valibot';
 
 const inputSchema = object({
   load: coerce(number(), Number),
@@ -26,24 +26,24 @@ const addSetUsecase = new TrainingRecordAddSetUsecase(
 );
 
 export async function addSetAction(formData: FormData) {
-  "use server";
+  'use server';
 
   let input;
   try {
     input = parse(inputSchema, {
       ...Object.fromEntries(formData.entries()),
-      load: formData.get("load"),
-      value: formData.get("value"),
+      load: formData.get('load'),
+      value: formData.get('value'),
     });
     // TODO
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.error("validation error", {
+    console.error('validation error', {
       issue: JSON.stringify(e, null, 4),
       message: e.message,
       stack: e.stack,
     });
-    throw new Error("validatin error");
+    throw new Error('validatin error');
   }
 
   const trainingRecord = await addSetUsecase.execute(input);

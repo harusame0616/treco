@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { PrismaTrainingCategoryQuery } from "@/domains/training-category/infrastructures/prisma.query";
-import { TrainingCategoryQueryByTraineeIdUsecase } from "@/domains/training-category/usecases/query-by-trainee-id.usecase";
-import { PrismaTrainingEventQuery } from "@/domains/training-event/infrastructures/prisma.query";
-import { TrainingEventQueryByTrainingCategoryId } from "@/domains/training-event/usecases/query-by-training-category-id.usecase";
-import { getSignedInTraineeId } from "@/lib/trainee";
-import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
-import dayjs from "dayjs";
-import { notFound } from "next/navigation";
+import { Button } from '@/components/ui/button';
+import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
+import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
+import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
+import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
+import { getSignedInTraineeId } from '@/lib/trainee';
+import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import dayjs from 'dayjs';
+import { notFound } from 'next/navigation';
 
-import { createNewRecordAction } from "./actions";
+import { createNewRecordAction } from './actions';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const query = new TrainingEventQueryByTrainingCategoryId(
@@ -94,7 +94,7 @@ export default async function TrainingEventPage({
               <button className="text-foreground block w-full no-underline text-left whitespace-nowrap overflow-x-hidden text-ellipsis">
                 <span className="text-xl grow ">{name}</span>
               </button>
-              <Button aria-label="トレーニング種目名編集" variant={"ghost"}>
+              <Button aria-label="トレーニング種目名編集" variant={'ghost'}>
                 <Pencil2Icon aria-hidden="true" className="w-6 h-6" />
               </Button>
             </form>

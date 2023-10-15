@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { fbAuth } from "@/lib/firebase/client";
+import { fbAuth } from '@/lib/firebase/client';
 import {
   signInAnonymously as _signInAnonymously,
   AuthProvider,
@@ -12,10 +12,10 @@ import {
   onAuthStateChanged,
   signInWithRedirect,
   signOut,
-} from "firebase/auth";
-import { useLayoutEffect, useState } from "react";
+} from 'firebase/auth';
+import { useLayoutEffect, useState } from 'react';
 
-const oAuthProviderNames = ["google", "twitter", "facebook"] as const;
+const oAuthProviderNames = ['google', 'twitter', 'facebook'] as const;
 export type OAuthProviderName = (typeof oAuthProviderNames)[number];
 const isProviderName = (value: unknown): value is OAuthProviderName =>
   oAuthProviderNames.includes(value as OAuthProviderName);
@@ -40,7 +40,7 @@ export function useAuthContext() {
 
   const signInWith = async (providerName: OAuthProviderName) => {
     if (!isProviderName(providerName)) {
-      throw new Error("providerName error: ", providerName);
+      throw new Error('providerName error: ', providerName);
     }
 
     await signInWithRedirect(fbAuth, providerMappedProviderName[providerName]);
@@ -56,15 +56,15 @@ export function useAuthContext() {
 
   const linkWith = async (providerName: OAuthProviderName) => {
     if (!isProviderName(providerName)) {
-      throw new Error("providerName error: ", providerName);
+      throw new Error('providerName error: ', providerName);
     }
 
     if (fbAuth.currentUser == null) {
-      throw new Error("currentUser is null");
+      throw new Error('currentUser is null');
     }
 
     if (!fbAuth.currentUser.isAnonymous) {
-      throw new Error("currentUser is no anonymous");
+      throw new Error('currentUser is no anonymous');
     }
 
     await linkWithRedirect(

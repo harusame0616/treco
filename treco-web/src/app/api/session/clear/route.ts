@@ -1,6 +1,6 @@
-import { auth } from "@/lib/firebase/admin";
-import { SESSION_ID_COOKIE_NAME } from "@/lib/session";
-import { NextRequest, NextResponse } from "next/server";
+import { auth } from '@/lib/firebase/admin';
+import { SESSION_ID_COOKIE_NAME } from '@/lib/session';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const response = new NextResponse();

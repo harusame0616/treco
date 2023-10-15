@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { FilePlusIcon, HomeIcon, PersonIcon } from "@radix-ui/react-icons";
-import dayjs from "dayjs";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { FilePlusIcon, HomeIcon, PersonIcon } from '@radix-ui/react-icons';
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export function MainMenu() {
   const searchParams = useSearchParams();
-  const selectedDate = dayjs(searchParams.get("date") || new Date());
+  const selectedDate = dayjs(searchParams.get('date') || new Date());
 
   const menus = [
     {
       icon: HomeIcon,
-      label: "ホーム",
-      path: "/home",
+      label: 'ホーム',
+      path: '/home',
     },
     {
       icon: FilePlusIcon,
-      label: "トレーニング記録",
+      label: 'トレーニング記録',
       path: `/home/categories?date=${selectedDate.toISOString()}`,
     },
     {
       icon: PersonIcon,
-      label: "アカウント",
-      path: "/home/account",
+      label: 'アカウント',
+      path: '/home/account',
     },
   ];
 

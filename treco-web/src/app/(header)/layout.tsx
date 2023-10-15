@@ -1,9 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
-import { PropsWithChildren } from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { PropsWithChildren } from 'react';
 
-import Icon from "./icon.png";
-import { Title } from "./title";
+import Icon from './icon.png';
+import { Title } from './title';
 
 <Image alt="TRECo アイコン" height={100} src={Icon} width={100} />;
 

@@ -12,7 +12,7 @@ const inputSchema = object({
 });
 
 const createUsecase = new TrainingRecordCreateUsecase(
-  new PrismaTrainingRecordRepository()
+  new PrismaTrainingRecordRepository(),
 );
 
 export async function createNewRecordAction(formData: FormData) {
@@ -28,7 +28,7 @@ export async function createNewRecordAction(formData: FormData) {
         JSON.stringify({
           error: e,
           func: 'createNewRecordAction',
-        })
+        }),
       );
       throw new Error('validation error');
     }
@@ -47,7 +47,7 @@ export async function createNewRecordAction(formData: FormData) {
     `/home/categories/${input.trainingCategoryId}/events/${
       input.trainingEventId
     }/records/${newRecord.trainingRecordId}?date=${dayjs(
-      newRecord.trainingDate
-    ).toISOString()}`
+      newRecord.trainingDate,
+    ).toISOString()}`,
   );
 }

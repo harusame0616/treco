@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { PropsWithChildren } from "react";
-import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { Button } from '@/components/ui/button';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { PropsWithChildren } from 'react';
+import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
 export function SubmitButton({ children }: PropsWithChildren) {
   const { pending } = useFormStatus();

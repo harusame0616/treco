@@ -1,6 +1,6 @@
-import { traineeFixtures } from "../../../../fixtures/trainee.fixture";
-import { createTrainingCategoryFixtures } from "../../../../fixtures/training-category.fixture";
-import { TrainingCategoryDto } from "../models/training-cateogry";
+import { traineeFixtures } from '../../../../fixtures/trainee.fixture';
+import { createTrainingCategoryFixtures } from '../../../../fixtures/training-category.fixture';
+import { TrainingCategoryDto } from '../models/training-cateogry';
 
 declare global {
   // eslint-disable-next-line no-var

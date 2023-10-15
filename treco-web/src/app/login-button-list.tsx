@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/auth';
 
 export function LoginButtonList() {
   const auth = useAuth();
 
   const providers = [
     {
-      id: "google",
-      label: "Google",
+      id: 'google',
+      label: 'Google',
     },
     {
-      id: "twitter",
-      label: "X (Twitter)",
+      id: 'twitter',
+      label: 'X (Twitter)',
     },
     {
-      id: "facebook",
-      label: "facebook",
+      id: 'facebook',
+      label: 'facebook',
     },
   ] as const;
 

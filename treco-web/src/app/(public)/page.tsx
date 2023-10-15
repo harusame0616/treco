@@ -1,15 +1,15 @@
-import { isAuthenticated } from "@/lib/auth/auth";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { isAuthenticated } from '@/lib/auth/auth';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { LoginButtonList } from "../login-button-list";
-import { LoginCheck } from "../login-check";
-import SplashImage from "./splash.svg";
+import { LoginButtonList } from '../login-button-list';
+import { LoginCheck } from '../login-check';
+import SplashImage from './splash.svg';
 
 export default async function Home() {
   if (await isAuthenticated()) {
-    redirect("/home");
+    redirect('/home');
   }
 
   return (

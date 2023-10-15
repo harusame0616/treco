@@ -1,4 +1,4 @@
-import { TrainingRecordDto } from "../models/training-record";
+import { TrainingRecordDto } from '../models/training-record';
 
 declare global {
   // eslint-disable-next-line no-var

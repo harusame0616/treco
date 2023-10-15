@@ -1,24 +1,24 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
-import { AuthProvider } from "@/lib/auth";
-import { M_PLUS_Rounded_1c } from "next/font/google";
-import { PropsWithChildren } from "react";
+import { AuthProvider } from '@/lib/auth';
+import { M_PLUS_Rounded_1c } from 'next/font/google';
+import { PropsWithChildren } from 'react';
 
-import "./globals.css";
+import './globals.css';
 
 const baseFont = M_PLUS_Rounded_1c({
-  subsets: ["latin"],
-  weight: ["300", "700", "900"],
+  subsets: ['latin'],
+  weight: ['300', '700', '900'],
 });
 
 export const metadata: Metadata = {
   description:
-    "トレーニングをもっと楽しくするシンプルなトレーニング記録サービス",
-  title: "TRECo - BESIDE YOUR WORKOUT",
+    'トレーニングをもっと楽しくするシンプルなトレーニング記録サービス',
+  title: 'TRECo - BESIDE YOUR WORKOUT',
   viewport: {
     initialScale: 1,
     maximumScale: 1,
-    width: "device-width",
+    width: 'device-width',
   },
 };
 

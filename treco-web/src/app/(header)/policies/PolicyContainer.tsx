@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card";
-import { PropsWithChildren } from "react";
+import { Card } from '@/components/ui/card';
+import { PropsWithChildren } from 'react';
 
 export function PolicyContainer({
   children,

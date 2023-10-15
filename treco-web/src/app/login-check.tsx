@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/lib/auth";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useAuth } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export function LoginCheck() {
   const { getIdToken, isAuthenticated, isLoading, signOut } = useAuth();
@@ -22,11 +22,11 @@ export function LoginCheck() {
     }
 
     getIdToken().then((idToken) => {
-      fetch("/api/session/start", {
+      fetch('/api/session/start', {
         body: JSON.stringify({
           id: idToken,
         }),
-        method: "POST",
+        method: 'POST',
       })
         .then(() => {
           setIsPushed(true);

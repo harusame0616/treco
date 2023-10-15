@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { PrismaTrainingCategoryQuery } from "@/domains/training-category/infrastructures/prisma.query";
-import { TrainingCategoryQueryByTraineeIdUsecase } from "@/domains/training-category/usecases/query-by-trainee-id.usecase";
-import { getSignedInTraineeId } from "@/lib/trainee";
-import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
-import dayjs from "dayjs";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
+import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
+import { getSignedInTraineeId } from '@/lib/trainee';
+import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import dayjs from 'dayjs';
+import Link from 'next/link';
 
 async function queryCategories(props: { traineeId: string }) {
   const queryByTraineeIdUsecase = new TrainingCategoryQueryByTraineeIdUsecase(
@@ -48,7 +48,7 @@ export default async function CategoryPage({ searchParams }: Props) {
                   </span>
                   <span className="text-3xl grow">{name}</span>
                 </Link>
-                <Button aria-label="カテゴリ名編集" variant={"ghost"}>
+                <Button aria-label="カテゴリ名編集" variant={'ghost'}>
                   <Pencil2Icon aria-hidden="true" className="w-6 h-6" />
                 </Button>
               </div>
