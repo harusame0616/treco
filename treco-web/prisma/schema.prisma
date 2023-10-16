@@ -9,6 +9,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   directUrl = env("DATABASE_URL_NON_POLING")
+  shadowDatabaseUrl = env("DATABASE_SHADOW")
 }
 
 model Trainee {

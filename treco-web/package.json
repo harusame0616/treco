@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' NEXT_PUBLIC_AUTH_EMULATOR=use next dev",
     "dev:no-auth-emulator": "next dev",
-    "prebuild": "npm run format:check && prisma generate",
+    "prebuild": "npm run format:check && prisma generate && prisma migrate deploy",
     "build": "next build",
     "start": "next start",
     "lint:check": "next lint",
