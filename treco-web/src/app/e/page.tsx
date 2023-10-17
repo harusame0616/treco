@@ -1,5 +1,7 @@
 import { logger } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 export default function ErrorSamplePage() {
   console.log('log');
   logger.trace({ level: 'trace' }, 'test');
