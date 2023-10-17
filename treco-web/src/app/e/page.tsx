@@ -13,5 +13,6 @@ export default function ErrorSamplePage() {
     level: 'fatal',
     err: new Error('sample error'),
   });
+  console.error('console error');
   return <div>error</div>;
 }
