@@ -1,6 +1,6 @@
 import { logger } from '@/lib/logger';
 
-export function ErrorSamplePage() {
+export default function ErrorSamplePage() {
   logger.error(
     {
       e: new Error('sample error'),
