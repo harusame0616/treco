@@ -1,6 +1,7 @@
 import { logger } from '@/lib/logger';
 
 export default function ErrorSamplePage() {
+  console.log('log');
   logger.trace({ level: 'trace' }, 'test');
   logger.debug({ level: 'debug' }, 'test');
   logger.info({ level: 'info' }, 'test');
