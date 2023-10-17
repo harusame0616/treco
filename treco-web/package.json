@@ -32,6 +32,7 @@
     "firebase-admin": "^11.11.0",
     "next": "latest",
     "next-auth": "^4.23.2",
+    "pino": "^8.16.0",
     "prisma": "^5.4.2",
     "react": "latest",
     "react-dom": "latest",
@@ -39,7 +40,8 @@
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
-    "valibot": "^0.18.0"
+    "valibot": "^0.18.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
