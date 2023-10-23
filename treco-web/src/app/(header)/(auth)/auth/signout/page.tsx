@@ -1,26 +1,27 @@
 'use client';
 
-import { useAuth } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { signOut } from 'next-auth/react';
+import { useEffect } from 'react';
 
 export default function SignOutPage() {
-  const [isPushed, setIsPushed] = useState(false);
-  const router = useRouter();
-  const { signOut } = useAuth();
-
   useEffect(() => {
-    if (isPushed || !router || !signOut) {
+    if (!signOut) {
       return;
     }
 
-    fetch('/api/session/clear', { method: 'POST' }).then(() => {
-      signOut().then(() => {
-        setIsPushed(true);
-        router.refresh();
-      });
+    signOut({
+      redirect: true,
+      callbackUrl: '/',
     });
-  }, [isPushed, router, signOut]);
+  }, [signOut]);
 
-  return <div className="text-center">サインアウト中です</div>;
+  return (
+    <div className="p-8 flex flex-col items-center">
+      <div className="mb-8">サインアウト中です</div>
+      <div className="flex">
+        <ReloadIcon className="animate-spin" />
+      </div>
+    </div>
+  );
 }
