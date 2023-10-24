@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
-import { TrainingCategoryDto } from '../models/training-cateogry';
+import { TrainingCategoryDto } from '../models/training-category';
 import { TrainingCategoryQuery } from '../usecases/training-category.query';
 
 export class PrismaTrainingCategoryQuery implements TrainingCategoryQuery {

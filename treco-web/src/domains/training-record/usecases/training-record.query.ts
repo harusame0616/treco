@@ -1,4 +1,4 @@
-import { TrainingCategoryDto } from '@/domains/training-category/models/training-cateogry';
+import { TrainingCategoryDto } from '@/domains/training-category/models/training-category';
 import { TrainingEventDto } from '@/domains/training-event/models/training-event';
 
 import { TrainingRecordDto } from '../models/training-record';
