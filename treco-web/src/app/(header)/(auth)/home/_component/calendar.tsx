@@ -34,6 +34,7 @@ export function Calendar() {
   const months = createViewMonths(viewMonth, slideIndex);
   const selectDateHandler = useCallback(
     (date: Date) => {
+      console.log({ date });
       setSelectDate(dayjs(date));
       const searchParams = new URLSearchParams({
         date: dayjs(date).format('YYYY-MM-DD'),

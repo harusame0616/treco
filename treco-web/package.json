@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' NEXT_PUBLIC_AUTH_EMULATOR=use next dev",
     "dev:no-auth-emulator": "next dev",
-    "prebuild": "npm run format:check",
+    "prebuild": "npm run format:check && prisma generate && prisma migrate deploy",
     "build": "next build",
     "start": "next start",
     "lint:check": "next lint",
@@ -31,6 +31,7 @@
     "firebase": "^10.4.0",
     "firebase-admin": "^11.11.0",
     "next": "latest",
+    "next-auth": "^4.23.2",
     "prisma": "^5.4.2",
     "react": "latest",
     "react-dom": "latest",

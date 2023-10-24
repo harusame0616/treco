@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { LoginButtonList } from '../login-button-list';
-import { LoginCheck } from '../login-check';
 import SplashImage from './splash.svg';
 
 export default async function Home() {
@@ -14,7 +13,6 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col w-full items-center px-4 py-14 gap-10">
-      <LoginCheck />
       <Image
         alt="TRECo BESIDE YOUR WORKOUT"
         priority

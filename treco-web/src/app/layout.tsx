@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 
-import { AuthProvider } from '@/lib/auth';
 import { M_PLUS_Rounded_1c } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
 import './globals.css';
+import SessionProvider from './session-provider';
 
 const baseFont = M_PLUS_Rounded_1c({
   subsets: ['latin'],
@@ -22,11 +22,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ja">
       <body className={`${baseFont.className} dark`}>
-        <AuthProvider>{children}</AuthProvider>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
