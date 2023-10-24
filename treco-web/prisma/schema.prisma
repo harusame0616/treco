@@ -12,11 +12,19 @@ datasource db {
   shadowDatabaseUrl = env("DATABASE_SHADOW")
 }
 
+model AuthUser {
+  authUserId String @id @db.Uuid
+  traineeId String @unique @db.Uuid
+  sub String @unique @db.VarChar(255)
+  email String @unique @db.VarChar(1024)
+
+  trainee   Trainee @relation(fields: [traineeId], references: [traineeId])
+}
+
 model Trainee {
   traineeId String @id @db.Uuid
 
   name   String
-  authId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -24,6 +32,8 @@ model Trainee {
   trainingCategories TrainingCategory[]
   trainingEvents     TrainingEvent[]
   trainingRecords    TrainingRecord[]
+
+  authUser AuthUser?
 }
 
 model TrainingCategory {
