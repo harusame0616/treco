@@ -5,6 +5,7 @@ import { getSignedInTraineeId } from '@/lib/trainee';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+import { CategoryEdit } from './_components/category-edit';
 
 async function queryCategories(props: { traineeId: string }) {
   const queryByTraineeIdUsecase = new TrainingCategoryQueryByTraineeIdUsecase(
@@ -49,7 +50,11 @@ export default async function CategoryPage({ searchParams }: Props) {
                   <span className="text-3xl grow">{name}</span>
                 </Link>
                 <Button aria-label="カテゴリ名編集" variant={'ghost'}>
-                  <Pencil2Icon aria-hidden="true" className="w-6 h-6" />
+                  <CategoryEdit
+                    color={color}
+                    name={name}
+                    trainingCategoryId={trainingCategoryId}
+                  />
                 </Button>
               </div>
               <Button

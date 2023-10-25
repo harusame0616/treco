@@ -13,6 +13,14 @@ export class TrainingCategory {
     return new TrainingCategory(dto);
   }
 
+  changeName(name: string) {
+    this.dto.name = name;
+  }
+
+  changeColor(color: string) {
+    this.dto.color = color;
+  }
+
   toDto() {
     return {
       ...this.dto,
