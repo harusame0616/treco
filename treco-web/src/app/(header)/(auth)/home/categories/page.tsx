@@ -27,6 +27,10 @@ export default async function CategoryPage({ searchParams }: Props) {
 
   return (
     <div className="p-2">
+      <p className="mb-4 text-muted-foreground text-sm">
+        トレーニングカテゴリーを選択してください。左にスワイプすると削除できます。
+      </p>
+
       <ul
         aria-label="トレーニングカテゴリー"
         className="w-full flex flex-col gap-2"
