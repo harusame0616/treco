@@ -26,13 +26,16 @@ export default async function CategoryPage({ searchParams }: Props) {
   const selectDate = dayjs(searchParams.date);
 
   return (
-    <div>
-      <ul aria-label="トレーニングカテゴリー" className="w-full">
+    <div className="p-2">
+      <ul
+        aria-label="トレーニングカテゴリー"
+        className="w-full flex flex-col gap-2"
+      >
         {categories.length ? (
           categories.map(({ color, name, trainingCategoryId }) => (
             <li
               aria-label={name}
-              className={`flex m-2 text-lg  snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
+              className={`flex text-lg snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
               key={trainingCategoryId}
             >
               <div className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16">
@@ -70,6 +73,9 @@ export default async function CategoryPage({ searchParams }: Props) {
           <p className="text-center p-4">カテゴリーが登録されていません。</p>
         )}
       </ul>
+      <div className="mt-2">
+        <CategoryEdit />
+      </div>
     </div>
   );
 }

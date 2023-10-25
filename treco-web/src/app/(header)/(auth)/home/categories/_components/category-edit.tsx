@@ -21,13 +21,17 @@ import {
   object,
   string,
 } from 'valibot';
-import { editCategoryAction } from '../actions';
+import { createCategoryAction, editCategoryAction } from '../actions';
 
-type Props = {
+type CreateProps = {};
+
+type EditProps = {
   trainingCategoryId: string;
   color: string;
   name: string;
 };
+
+type Props = CreateProps | EditProps;
 
 const inputSchema = object({
   name: string(),
@@ -35,36 +39,48 @@ const inputSchema = object({
 });
 type InputSchema = typeof inputSchema;
 
-export function CategoryEdit({ trainingCategoryId, color, name }: Props) {
+export function CategoryEdit(props: Props) {
   const [open, setOpen] = useState(false);
+  const isNew = !('trainingCategoryId' in props);
 
   const form = useForm<InputType<InputSchema>>({
     defaultValues: {
-      name: name,
-      color,
+      name: 'name' in props ? props.name : '',
+      color: 'color' in props ? props.color : '',
     },
     resolver: valibotResolver(inputSchema),
   });
 
-  const onClick = async (props: OutputType<InputSchema>) => {
-    await editCategoryAction({
-      trainingCategoryId,
-      name: props.name,
-      color: props.color,
-    });
+  const onClick = async ({ name, color }: OutputType<InputSchema>) => {
+    if (isNew) {
+      await createCategoryAction({
+        name,
+        color,
+      });
+    } else {
+      await editCategoryAction({
+        trainingCategoryId: props.trainingCategoryId,
+        name,
+        color,
+      });
+    }
     setOpen(false);
   };
+  const title = 'トレーニングカテゴリ' + (isNew ? '作成' : '編集');
+  const trigger = isNew ? (
+    <Button className="w-full">トレーニングカテゴリを作成する</Button>
+  ) : (
+    <Pencil2Icon className="w-6 h-6" />
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Pencil2Icon className="w-6 h-6" />
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>カテゴリ名編集</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div>
+        <div className="grid gap-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">名前</Label>
             <Input className="col-span-3" {...form.register('name')} />

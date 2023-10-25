@@ -24,7 +24,6 @@ export class TrainingRecordCreateUsecase {
   constructor(private trainingRecordRepository: TrainingRecordRepository) {}
 
   async execute({ traineeId, trainingDate, trainingEventId }: Props) {
-    console.log(trainingDate);
     const trainingEvent = await this.trainingEventRepository.findOneById({
       trainingEventId,
     });
