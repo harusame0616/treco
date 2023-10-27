@@ -1,6 +1,7 @@
 'use server';
 
 import { TraineePrismaRepository } from '@/domains/trainee/infrastructures/prisma.repository';
+import { TrainingCategoryPrismaRepository } from '@/domains/training-category/infrastructures/prisma.repository';
 import { TrainingEventPrismaRepository } from '@/domains/training-event/infrastructures/prisma.repository';
 import { TrainingEventCreateUsecase } from '@/domains/training-event/usecases/create.usecase';
 import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
@@ -71,6 +72,7 @@ export async function createTrainingEventAction(
 
   await new TrainingEventCreateUsecase(
     new TraineePrismaRepository(),
+    new TrainingCategoryPrismaRepository(),
     new TrainingEventPrismaRepository(),
   ).execute({
     traineeId,
