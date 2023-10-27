@@ -4,11 +4,11 @@ import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-cate
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import { TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
 import { notFound } from 'next/navigation';
 
-import { createNewRecordAction } from './actions';
+import { createNewRecordAction } from './_actions';
 import { EventEdit } from './event-edit';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
@@ -69,48 +69,58 @@ export default async function TrainingEventPage({
         aria-label={`${category.name}のトレーニング種目`}
         className="mb-2 flex w-full flex-col gap-2"
       >
-        {trainingEvents.map(({ name, trainingEventId }) => (
-          <li
-            aria-label={name}
-            className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
-            key={trainingEventId}
-          >
-            <form
-              action={createNewRecordAction}
-              className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
+        {trainingEvents.map(
+          ({ loadUnit, name, trainingEventId, valueUnit }) => (
+            <li
+              aria-label={name}
+              className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
+              key={trainingEventId}
             >
-              <input
-                name="trainingDate"
-                type="hidden"
-                value={selectDate.toISOString()}
-              />
-              <input
-                name="trainingCategoryId"
-                type="hidden"
-                value={params.categoryId}
-              />
-              <input
-                name="trainingEventId"
-                type="hidden"
-                value={trainingEventId}
-              />
-              <input name="traineeId" type="hidden" value={signedInTraineeId} />
-              <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
-                <span className="grow text-xl ">{name}</span>
-              </button>
-              <Button aria-label="トレーニング種目名編集" variant={'ghost'}>
-                <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
+              <form
+                action={createNewRecordAction}
+                className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
+              >
+                <input
+                  name="trainingDate"
+                  type="hidden"
+                  value={selectDate.toISOString()}
+                />
+                <input
+                  name="trainingCategoryId"
+                  type="hidden"
+                  value={params.categoryId}
+                />
+                <input
+                  name="trainingEventId"
+                  type="hidden"
+                  value={trainingEventId}
+                />
+                <input
+                  name="traineeId"
+                  type="hidden"
+                  value={signedInTraineeId}
+                />
+                <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
+                  <span className="grow text-xl ">{name}</span>
+                </button>
+                <EventEdit
+                  loadUnit={loadUnit}
+                  name={name}
+                  trainingCategoryId={params.categoryId}
+                  trainingEventId={trainingEventId}
+                  valueUnit={valueUnit}
+                />
+              </form>
+              <Button
+                aria-label="削除"
+                className="ml-4 h-16 w-16 snap-start"
+                size="icon"
+              >
+                <TrashIcon aria-hidden="true" className="h-12 w-14" />
               </Button>
-            </form>
-            <Button
-              aria-label="削除"
-              className="ml-4 h-16 w-16 snap-start"
-              size="icon"
-            >
-              <TrashIcon aria-hidden="true" className="h-12 w-14" />
-            </Button>
-          </li>
-        ))}
+            </li>
+          ),
+        )}
       </ul>
       <EventEdit trainingCategoryId={params.categoryId} />
     </div>

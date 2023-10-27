@@ -31,12 +31,23 @@ export class TrainingEvent {
     return new TrainingEvent(dto);
   }
 
+  changeLoadUnit(loadUnit: string) {
+    this.dto.loadUnit = loadUnit;
+  }
+
+  changeName(name: string) {
+    this.dto.name = name;
+  }
+
+  changeValueUnit(valueUnit: string) {
+    this.dto.valueUnit = valueUnit;
+  }
+
   toDto() {
     return {
       ...this.dto,
     };
   }
-
   get order() {
     return this.dto.order;
   }
