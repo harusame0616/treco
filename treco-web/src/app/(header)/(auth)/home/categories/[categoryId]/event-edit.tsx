@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { valibotResolver } from '@hookform/resolvers/valibot';
+import { Pencil2Icon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -21,9 +22,18 @@ import {
   string,
 } from 'valibot';
 
-import { createTrainingEventAction } from './actions';
+import { createTrainingEventAction, editTrainingEventAction } from './_actions';
 
-type Props = { trainingCategoryId: string };
+type CreateProps = { trainingCategoryId: string };
+type EditProps = {
+  loadUnit: string;
+  name: string;
+  trainingCategoryId: string;
+  trainingEventId: string;
+  valueUnit: string;
+};
+
+type Props = CreateProps | EditProps;
 
 const inputSchema = object({
   loadUnit: string(),
@@ -32,15 +42,18 @@ const inputSchema = object({
 });
 type InputSchema = typeof inputSchema;
 
-export function EventEdit({ trainingCategoryId }: Props) {
+export function EventEdit(props: Props) {
   const [open, setOpen] = useState(false);
+  const isNew = !('trainingEventId' in props);
 
   const form = useForm<InputType<InputSchema>>({
-    defaultValues: {
-      loadUnit: '回',
-      name: '',
-      valueUnit: 'kg',
-    },
+    defaultValues: isNew
+      ? {
+          loadUnit: '回',
+          name: '',
+          valueUnit: 'kg',
+        }
+      : props,
     resolver: valibotResolver(inputSchema),
   });
 
@@ -49,21 +62,35 @@ export function EventEdit({ trainingCategoryId }: Props) {
     name,
     valueUnit,
   }: OutputType<InputSchema>) => {
-    await createTrainingEventAction({
-      loadUnit,
-      name,
-      trainingCategoryId,
-      valueUnit,
-    });
+    if (isNew) {
+      await createTrainingEventAction({
+        loadUnit,
+        name,
+        trainingCategoryId: props.trainingCategoryId,
+        valueUnit,
+      });
+    } else {
+      await editTrainingEventAction({
+        loadUnit,
+        name,
+        trainingCategoryId: props.trainingCategoryId,
+        trainingEventId: props.trainingEventId,
+        valueUnit,
+      });
+    }
     setOpen(false);
   };
+
   const title = 'トレーニングイベントを作成';
+  const trigger = isNew ? (
+    <Button className="w-full">トレーニング種目を作成する</Button>
+  ) : (
+    <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
+  );
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button className="w-full">トレーニング種目を作成する</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

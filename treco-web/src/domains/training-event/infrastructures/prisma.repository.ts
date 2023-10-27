@@ -35,8 +35,16 @@ export class TrainingEventPrismaRepository implements TrainingEventRepository {
   async save(trainingEvent: TrainingEvent): Promise<void> {
     const dto = trainingEvent.toDto();
 
-    await prisma.trainingEvent.create({
-      data: dto,
+    await prisma.trainingEvent.upsert({
+      create: dto,
+      update: {
+        loadUnit: dto.loadUnit,
+        name: dto.name,
+        valueUnit: dto.valueUnit,
+      },
+      where: {
+        trainingEventId: dto.trainingEventId,
+      },
     });
   }
 }
