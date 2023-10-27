@@ -22,7 +22,10 @@ import {
   string,
 } from 'valibot';
 
-import { createCategoryAction, editCategoryAction } from '../actions';
+import {
+  createTrainingCategoryAction,
+  editTrainingCategoryAction,
+} from '../_actions';
 
 type CreateProps = Record<string, never>;
 
@@ -54,12 +57,12 @@ export function CategoryEdit(props: Props) {
 
   const onClick = async ({ color, name }: OutputType<InputSchema>) => {
     if (isNew) {
-      await createCategoryAction({
+      await createTrainingCategoryAction({
         color,
         name,
       });
     } else {
-      await editCategoryAction({
+      await editTrainingCategoryAction({
         color,
         name,
         trainingCategoryId: props.trainingCategoryId,
