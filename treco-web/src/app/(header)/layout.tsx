@@ -9,7 +9,7 @@ import { Title } from './title';
 
 export default function HeaderLayout({ children }: PropsWithChildren) {
   return (
-    <div className="w-full h-full flex flex-col max-w-5xl mx-auto border-x border-x-accent">
+    <div className="mx-auto flex h-full w-full max-w-5xl flex-col border-x border-x-accent">
       <MainHeader />
       <div className="grow overflow-hidden">{children}</div>
     </div>
@@ -18,7 +18,7 @@ export default function HeaderLayout({ children }: PropsWithChildren) {
 
 function MainHeader() {
   return (
-    <header className="px-4 py-2 bg-background items-center grid border-b border-b-accent shadow-md grid-cols-header">
+    <header className="grid grid-cols-header items-center border-b border-b-accent bg-background px-4 py-2 shadow-md">
       <Link href="/">
         <div className="sr-only">TRECo ホームへのリンク</div>
         <Image alt="TRECo アイコン" height="32" src={Icon} width="32" />

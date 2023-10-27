@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react';
 
 export default function PoliciesLayout({ children }: PropsWithChildren) {
   return (
-    <main className="h-full px-4 py-8 max-w-5xl mx-auto">
+    <main className="mx-auto h-full max-w-5xl px-4 py-8">
       {children}
       <nav className="text-center">
         <Link href="/">戻る</Link>

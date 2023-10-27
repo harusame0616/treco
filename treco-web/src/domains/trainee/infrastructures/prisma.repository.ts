@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+
 import { Trainee } from '../models/trainee';
 import { TraineeRepository } from '../usecases/repository';
 

@@ -12,14 +12,14 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex flex-col w-full items-center px-4 py-14 gap-10">
+    <main className="flex w-full flex-col items-center gap-10 px-4 py-14">
       <Image
         alt="TRECo BESIDE YOUR WORKOUT"
         priority
         src={SplashImage}
         width="500"
       />
-      <p className="text-[min(5vw,28px)] text-center flex flex-col gap-2">
+      <p className="flex flex-col gap-2 text-center text-[min(5vw,28px)]">
         <span className="block">トレーニングをもっと楽しくする</span>
         <span className="block">シンプルなトレーニング記録サービス</span>
       </p>

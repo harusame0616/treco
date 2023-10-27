@@ -4,8 +4,8 @@ export function getRequiredEnv(environmentKey: string) {
   if (!value) {
     const err = new Error(`Missing ${environmentKey} environment variable`);
     console.error({
-      msg: err.message,
       err,
+      msg: err.message,
     });
     throw err;
   }

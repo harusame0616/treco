@@ -1,11 +1,11 @@
-import { TrainingCategoryRepository } from './repository';
 import { TraineeRepository } from '../../trainee/usecases/repository';
 import { TrainingCategory } from '../models/training-category';
+import { TrainingCategoryRepository } from './repository';
 
 type ExecuteProps = {
-  traineeId: string;
-  name: string;
   color: string;
+  name: string;
+  traineeId: string;
 };
 
 export class TrainingCategoryCreateUsecase {
@@ -15,23 +15,23 @@ export class TrainingCategoryCreateUsecase {
   ) {}
 
   async execute(props: ExecuteProps) {
-    const { traineeId, name, color } = props;
+    const { color, name, traineeId } = props;
 
     await this.traineeRepository.findOneById(traineeId);
 
     const lastOrderTrainingCategory =
       await this.trainingCategoryRepository.findOneByOrder({
-        traineeId,
         order: 'last',
+        traineeId,
       });
 
     const trainingCategory = TrainingCategory.create({
-      traineeId,
-      name,
       color,
+      name,
       order: lastOrderTrainingCategory
         ? lastOrderTrainingCategory.order + 1
         : 0,
+      traineeId,
     });
 
     await this.trainingCategoryRepository.save(trainingCategory);

@@ -8,9 +8,9 @@ import { getSignedInTraineeId } from '@/lib/trainee';
 import { revalidatePath } from 'next/cache';
 
 type EditCategoryProps = {
-  trainingCategoryId: string;
-  name: string;
   color: string;
+  name: string;
+  trainingCategoryId: string;
 };
 
 export async function editCategoryAction(props: EditCategoryProps) {
@@ -22,8 +22,8 @@ export async function editCategoryAction(props: EditCategoryProps) {
 }
 
 type CreateCategoryProps = {
-  name: string;
   color: string;
+  name: string;
 };
 
 export async function createCategoryAction(props: CreateCategoryProps) {

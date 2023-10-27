@@ -59,10 +59,10 @@ export async function createNewRecordAction(formData: FormData) {
 }
 
 type CreateTrainingEventProps = {
-  trainingCategoryId: string;
-  name: string;
-  valueUnit: string;
   loadUnit: string;
+  name: string;
+  trainingCategoryId: string;
+  valueUnit: string;
 };
 
 export async function createTrainingEventAction(

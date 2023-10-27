@@ -52,8 +52,8 @@ export default async function TrainingRecordEditPage({
   const isEditing = activeSetIndex != null;
 
   return (
-    <div className="w-full flex flex-col h-full">
-      <div className="w-full px-4 shrink-0">
+    <div className="flex h-full w-full flex-col">
+      <div className="w-full shrink-0 px-4">
         <span className="mr-2" style={{ color: trainingCategory.color }}>
           ●
         </span>
@@ -61,45 +61,45 @@ export default async function TrainingRecordEditPage({
         <span className="mx-2">&gt;</span>
         <span>{trainingEvent.name}</span>
       </div>
-      <div className="flex top-11 p-2 shrink-0 text-xs text-muted-foreground">
+      <div className="top-11 flex shrink-0 p-2 text-xs text-muted-foreground">
         <div className="w-12">セット</div>
-        <div className="w-12 ml-1">負荷</div>
-        <div className="w-10 ml-4">値</div>
-        <div className="flex-grow">備考</div>
+        <div className="ml-1 w-12">負荷</div>
+        <div className="ml-4 w-10">値</div>
+        <div className="grow">備考</div>
       </div>
-      <div className="bg-muted px-4 h-full overflow-y-scroll py-4">
+      <div className="h-full overflow-y-scroll bg-muted p-4">
         {sets.length ? (
           <ul className="">
             {sets.map(({ load, note, value }, index) => (
               <li
-                className="flex border-b border-b-muted-foreground border-solid last:border-b-0 h-16"
+                className="flex h-16 border-b border-solid border-b-muted-foreground last:border-b-0"
                 key={index}
               >
                 <Link
-                  className={`flex w-full no-underline text-foreground ${
+                  className={`flex w-full text-foreground no-underline ${
                     activeSetIndex === index
-                      ? 'text-primary rounded-sm font-bold important'
+                      ? 'rounded-sm font-bold text-primary'
                       : ''
                   }`}
                   href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
                 >
                   <div
-                    className={`w-4 text-xs flex justify-end items-center  mr-1 ${
+                    className={`mr-1 flex w-4 items-center justify-end  text-xs ${
                       activeSetIndex === index
-                        ? 'text-primary text-bold'
+                        ? 'font-bold text-primary'
                         : 'text-muted-foreground'
                     }`}
                   >
                     {index + 1}
                   </div>
-                  <div className="w-12 flex items-center justify-end mr-1">
+                  <div className="mr-1 flex w-12 items-center justify-end">
                     {load}
                   </div>
-                  <div className="w-12 flex items-center justify-end mr-8">
+                  <div className="mr-8 flex w-12 items-center justify-end">
                     {value}
                   </div>
-                  <div className="flex items-center grow">
-                    <div className="w-12 flex-grow text-xs whitespace-pre p-3 max-h-10 overflow-y-auto">
+                  <div className="flex grow items-center">
+                    <div className="max-h-10 w-12 grow overflow-y-auto whitespace-pre p-3 text-xs">
                       {note || '-'}
                     </div>
                   </div>
@@ -113,7 +113,7 @@ export default async function TrainingRecordEditPage({
             ))}
           </ul>
         ) : (
-          <p className="break-word">
+          <p>
             <span className="block">まだ記録がありません。</span>
             <span className="block">
               下部のフォームから記録を追加してください。
@@ -123,7 +123,7 @@ export default async function TrainingRecordEditPage({
       </div>
       <form
         action={isEditing ? editSetAction : addSetAction}
-        className="shrink-0 p-4 gap-1 flex flex-col"
+        className="flex shrink-0 flex-col gap-1 p-4"
       >
         <input
           name="trainingCategoryId"
@@ -162,9 +162,9 @@ export default async function TrainingRecordEditPage({
           </label>
         </div>
         <label className="flex">
-          <div className="shrink-0 mr-2">備考</div>
+          <div className="mr-2 shrink-0">備考</div>
           <Textarea
-            className="grow h-1"
+            className="h-1 grow"
             defaultValue={noteDefaultValue}
             name="note"
           />

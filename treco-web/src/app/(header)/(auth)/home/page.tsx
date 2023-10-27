@@ -24,11 +24,11 @@ export default async function HomePage({ searchParams }: Props) {
     : new Date();
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4 bg-muted">
+    <div className="flex h-full flex-col">
+      <div className="bg-muted p-4">
         <Calendar />
       </div>
-      <div className="p-4 flex flex-col overflow-hidden">
+      <div className="flex flex-col overflow-hidden p-4">
         <div className="overflow-scroll">
           <TrainingRecords date={selectedDate} traineeId={traineeId} />
         </div>
@@ -50,7 +50,7 @@ async function TrainingRecords({
     <ul className="flex flex-col gap-4">
       {trainingRecords.map((record) => (
         <li key={record.trainingRecordId}>
-          <div className="flex items-center mb-2">
+          <div className="mb-2 flex items-center">
             <span
               aria-hidden="true"
               className="mr-1"
@@ -63,7 +63,7 @@ async function TrainingRecords({
           <ul className="rounded-md bg-muted p-4">
             {record.sets.map((set, index) => (
               <li className="flex gap-2" key={index}>
-                <div className="w-4 text-xs text-muted-foreground flex items-end justify-end mb-[3px]">
+                <div className="mb-[3px] flex w-4 items-end justify-end text-xs text-muted-foreground">
                   {index + 1}
                 </div>
                 <div className="w-12 text-right text-lg">
@@ -72,7 +72,7 @@ async function TrainingRecords({
                     {record.trainingEvent.loadUnit}
                   </span>
                 </div>
-                <div className="w-12 text-right mr-4 text-lg">
+                <div className="mr-4 w-12 text-right text-lg">
                   {set.value}
                   <span className="ml-1 text-xs text-muted-foreground">
                     {record.trainingEvent.valueUnit}

@@ -20,14 +20,15 @@ import {
   object,
   string,
 } from 'valibot';
+
 import { createTrainingEventAction } from './actions';
 
 type Props = { trainingCategoryId: string };
 
 const inputSchema = object({
+  loadUnit: string(),
   name: string(),
   valueUnit: string(),
-  loadUnit: string(),
 });
 type InputSchema = typeof inputSchema;
 
@@ -36,30 +37,30 @@ export function EventEdit({ trainingCategoryId }: Props) {
 
   const form = useForm<InputType<InputSchema>>({
     defaultValues: {
+      loadUnit: '回',
       name: '',
       valueUnit: 'kg',
-      loadUnit: '回',
     },
     resolver: valibotResolver(inputSchema),
   });
 
   const onClick = async ({
+    loadUnit,
     name,
     valueUnit,
-    loadUnit,
   }: OutputType<InputSchema>) => {
     await createTrainingEventAction({
-      trainingCategoryId,
-      name,
-      valueUnit,
       loadUnit,
+      name,
+      trainingCategoryId,
+      valueUnit,
     });
     setOpen(false);
   };
   const title = 'トレーニングイベントを作成';
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
         <Button className="w-full">トレーニング種目を作成する</Button>
       </DialogTrigger>
@@ -83,9 +84,9 @@ export function EventEdit({ trainingCategoryId }: Props) {
         </div>
         <DialogFooter>
           <Button
-            type="button"
-            onClick={form.handleSubmit(onClick)}
             disabled={form.formState.isSubmitting}
+            onClick={form.handleSubmit(onClick)}
+            type="button"
           >
             保存する
           </Button>

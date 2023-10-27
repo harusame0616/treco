@@ -1,34 +1,9 @@
 import { prisma } from '@/lib/prisma';
-import { TrainingEventRepository } from '../usecases/repository';
+
 import { TrainingEvent } from '../models/training-event';
+import { TrainingEventRepository } from '../usecases/repository';
 
 export class TrainingEventPrismaRepository implements TrainingEventRepository {
-  async save(trainingEvent: TrainingEvent): Promise<void> {
-    const dto = trainingEvent.toDto();
-
-    await prisma.trainingEvent.create({
-      data: dto,
-    });
-  }
-
-  async findOneByOrder({
-    trainingCategoryId,
-  }: {
-    trainingCategoryId: string;
-    order: 'last';
-  }) {
-    const trainingEvent = await prisma.trainingEvent.findFirst({
-      where: {
-        trainingCategoryId,
-      },
-      orderBy: {
-        order: 'desc',
-      },
-    });
-
-    return trainingEvent ? TrainingEvent.fromDto(trainingEvent) : null;
-  }
-
   async findOneById(trainingEventId: string) {
     const trainingEvent = await prisma.trainingEvent.findUnique({
       where: {
@@ -37,5 +12,31 @@ export class TrainingEventPrismaRepository implements TrainingEventRepository {
     });
 
     return trainingEvent ? TrainingEvent.fromDto(trainingEvent) : null;
+  }
+
+  async findOneByOrder({
+    trainingCategoryId,
+  }: {
+    order: 'last';
+    trainingCategoryId: string;
+  }) {
+    const trainingEvent = await prisma.trainingEvent.findFirst({
+      orderBy: {
+        order: 'desc',
+      },
+      where: {
+        trainingCategoryId,
+      },
+    });
+
+    return trainingEvent ? TrainingEvent.fromDto(trainingEvent) : null;
+  }
+
+  async save(trainingEvent: TrainingEvent): Promise<void> {
+    const dto = trainingEvent.toDto();
+
+    await prisma.trainingEvent.create({
+      data: dto,
+    });
   }
 }
