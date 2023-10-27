@@ -1,10 +1,8 @@
-import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
 import { notFound } from 'next/navigation';
 
