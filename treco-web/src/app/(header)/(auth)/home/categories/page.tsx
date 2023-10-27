@@ -2,10 +2,10 @@ import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 
+import { CategoryDelete } from './_components/category-delete';
 import { CategoryEdit } from './_components/category-edit';
 
 async function queryCategories(props: { traineeId: string }) {
@@ -23,6 +23,7 @@ type Props = {
 };
 export default async function CategoryPage({ searchParams }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
+
   const categories = await queryCategories({ traineeId: signedInTraineeId });
   const selectDate = dayjs(searchParams.date);
 
@@ -65,13 +66,9 @@ export default async function CategoryPage({ searchParams }: Props) {
                   />
                 </Button>
               </div>
-              <Button
-                aria-label="削除"
-                className="ml-4 h-16 w-16 snap-start"
-                size="icon"
-              >
-                <TrashIcon aria-hidden="true" className="h-12 w-14" />
-              </Button>
+              <div className="ml-4 h-16 w-16 snap-start">
+                <CategoryDelete trainingCategoryId={trainingCategoryId} />
+              </div>
             </li>
           ))
         ) : (

@@ -67,7 +67,7 @@ model TrainingEvent {
   traineeId          String @db.Uuid
   trainee          Trainee          @relation(fields: [traineeId], references: [traineeId])
   trainingCategoryId String @db.Uuid
-  trainingCategory TrainingCategory @relation(fields: [trainingCategoryId], references: [trainingCategoryId])
+  trainingCategory TrainingCategory @relation(fields: [trainingCategoryId], references: [trainingCategoryId], onDelete: Cascade)
 
   trainingRecords TrainingRecord[]
 
@@ -85,7 +85,7 @@ model TrainingRecord {
   traineeId       String   @db.Uuid
   trainee       Trainee       @relation(fields: [traineeId], references: [traineeId])
   trainingEventId String   @db.Uuid
-  trainingEvent TrainingEvent @relation(fields: [trainingEventId], references: [trainingEventId])
+  trainingEvent TrainingEvent @relation(fields: [trainingEventId], references: [trainingEventId], onDelete: Cascade)
 
   sets TrainingSet[]
 }
@@ -101,7 +101,7 @@ model TrainingSet {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  trainingRecord TrainingRecord @relation(fields: [trainingRecordId], references: [trainingRecordId])
+  trainingRecord TrainingRecord @relation(fields: [trainingRecordId], references: [trainingRecordId], onDelete: Cascade)
 
   @@id([trainingRecordId, order])
 }
