@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { notFound } from 'next/navigation';
 
 import { createNewRecordAction } from './actions';
+import { EventEdit } from './event-edit';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const query = new TrainingEventQueryByTrainingCategoryId(
@@ -56,19 +57,22 @@ export default async function TrainingEventPage({
   }
 
   return (
-    <div className="px-4">
-      <h2 className="sr-only">トレーニング種目選択</h2>
-      <p className="mb-4">トレーニング種目を選択してください</p>
-      <nav className="mb-4">
+    <div className="p-2">
+      <p className="mb-4 text-muted-foreground text-sm">
+        トレーニング種目を選択してください
+      </p>
+      <div className="mb-4">
         <span style={{ color: category.color }}>●</span> 胸
-      </nav>
+      </div>
 
-      <ul aria-label={`${category.name}のトレーニング種目`} className="w-full">
+      <ul
+        aria-label={`${category.name}のトレーニング種目`}
+        className="w-full flex flex-col gap-2 mb-2"
+      >
         {trainingEvents.map(({ name, trainingEventId }) => (
           <li
             aria-label={name}
-            className={`flex m-2 snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
-            data-before="●"
+            className={`flex snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
             key={trainingEventId}
           >
             <form
@@ -108,6 +112,7 @@ export default async function TrainingEventPage({
           </li>
         ))}
       </ul>
+      <EventEdit trainingCategoryId={params.categoryId} />
     </div>
   );
 }
