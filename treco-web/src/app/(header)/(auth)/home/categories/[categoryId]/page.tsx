@@ -9,7 +9,8 @@ import dayjs from 'dayjs';
 import { notFound } from 'next/navigation';
 
 import { createNewRecordAction } from './_actions';
-import { EventEdit } from './event-edit';
+import { EventDelete } from './_components/event-delete';
+import { EventEdit } from './_components/event-edit';
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const query = new TrainingEventQueryByTrainingCategoryId(
@@ -69,57 +70,62 @@ export default async function TrainingEventPage({
         aria-label={`${category.name}のトレーニング種目`}
         className="mb-2 flex w-full flex-col gap-2"
       >
-        {trainingEvents.map(
-          ({ loadUnit, name, trainingEventId, valueUnit }) => (
-            <li
-              aria-label={name}
-              className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
-              key={trainingEventId}
-            >
-              <form
-                action={createNewRecordAction}
-                className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
+        {trainingEvents.length ? (
+          trainingEvents.map(
+            ({ loadUnit, name, trainingEventId, valueUnit }) => (
+              <li
+                aria-label={name}
+                className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
+                key={trainingEventId}
               >
-                <input
-                  name="trainingDate"
-                  type="hidden"
-                  value={selectDate.toISOString()}
-                />
-                <input
-                  name="trainingCategoryId"
-                  type="hidden"
-                  value={params.categoryId}
-                />
-                <input
-                  name="trainingEventId"
-                  type="hidden"
-                  value={trainingEventId}
-                />
-                <input
-                  name="traineeId"
-                  type="hidden"
-                  value={signedInTraineeId}
-                />
-                <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
-                  <span className="grow text-xl ">{name}</span>
-                </button>
-                <EventEdit
-                  loadUnit={loadUnit}
-                  name={name}
-                  trainingCategoryId={params.categoryId}
-                  trainingEventId={trainingEventId}
-                  valueUnit={valueUnit}
-                />
-              </form>
-              <Button
-                aria-label="削除"
-                className="ml-4 h-16 w-16 snap-start"
-                size="icon"
-              >
-                <TrashIcon aria-hidden="true" className="h-12 w-14" />
-              </Button>
-            </li>
-          ),
+                <form
+                  action={createNewRecordAction}
+                  className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
+                >
+                  <input
+                    name="trainingDate"
+                    type="hidden"
+                    value={selectDate.toISOString()}
+                  />
+                  <input
+                    name="trainingCategoryId"
+                    type="hidden"
+                    value={params.categoryId}
+                  />
+                  <input
+                    name="trainingEventId"
+                    type="hidden"
+                    value={trainingEventId}
+                  />
+                  <input
+                    name="traineeId"
+                    type="hidden"
+                    value={signedInTraineeId}
+                  />
+                  <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
+                    <span className="grow text-xl ">{name}</span>
+                  </button>
+                  <EventEdit
+                    loadUnit={loadUnit}
+                    name={name}
+                    trainingCategoryId={params.categoryId}
+                    trainingEventId={trainingEventId}
+                    valueUnit={valueUnit}
+                  />
+                </form>
+                <div className="ml-4 h-16 w-16 snap-start">
+                  <EventDelete
+                    trainingCategoryId={params.categoryId}
+                    trainingEventId={trainingEventId}
+                  />
+                </div>
+              </li>
+            ),
+          )
+        ) : (
+          <p className="p-4 text-center">
+            トレーニング種目が登録されていません。
+          </p>
         )}
       </ul>
       <EventEdit trainingCategoryId={params.categoryId} />

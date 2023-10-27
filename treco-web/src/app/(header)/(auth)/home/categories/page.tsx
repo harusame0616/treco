@@ -72,7 +72,9 @@ export default async function CategoryPage({ searchParams }: Props) {
             </li>
           ))
         ) : (
-          <p className="p-4 text-center">カテゴリーが登録されていません。</p>
+          <p className="p-4 text-center">
+            トレーニングカテゴリーが登録されていません。
+          </p>
         )}
       </ul>
       <div className="mt-2">

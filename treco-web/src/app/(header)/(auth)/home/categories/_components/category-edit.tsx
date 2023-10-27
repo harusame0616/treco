@@ -72,7 +72,7 @@ export function CategoryEdit(props: Props) {
   };
   const title = 'トレーニングカテゴリ' + (isNew ? '作成' : '編集');
   const trigger = isNew ? (
-    <Button className="w-full">トレーニングカテゴリを作成する</Button>
+    <Button className="w-full">トレーニングカテゴリーを作成する</Button>
   ) : (
     <Pencil2Icon className="h-6 w-6" />
   );

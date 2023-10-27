@@ -15,18 +15,19 @@ import { Button } from '@/components/ui/button';
 import { TrashIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 
-import { deleteTrainingCategoryAction } from '../_actions/delete-training-category.action';
+import { deleteTrainingEventAction } from '../_actions/delete-training-event.action';
 
 type Props = {
   trainingCategoryId: string;
+  trainingEventId: string;
 };
-export function CategoryDelete({ trainingCategoryId }: Props) {
+export function EventDelete({ trainingCategoryId, trainingEventId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  async function deleteTrainingCategory() {
+  async function deleteTrainingEvent() {
     setIsProcessing(true);
     try {
-      await deleteTrainingCategoryAction({ trainingCategoryId });
+      await deleteTrainingEventAction({ trainingCategoryId, trainingEventId });
     } finally {
       setIsProcessing(false);
     }
@@ -43,21 +44,20 @@ export function CategoryDelete({ trainingCategoryId }: Props) {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            本当にトレーニングカテゴリーを削除しますか？
+            本当にトレーニング種目を削除しますか？
           </AlertDialogTitle>
           <AlertDialogDescription>
             この操作は取り消せません。また、関連する以下のデータも一緒に削除されます。
-            <span className="mt-8 block">・トレーニング種目</span>
-            <span className="block">・トレーニング記録</span>
+            <span className="mt-8 block">・トレーニング記録</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>やめる</AlertDialogCancel>
           <AlertDialogAction
             disabled={isProcessing}
-            onClick={deleteTrainingCategory}
+            onClick={deleteTrainingEvent}
           >
-            トレーニングカテゴリーを削除する
+            トレーニング種目を削除する
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
