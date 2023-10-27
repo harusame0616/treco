@@ -47,7 +47,7 @@ export default async function CategoryPage({ searchParams }: Props) {
               <div className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4">
                 <Link
                   className="block w-full text-foreground no-underline"
-                  href={`/home/categories/${trainingCategoryId}?date=${selectDate.toISOString()}`}
+                  href={`/home/categories/${trainingCategoryId}/events?date=${selectDate.toISOString()}`}
                 >
                   <span
                     aria-hidden="true"
@@ -72,7 +72,9 @@ export default async function CategoryPage({ searchParams }: Props) {
             </li>
           ))
         ) : (
-          <p className="p-4 text-center">カテゴリーが登録されていません。</p>
+          <p className="p-4 text-center">
+            トレーニングカテゴリーが登録されていません。
+          </p>
         )}
       </ul>
       <div className="mt-2">

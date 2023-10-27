@@ -4,6 +4,14 @@ import { TrainingEvent } from '../models/training-event';
 import { TrainingEventRepository } from '../usecases/repository';
 
 export class TrainingEventPrismaRepository implements TrainingEventRepository {
+  async delete(trainingEventId: string) {
+    await prisma.trainingEvent.delete({
+      where: {
+        trainingEventId,
+      },
+    });
+  }
+
   async findOneById(trainingEventId: string) {
     const trainingEvent = await prisma.trainingEvent.findUnique({
       where: {

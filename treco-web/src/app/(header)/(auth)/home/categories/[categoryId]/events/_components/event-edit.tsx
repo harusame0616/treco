@@ -22,7 +22,10 @@ import {
   string,
 } from 'valibot';
 
-import { createTrainingEventAction, editTrainingEventAction } from './_actions';
+import {
+  createTrainingEventAction,
+  editTrainingEventAction,
+} from '../_actions';
 
 type CreateProps = { trainingCategoryId: string };
 type EditProps = {
