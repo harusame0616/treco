@@ -12,10 +12,10 @@ export class TrainingCategory {
   private constructor(private dto: TrainingCategoryDto) {}
 
   static create(props: {
-    traineeId: string;
-    name: string;
     color: string;
+    name: string;
     order: number;
+    traineeId: string;
   }) {
     return new TrainingCategory({
       ...props,
@@ -27,21 +27,21 @@ export class TrainingCategory {
     return new TrainingCategory(dto);
   }
 
-  changeName(name: string) {
-    this.dto.name = name;
-  }
-
   changeColor(color: string) {
     this.dto.color = color;
   }
 
-  get order() {
-    return this.dto.order;
+  changeName(name: string) {
+    this.dto.name = name;
   }
 
   toDto() {
     return {
       ...this.dto,
     };
+  }
+
+  get order() {
+    return this.dto.order;
   }
 }

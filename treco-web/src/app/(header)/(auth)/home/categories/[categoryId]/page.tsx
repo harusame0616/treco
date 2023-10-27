@@ -58,7 +58,7 @@ export default async function TrainingEventPage({
 
   return (
     <div className="p-2">
-      <p className="mb-4 text-muted-foreground text-sm">
+      <p className="mb-4 text-sm text-muted-foreground">
         トレーニング種目を選択してください
       </p>
       <div className="mb-4">
@@ -67,17 +67,17 @@ export default async function TrainingEventPage({
 
       <ul
         aria-label={`${category.name}のトレーニング種目`}
-        className="w-full flex flex-col gap-2 mb-2"
+        className="mb-2 flex w-full flex-col gap-2"
       >
         {trainingEvents.map(({ name, trainingEventId }) => (
           <li
             aria-label={name}
-            className={`flex snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
+            className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
             key={trainingEventId}
           >
             <form
               action={createNewRecordAction}
-              className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16"
+              className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
             >
               <input
                 name="trainingDate"
@@ -95,19 +95,19 @@ export default async function TrainingEventPage({
                 value={trainingEventId}
               />
               <input name="traineeId" type="hidden" value={signedInTraineeId} />
-              <button className="text-foreground block w-full no-underline text-left whitespace-nowrap overflow-x-hidden text-ellipsis">
-                <span className="text-xl grow ">{name}</span>
+              <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
+                <span className="grow text-xl ">{name}</span>
               </button>
               <Button aria-label="トレーニング種目名編集" variant={'ghost'}>
-                <Pencil2Icon aria-hidden="true" className="w-6 h-6" />
+                <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
               </Button>
             </form>
             <Button
               aria-label="削除"
-              className="ml-4 snap-start w-16 h-16"
+              className="ml-4 h-16 w-16 snap-start"
               size="icon"
             >
-              <TrashIcon aria-hidden="true" className="w-14 h-12" />
+              <TrashIcon aria-hidden="true" className="h-12 w-14" />
             </Button>
           </li>
         ))}

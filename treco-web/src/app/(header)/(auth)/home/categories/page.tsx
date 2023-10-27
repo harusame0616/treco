@@ -2,9 +2,10 @@ import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
+import { TrashIcon } from '@radix-ui/react-icons';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+
 import { CategoryEdit } from './_components/category-edit';
 
 async function queryCategories(props: { traineeId: string }) {
@@ -27,24 +28,24 @@ export default async function CategoryPage({ searchParams }: Props) {
 
   return (
     <div className="p-2">
-      <p className="mb-4 text-muted-foreground text-sm">
+      <p className="mb-4 text-sm text-muted-foreground">
         トレーニングカテゴリーを選択してください。左にスワイプすると削除できます。
       </p>
 
       <ul
         aria-label="トレーニングカテゴリー"
-        className="w-full flex flex-col gap-2"
+        className="flex w-full flex-col gap-2"
       >
         {categories.length ? (
           categories.map(({ color, name, trainingCategoryId }) => (
             <li
               aria-label={name}
-              className={`flex text-lg snap-mandatory snap-x overflow-x-scroll flex-nowrap`}
+              className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll text-lg`}
               key={trainingCategoryId}
             >
-              <div className="grow flex bg-muted w-full p-4 rounded-md items-center min-w-full snap-start h-16">
+              <div className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4">
                 <Link
-                  className="text-foreground block w-full no-underline"
+                  className="block w-full text-foreground no-underline"
                   href={`/home/categories/${trainingCategoryId}?date=${selectDate.toISOString()}`}
                 >
                   <span
@@ -54,7 +55,7 @@ export default async function CategoryPage({ searchParams }: Props) {
                   >
                     ●
                   </span>
-                  <span className="text-3xl grow">{name}</span>
+                  <span className="grow text-3xl">{name}</span>
                 </Link>
                 <Button aria-label="カテゴリ名編集" variant={'ghost'}>
                   <CategoryEdit
@@ -66,15 +67,15 @@ export default async function CategoryPage({ searchParams }: Props) {
               </div>
               <Button
                 aria-label="削除"
-                className="ml-4 snap-start w-16 h-16"
+                className="ml-4 h-16 w-16 snap-start"
                 size="icon"
               >
-                <TrashIcon aria-hidden="true" className="w-14 h-12" />
+                <TrashIcon aria-hidden="true" className="h-12 w-14" />
               </Button>
             </li>
           ))
         ) : (
-          <p className="text-center p-4">カテゴリーが登録されていません。</p>
+          <p className="p-4 text-center">カテゴリーが登録されていません。</p>
         )}
       </ul>
       <div className="mt-2">

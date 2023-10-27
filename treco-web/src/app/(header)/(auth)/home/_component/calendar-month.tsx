@@ -37,10 +37,10 @@ export function CalendarMonth({
     .map((_, index) => calenderStart.add(index, 'day'));
 
   return (
-    <div className="bg-muted grid grid-cols-7">
+    <div className="grid grid-cols-7 bg-muted">
       {daysOfWeek.map((day) => (
         <div
-          className={`${day.color} text-xs text-center mb-1`}
+          className={`${day.color} mb-1 text-center text-xs`}
           key={day.label}
         >
           {day.label}

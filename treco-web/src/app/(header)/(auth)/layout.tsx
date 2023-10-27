@@ -18,8 +18,8 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <main className="overflow-scroll grow">{children}</main>
+    <div className="flex h-full flex-col">
+      <main className="grow overflow-scroll">{children}</main>
       <MainMenu />
     </div>
   );

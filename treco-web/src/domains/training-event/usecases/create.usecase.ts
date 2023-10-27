@@ -1,14 +1,14 @@
-import { TrainingCategoryRepository } from '../../training-category/usecases/repository';
 import { TraineeRepository } from '../../trainee/usecases/repository';
+import { TrainingCategoryRepository } from '../../training-category/usecases/repository';
 import { TrainingEvent } from '../models/training-event';
 import { TrainingEventRepository } from './repository';
 
 type ExecuteProps = {
+  loadUnit: string;
+  name: string;
   traineeId: string;
   trainingCategoryId: string;
-  name: string;
   valueUnit: string;
-  loadUnit: string;
 };
 
 export class TrainingEventCreateUsecase {
@@ -19,11 +19,11 @@ export class TrainingEventCreateUsecase {
   ) {}
 
   async execute({
+    loadUnit,
+    name,
     traineeId,
     trainingCategoryId,
     valueUnit,
-    name,
-    loadUnit,
   }: ExecuteProps) {
     const [trainee, trainingCategory] = await Promise.all([
       this.traineeRepository.findOneById(traineeId),
@@ -40,17 +40,17 @@ export class TrainingEventCreateUsecase {
 
     const lastOrderTrainingEvent =
       await this.trainingEventRepository.findOneByOrder({
-        trainingCategoryId,
         order: 'last',
+        trainingCategoryId,
       });
 
     const trainingEvent = TrainingEvent.create({
-      traineeId,
+      loadUnit,
       name,
+      order: lastOrderTrainingEvent ? lastOrderTrainingEvent.order + 1 : 0,
+      traineeId,
       trainingCategoryId,
       valueUnit,
-      loadUnit,
-      order: lastOrderTrainingEvent ? lastOrderTrainingEvent.order + 1 : 0,
     });
 
     await this.trainingEventRepository.save(trainingEvent);

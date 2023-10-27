@@ -30,7 +30,7 @@ export function MainMenu() {
   return (
     <nav
       aria-label="メインメニュー"
-      className="border-t-accent border-t px-4 py-2 bg-background"
+      className="border-t border-t-accent bg-background px-4 py-2"
     >
       <ul aria-label="メニュー" className="flex justify-evenly">
         {menus.map((menu) => (
@@ -53,7 +53,7 @@ function MenuItem({
   return (
     <li aria-label={label} key={path}>
       <Link aria-label={`${label}へのリンク`} href={path}>
-        <Icon aria-hidden className="w-8 h-8" />
+        <Icon aria-hidden className="h-8 w-8" />
       </Link>
     </li>
   );

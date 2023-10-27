@@ -21,21 +21,22 @@ import {
   object,
   string,
 } from 'valibot';
+
 import { createCategoryAction, editCategoryAction } from '../actions';
 
-type CreateProps = {};
+type CreateProps = Record<string, never>;
 
 type EditProps = {
-  trainingCategoryId: string;
   color: string;
   name: string;
+  trainingCategoryId: string;
 };
 
 type Props = CreateProps | EditProps;
 
 const inputSchema = object({
-  name: string(),
   color: string(),
+  name: string(),
 });
 type InputSchema = typeof inputSchema;
 
@@ -45,23 +46,23 @@ export function CategoryEdit(props: Props) {
 
   const form = useForm<InputType<InputSchema>>({
     defaultValues: {
-      name: 'name' in props ? props.name : '',
       color: 'color' in props ? props.color : '',
+      name: 'name' in props ? props.name : '',
     },
     resolver: valibotResolver(inputSchema),
   });
 
-  const onClick = async ({ name, color }: OutputType<InputSchema>) => {
+  const onClick = async ({ color, name }: OutputType<InputSchema>) => {
     if (isNew) {
       await createCategoryAction({
-        name,
         color,
+        name,
       });
     } else {
       await editCategoryAction({
-        trainingCategoryId: props.trainingCategoryId,
-        name,
         color,
+        name,
+        trainingCategoryId: props.trainingCategoryId,
       });
     }
     setOpen(false);
@@ -70,11 +71,11 @@ export function CategoryEdit(props: Props) {
   const trigger = isNew ? (
     <Button className="w-full">トレーニングカテゴリを作成する</Button>
   ) : (
-    <Pencil2Icon className="w-6 h-6" />
+    <Pencil2Icon className="h-6 w-6" />
   );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -96,9 +97,9 @@ export function CategoryEdit(props: Props) {
         </div>
         <DialogFooter>
           <Button
-            type="button"
-            onClick={form.handleSubmit(onClick)}
             disabled={form.formState.isSubmitting}
+            onClick={form.handleSubmit(onClick)}
+            type="button"
           >
             保存する
           </Button>

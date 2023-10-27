@@ -13,17 +13,13 @@ export type TrainingEventDto = {
 export class TrainingEvent {
   private constructor(private dto: TrainingEventDto) {}
 
-  static fromDto(dto: TrainingEventDto) {
-    return new TrainingEvent(dto);
-  }
-
   static create(props: {
+    loadUnit: string;
+    name: string;
+    order: number;
     traineeId: string;
     trainingCategoryId: string;
-    name: string;
     valueUnit: string;
-    loadUnit: string;
-    order: number;
   }) {
     return new TrainingEvent({
       ...props,
@@ -31,13 +27,17 @@ export class TrainingEvent {
     });
   }
 
-  get order() {
-    return this.dto.order;
+  static fromDto(dto: TrainingEventDto) {
+    return new TrainingEvent(dto);
   }
 
   toDto() {
     return {
       ...this.dto,
     };
+  }
+
+  get order() {
+    return this.dto.order;
   }
 }

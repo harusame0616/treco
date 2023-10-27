@@ -4,7 +4,7 @@ import { M_PLUS_Rounded_1c } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
 import './globals.css';
-import SessionProvider from './session-provider';
+import { SessionProvider } from './session-provider';
 
 const baseFont = M_PLUS_Rounded_1c({
   subsets: ['latin'],

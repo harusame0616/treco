@@ -11,13 +11,13 @@ export default function SignOutPage() {
     }
 
     signOut({
-      redirect: true,
       callbackUrl: '/',
+      redirect: true,
     });
-  }, [signOut]);
+  }, []);
 
   return (
-    <div className="p-8 flex flex-col items-center">
+    <div className="flex flex-col items-center p-8">
       <div className="mb-8">サインアウト中です</div>
       <div className="flex">
         <ReloadIcon className="animate-spin" />

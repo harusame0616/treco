@@ -1,11 +1,11 @@
+import type { NextAuthOptions } from 'next-auth';
+
 import { getDefaultCategories } from '@/domains/training-category/lib/default-categories';
 import { getDefaultEvents } from '@/domains/training-event/lib/default-events';
 import { getRequiredEnv } from '@/lib/environment';
 import { generateId } from '@/lib/id';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
-import type { NextAuthOptions } from 'next-auth';
-
 import GoogleProvider from 'next-auth/providers/google';
 
 declare module 'next-auth' {
@@ -25,15 +25,15 @@ async function createTrainee(sub: string, email: string, name: string) {
   await prisma.$transaction(async (tx) => {
     await tx.trainee.create({
       data: {
-        name,
-        traineeId,
         authUser: {
           create: {
             authUserId: generateId(),
-            sub,
             email,
+            sub,
           },
         },
+        name,
+        traineeId,
       },
     });
 
@@ -71,15 +71,8 @@ async function createTrainee(sub: string, email: string, name: string) {
 }
 
 export const authOptions = {
-  secret: getRequiredEnv('NEXT_AUTH_SECRET'),
-  providers: [
-    GoogleProvider({
-      clientId: getRequiredEnv('GOOGLE_CLIENT_ID'),
-      clientSecret: getRequiredEnv('GOOGLE_CLIENT_SECRET'),
-    }),
-  ],
   callbacks: {
-    async session({ session, user, token }) {
+    async session({ session, token }) {
       if (!token.sub || !token.email || !token.name) {
         throw new Error('token is invalid');
       }
@@ -109,6 +102,13 @@ export const authOptions = {
       return session;
     },
   },
+  providers: [
+    GoogleProvider({
+      clientId: getRequiredEnv('GOOGLE_CLIENT_ID'),
+      clientSecret: getRequiredEnv('GOOGLE_CLIENT_SECRET'),
+    }),
+  ],
+  secret: getRequiredEnv('NEXT_AUTH_SECRET'),
 } satisfies NextAuthOptions;
 
 const handler = NextAuth(authOptions);
