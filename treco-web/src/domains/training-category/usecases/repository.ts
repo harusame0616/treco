@@ -1,7 +1,7 @@
 import { TrainingCategory } from '../models/training-category';
 
 export interface TrainingCategoryRepository {
-  findById(id: string): Promise<TrainingCategory>;
+  findById(trainingCategoryId: string): Promise<TrainingCategory>;
   findOneByOrder(props: {
     traineeId: string;
     order: 'last';
