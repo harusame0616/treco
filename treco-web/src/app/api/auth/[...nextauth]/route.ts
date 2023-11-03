@@ -4,11 +4,9 @@ import { getDefaultCategories } from '@/domains/training-category/lib/default-ca
 import { getDefaultEvents } from '@/domains/training-event/lib/default-events';
 import { getRequiredEnv } from '@/lib/environment';
 import { generateId } from '@/lib/id';
-import { createServerLogger, eventTypeEnum } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { unknown } from 'valibot';
 
 declare module 'next-auth' {
   /**
@@ -24,14 +22,12 @@ declare module 'next-auth' {
 
 async function createTrainee(sub: string, email: string, name: string) {
   const traineeId = generateId();
-  const authUserId = generateId();
-
   await prisma.$transaction(async (tx) => {
     await tx.trainee.create({
       data: {
         authUser: {
           create: {
-            authUserId,
+            authUserId: generateId(),
             email,
             sub,
           },
@@ -70,7 +66,6 @@ async function createTrainee(sub: string, email: string, name: string) {
   });
 
   return {
-    authUserId,
     traineeId,
   };
 }
@@ -78,16 +73,8 @@ async function createTrainee(sub: string, email: string, name: string) {
 export const authOptions = {
   callbacks: {
     async session({ session, token }) {
-      const logger = createServerLogger();
       if (!token.sub || !token.email || !token.name) {
-        const error = Error('トークンが不正です');
-        logger.error('トークンに sub、 email、 name が含まれていません', {
-          error,
-          eventType: eventTypeEnum.APPLICATION_ERROR,
-          func: { name: 'session' },
-        });
-
-        throw error;
+        throw new Error('token is invalid');
       }
 
       const authUser = await prisma.authUser.findUnique({
@@ -103,40 +90,15 @@ export const authOptions = {
       if (authUser) {
         traineeId = authUser.traineeId;
       } else {
-        try {
-          const trainee = await createTrainee(
-            token.sub,
-            token.email,
-            token.name,
-          );
-          traineeId = trainee.traineeId;
-          logger.info('トレーニーを作成しました', {
-            eventType: eventTypeEnum.USER_ADD,
-            func: { name: 'session' },
-            trainee: {
-              email: token.email,
-              ...trainee,
-            },
-          });
-        } catch (e: unknown) {
-          logger.error('トレーニーの作成に失敗しました', {
-            error: e as Error,
-            func: { name: 'session' },
-            trainee: {
-              email: token.email,
-            },
-          });
-          throw e;
-        }
+        const trainee = await createTrainee(token.sub, token.email, token.name);
+        traineeId = trainee.traineeId;
       }
-
       if (authUser?.traineeId) {
         traineeId = authUser.traineeId;
       }
 
       session.user.traineeId = traineeId;
       session.user.sub = token.sub;
-
       return session;
     },
   },
