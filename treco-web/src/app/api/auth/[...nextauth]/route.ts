@@ -8,6 +8,7 @@ import { createServerLogger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { headers } from 'next/headers';
 
 declare module 'next-auth' {
   /**
@@ -74,10 +75,12 @@ async function createTrainee(sub: string, email: string, name: string) {
 export const authOptions = {
   callbacks: {
     async session({ session, token }) {
-      const logger = createServerLogger();
-      logger.info('test', {
-        func: { name: 'test' },
-      });
+      const test = headers().get('test');
+      console.log({ test });
+      // const logger = createServerLogger();
+      // logger.info('test', {
+      //   func: { name: 'test' },
+      // });
       if (!token.sub || !token.email || !token.name) {
         throw new Error('token is invalid');
       }
