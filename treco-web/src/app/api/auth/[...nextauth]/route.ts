@@ -8,7 +8,6 @@ import { createServerLogger, eventTypeEnum } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { unknown } from 'valibot';
 
 declare module 'next-auth' {
   /**
