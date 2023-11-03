@@ -9,8 +9,6 @@ import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
-export const dynamic = 'force-dynamic';
-
 declare module 'next-auth' {
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `Provider` React Context
