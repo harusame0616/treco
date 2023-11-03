@@ -4,11 +4,10 @@ import { getDefaultCategories } from '@/domains/training-category/lib/default-ca
 import { getDefaultEvents } from '@/domains/training-event/lib/default-events';
 import { getRequiredEnv } from '@/lib/environment';
 import { generateId } from '@/lib/id';
+import { createServerLogger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { createServer } from 'http';
-import { createServerLogger } from '@/lib/logger';
 
 declare module 'next-auth' {
   /**
