@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ja">
       <body className={`${baseFont.className} dark`}>
