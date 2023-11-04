@@ -29,7 +29,7 @@ export default async function HomePage({ searchParams }: Props) {
         <Calendar />
       </div>
       <div className="flex flex-col overflow-hidden p-4">
-        <div className="overflow-scroll">
+        <div className="overflow-auto">
           <TrainingRecords date={selectedDate} traineeId={traineeId} />
         </div>
       </div>
