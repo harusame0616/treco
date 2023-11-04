@@ -83,7 +83,7 @@ export default async function TrainingEventPage({
                   <input
                     name="trainingDate"
                     type="hidden"
-                    value={selectDate.toISOString()}
+                    value={selectDate.format('YYYY-MM-DD')}
                   />
                   <input
                     name="trainingCategoryId"
