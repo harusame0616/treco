@@ -9,14 +9,6 @@ export function LoginButtonList() {
       id: 'google',
       label: 'Google',
     },
-    {
-      id: 'twitter',
-      label: 'X (Twitter)',
-    },
-    {
-      id: 'facebook',
-      label: 'facebook',
-    },
   ] as const;
 
   return (
