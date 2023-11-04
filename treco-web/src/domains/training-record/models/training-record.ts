@@ -43,6 +43,16 @@ export class TrainingRecord {
     this.dto.sets.push({ load, note, value });
   }
 
+  deleteSet(index: number) {
+    if (index >= this.dto.sets.length || index < 0) {
+      throw new Error(
+        'トレーニングセットのインデックスが範囲外のため削除に失敗しました',
+      );
+    }
+
+    this.dto.sets.splice(index, 1);
+  }
+
   editSet({ index, load, note, value }: TrainingSet & { index: number }) {
     if (this.dto.sets.length <= index) {
       console.error('edit set index is out ouf range', {
