@@ -18,7 +18,7 @@ export function MainMenu() {
     {
       icon: FilePlusIcon,
       label: 'トレーニング記録',
-      path: `/home/categories?date=${selectedDate.toISOString()}`,
+      path: `/home/categories?date=${selectedDate.format('YYYY-MM-DD')}`,
     },
     {
       icon: PersonIcon,
