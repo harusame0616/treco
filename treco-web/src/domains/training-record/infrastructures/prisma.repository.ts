@@ -26,6 +26,13 @@ export class PrismaTrainingRecordRepository
   async save(trainingRecord: TrainingRecord): Promise<void> {
     const { sets, traineeId, trainingDate, trainingEventId, trainingRecordId } =
       trainingRecord.toDto();
+
+    await prisma.trainingSet.deleteMany({
+      where: {
+        trainingRecordId,
+      },
+    });
+
     await prisma.trainingRecord.upsert({
       create: {
         sets: {
@@ -45,44 +52,20 @@ export class PrismaTrainingRecordRepository
       },
       update: {
         sets: {
-          upsert: sets.map(({ load, note, value }, order) => ({
-            create: {
+          createMany: {
+            data: sets.map(({ load, note, value }, order) => ({
               load,
               note,
               order,
               value,
-            },
-            update: {
-              load,
-              note,
-              order,
-              value,
-            },
-            where: {
-              trainingRecordId_order: {
-                order,
-                trainingRecordId,
-              },
-            },
-          })),
+            })),
+          },
         },
         trainingDate,
       },
       where: {
         trainingRecordId,
       },
-      // create: {
-      //   ...dto,
-      //   sets: {
-      //     createMany: {
-      //       data: dto.sets.map((set, order) => ({
-      //         trainingRecordId: dto.trainingRecordId,
-      //         order,
-      //         ...set,
-      //       })),
-      //     },
-      //   },
-      // },
     });
   }
 }

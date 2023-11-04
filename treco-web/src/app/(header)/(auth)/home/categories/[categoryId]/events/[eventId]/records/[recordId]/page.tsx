@@ -1,14 +1,13 @@
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import { TrashIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
+import { SetDelete } from './set-delete';
 import { SubmitButton } from './submit-button';
 
 async function queryTrainingRecordEdit(trainingRecordId: string) {
@@ -105,9 +104,12 @@ export default async function TrainingRecordEditPage({
                   </div>
                 </Link>
                 <div className="flex items-center">
-                  <Button size="icon" variant="ghost">
-                    <TrashIcon />
-                  </Button>
+                  <SetDelete
+                    trainingCategoryId={params.categoryId}
+                    trainingEventId={params.eventId}
+                    trainingRecordId={params.recordId}
+                    trainingSetIndex={index}
+                  />
                 </div>
               </li>
             ))}
