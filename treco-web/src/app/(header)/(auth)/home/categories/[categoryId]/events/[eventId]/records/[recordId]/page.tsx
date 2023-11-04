@@ -67,7 +67,7 @@ export default async function TrainingRecordEditPage({
         <div className="ml-4 w-10">値</div>
         <div className="grow">備考</div>
       </div>
-      <div className="h-full overflow-y-scroll bg-muted p-4">
+      <div className="h-full overflow-y-auto bg-muted p-4">
         {sets.length ? (
           <ul className="">
             {sets.map(({ load, note, value }, index) => (
