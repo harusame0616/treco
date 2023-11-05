@@ -41,7 +41,7 @@ export function CalendarMonth({
 
   const apiUrl = new URL(
     '/api/query-training-marks-per-month-for-calendar',
-    'http://localhost:3000',
+    `${window.location.protocol}//${window.location.host}`,
   );
   apiUrl.searchParams.set('start', days.at(0)!.toISOString());
   apiUrl.searchParams.set('end', days.at(-1)!.toISOString());
