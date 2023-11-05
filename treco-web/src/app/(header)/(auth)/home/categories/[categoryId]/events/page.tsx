@@ -2,7 +2,7 @@ import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrast
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
-import { createDate } from '@/lib/date';
+import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { notFound } from 'next/navigation';
 
@@ -49,7 +49,7 @@ export default async function TrainingEventPage({
   const category = await queryCategory(params.categoryId);
   const trainingEvents = await queryTrainingEvents(params.categoryId);
 
-  const selectDate = createDate(searchParams.date).toDate();
+  const selectDate = createTZDate(searchParams.date).toDate();
 
   if (!category) {
     return notFound();

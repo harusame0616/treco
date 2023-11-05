@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
-import { createDate } from '@/lib/date';
+import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import Link from 'next/link';
 
@@ -25,7 +25,7 @@ export default async function CategoryPage({ searchParams }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
 
   const categories = await queryCategories({ traineeId: signedInTraineeId });
-  const selectDate = createDate(searchParams.date);
+  const selectDate = createTZDate(searchParams.date);
 
   return (
     <div className="p-2">

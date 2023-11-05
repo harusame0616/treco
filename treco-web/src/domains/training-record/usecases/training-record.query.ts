@@ -11,8 +11,9 @@ export interface TrainingRecordQuery {
     }
   >;
 
-  queryTrainingMarksPerMonthForCalendar(props: {
-    date: Date;
+  queryTrainingMarksForCalendar(props: {
+    end: Date;
+    start: Date;
     traineeId: string;
   }): Promise<
     {
