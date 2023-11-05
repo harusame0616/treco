@@ -77,7 +77,7 @@ model TrainingEvent {
 model TrainingRecord {
   trainingRecordId String @id @db.Uuid
 
-  trainingDate    DateTime @db.Date
+  trainingDate    DateTime @db.Timestamptz(3)
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

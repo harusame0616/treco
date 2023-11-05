@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
+import { createDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import dayjs from 'dayjs';
 import Link from 'next/link';
 
 import { CategoryDelete } from './_components/category-delete';
@@ -25,7 +25,7 @@ export default async function CategoryPage({ searchParams }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
 
   const categories = await queryCategories({ traineeId: signedInTraineeId });
-  const selectDate = dayjs(searchParams.date);
+  const selectDate = createDate(searchParams.date);
 
   return (
     <div className="p-2">

@@ -1,11 +1,11 @@
 'use client';
 
-import dayjs from 'dayjs';
+import { createDate } from '@/lib/date';
 import { useSearchParams } from 'next/navigation';
 
 export function Title() {
   const searchParams = useSearchParams();
-  const selectDate = dayjs(searchParams.get('date') || new Date());
+  const selectDate = createDate(searchParams.get('date') ?? undefined);
 
   return (
     <div className=" flex justify-center gap-1 text-xl font-bold">
