@@ -1,3 +1,4 @@
+import { TrainingMark } from '@/components/training-mark';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
@@ -60,8 +61,8 @@ export default async function TrainingEventPage({
       <p className="mb-4 text-sm text-muted-foreground">
         トレーニング種目を選択してください
       </p>
-      <div className="mb-4">
-        <span style={{ color: category.color }}>●</span> 胸
+      <div className="mb-4 flex items-center gap-2">
+        <TrainingMark color={category.color} size="small" /> 胸
       </div>
 
       <ul

@@ -1,11 +1,16 @@
+import { TrainingMark } from '@/components/training-mark';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
 import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
+import { Suspense } from 'react';
 
 import { Calendar } from './_component/calendar';
 
-async function queryTrainingRecord(traineeId: string, date: Date) {
+async function queryTrainingRecord(date: Date) {
+  const traineeId = await getSignedInTraineeId();
+
   const query = new TrainingRecordQueryListForHomeUsecase(
     new PrismaTrainingRecordQuery(),
   );
@@ -19,44 +24,34 @@ type Props = {
   };
 };
 export default async function HomePage({ searchParams }: Props) {
-  const traineeId = await getSignedInTraineeId();
   const selectedDate = createTZDate(searchParams.date).startOf('day').toDate();
 
   return (
     <div className="flex h-full flex-col">
-      <div className="bg-muted p-4">
+      <div className="bg-muted px-2 py-1">
         <Calendar />
       </div>
-      <div className="flex flex-col overflow-hidden p-4">
-        <div className="overflow-auto">
-          <TrainingRecords date={selectedDate} traineeId={traineeId} />
-        </div>
+      <div className="flex flex-col overflow-auto px-2 py-1">
+        <Suspense
+          fallback={<TrainingRecordsSkeleton />}
+          key={selectedDate.toISOString()}
+        >
+          <TrainingRecords date={selectedDate} />
+        </Suspense>
       </div>
     </div>
   );
 }
 
-async function TrainingRecords({
-  date,
-  traineeId,
-}: {
-  date: Date;
-  traineeId: string;
-}) {
-  const trainingRecords = await queryTrainingRecord(traineeId, date);
+async function TrainingRecords({ date }: { date: Date }) {
+  const trainingRecords = await queryTrainingRecord(date);
 
-  return (
+  return trainingRecords.length ? (
     <ul className="flex flex-col gap-4">
       {trainingRecords.map((record) => (
         <li key={record.trainingRecordId}>
-          <div className="mb-2 flex items-center">
-            <span
-              aria-hidden="true"
-              className="mr-1"
-              style={{ color: record.trainingCategory.color }}
-            >
-              ●
-            </span>
+          <div className="mb-2 flex items-center gap-2">
+            <TrainingMark color={record.trainingCategory.color} size="small" />
             {`${record.trainingCategory.name} - ${record.trainingEvent.name}`}
           </div>
           <ul className="rounded-md bg-muted p-4">
@@ -81,6 +76,28 @@ async function TrainingRecords({
               </li>
             ))}
           </ul>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-center text-muted-foreground">
+      トレーニング記録はありません
+    </p>
+  );
+}
+
+function TrainingRecordsSkeleton() {
+  return (
+    <ul className="flex flex-col gap-4">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <li key={i}>
+          <div className="mb-2 flex items-center gap-2">
+            <TrainingMark isSkeleton size="small" />
+            <Skeleton className="h-6 w-14" />
+            <Skeleton className="h-1 w-2" />
+            <Skeleton className="h-6 w-14" />
+          </div>
+          <Skeleton className="h-12 rounded-md bg-muted" />
         </li>
       ))}
     </ul>

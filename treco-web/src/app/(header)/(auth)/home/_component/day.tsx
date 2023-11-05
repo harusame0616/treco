@@ -22,7 +22,7 @@ export const Day = memo(function Day({
   const dateDayjs = dayjs(date);
 
   const style = [
-    'rounded-md h-14 transition flex flex-col px-1',
+    'rounded-md h-12 transition flex flex-col px-1',
     highlight ? 'bg-muted-foreground' : '',
     mute ? 'opacity-40' : '',
     active ? 'font-black text-yellow-300' : '',

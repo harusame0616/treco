@@ -18,7 +18,7 @@ export default function HeaderLayout({ children }: PropsWithChildren) {
 
 function MainHeader() {
   return (
-    <header className="grid grid-cols-header items-center border-b border-b-accent bg-background px-4 py-2 shadow-md">
+    <header className="grid grid-cols-header items-center border-b border-b-accent bg-background px-4 py-1 shadow-md">
       <Link href="/">
         <div className="sr-only">TRECo ホームへのリンク</div>
         <Image alt="TRECo アイコン" height="32" src={Icon} width="32" />

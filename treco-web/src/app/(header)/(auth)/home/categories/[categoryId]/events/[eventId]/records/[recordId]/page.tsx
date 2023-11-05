@@ -1,3 +1,4 @@
+import { TrainingMark } from '@/components/training-mark';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
@@ -52,12 +53,10 @@ export default async function TrainingRecordEditPage({
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="w-full shrink-0 px-4">
-        <span className="mr-2" style={{ color: trainingCategory.color }}>
-          ●
-        </span>
+      <div className="flex w-full shrink-0 items-center px-4 gap-2">
+        <TrainingMark color={trainingCategory.color} size="small" />
         <span>{trainingCategory.name}</span>
-        <span className="mx-2">&gt;</span>
+        <span>&gt;</span>
         <span>{trainingEvent.name}</span>
       </div>
       <div className="top-11 flex shrink-0 p-2 text-xs text-muted-foreground">
