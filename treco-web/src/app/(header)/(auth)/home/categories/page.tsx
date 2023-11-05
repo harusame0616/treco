@@ -1,3 +1,4 @@
+import { TrainingMark } from '@/components/training-mark';
 import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
@@ -46,18 +47,12 @@ export default async function CategoryPage({ searchParams }: Props) {
             >
               <div className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4">
                 <Link
-                  className="block w-full text-foreground no-underline"
+                  className="flex w-full items-center gap-4 text-foreground no-underline"
                   href={`/home/categories/${trainingCategoryId}/events?date=${selectDate.format(
                     'YYYY-MM-DD',
                   )}`}
                 >
-                  <span
-                    aria-hidden="true"
-                    className="mr-4 text-lg"
-                    style={{ color }}
-                  >
-                    ●
-                  </span>
+                  <TrainingMark color={color} size="small" />
                   <span className="grow text-3xl">{name}</span>
                 </Link>
                 <Button aria-label="カテゴリ名編集" variant={'ghost'}>
