@@ -1,7 +1,6 @@
 'use client';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TrainingRecordQueryTrainingMarksPerMonthForCalendar } from '@/domains/training-record/usecases/query-training-marks-per-month-for-calendar.usecase';
-import { createDate } from '@/lib/date';
+import { TrainingRecordQueryTrainingMarksForCalendar } from '@/domains/training-record/usecases/query-training-marks-for-calendar.usecase';
 import dayjs from 'dayjs';
 import useSWR from 'swr';
 
@@ -35,21 +34,20 @@ export function CalendarMonth({
 
   const firstDate = dayjs(`${year}-${month}-01`).startOf('month');
   const dayOfFirstDate = firstDate.day();
-  const calenderStart = firstDate.subtract(dayOfFirstDate, 'day');
+  const calendarStart = firstDate.subtract(dayOfFirstDate, 'day');
   const days = new Array(7 * 6)
     .fill(0)
-    .map((_, index) => calenderStart.add(index, 'day'));
+    .map((_, index) => calendarStart.add(index, 'day'));
 
   const apiUrl = new URL(
     '/api/query-training-marks-per-month-for-calendar',
     'http://localhost:3000',
   );
-  apiUrl.searchParams.set('date', firstDate.toISOString());
+  apiUrl.searchParams.set('start', days.at(0)!.toISOString());
+  apiUrl.searchParams.set('end', days.at(-1)!.toISOString());
 
   const { data, isLoading } = useSWR<
-    Awaited<
-      ReturnType<TrainingRecordQueryTrainingMarksPerMonthForCalendar['execute']>
-    >
+    Awaited<ReturnType<TrainingRecordQueryTrainingMarksForCalendar['execute']>>
   >(apiUrl.href, (url: string) =>
     fetch(url).then(async (data) => await data.json()),
   );
@@ -58,7 +56,7 @@ export function CalendarMonth({
   const trainingMarks = data
     ? data.reduce(
         (group, record) => {
-          const date = createDate(record.trainingDate).utc().toISOString();
+          const date = dayjs(record.trainingDate).utc().toISOString();
           if (!group[date]) {
             group[date] = {};
           }

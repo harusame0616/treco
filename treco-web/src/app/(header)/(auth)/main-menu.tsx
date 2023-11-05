@@ -1,13 +1,13 @@
 'use client';
 
-import { createDate } from '@/lib/date';
+import { createTZDate } from '@/lib/date';
 import { FilePlusIcon, HomeIcon, PersonIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export function MainMenu() {
   const searchParams = useSearchParams();
-  const selectedDate = createDate(searchParams.get('date'));
+  const selectedDate = createTZDate(searchParams.get('date'));
 
   const menus = [
     {

@@ -8,6 +8,6 @@ dayjs.tz.setDefault('Asia/Tokyo');
 
 export { dayjs as date };
 
-export function createDate(date?: Date | null | string) {
-  return dayjs(date).tz('Asia/Tokyo');
+export function createTZDate(date?: null | string) {
+  return dayjs.tz(date ?? undefined);
 }

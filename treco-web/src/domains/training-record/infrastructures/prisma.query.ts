@@ -29,11 +29,13 @@ export class PrismaTrainingRecordQuery implements TrainingRecordQuery {
     };
   }
 
-  async queryTrainingMarksPerMonthForCalendar({
-    date,
+  async queryTrainingMarksForCalendar({
+    end,
+    start,
     traineeId,
   }: {
-    date: Date;
+    end: Date;
+    start: Date;
     traineeId: string;
   }) {
     const records = await prisma.trainingRecord.findMany({
@@ -47,8 +49,8 @@ export class PrismaTrainingRecordQuery implements TrainingRecordQuery {
       where: {
         traineeId,
         trainingDate: {
-          gte: dayjs(date).startOf('month').startOf('month').toISOString(),
-          lt: dayjs(date).add(1, 'month').startOf('month').toISOString(),
+          gte: start.toISOString(),
+          lt: end.toISOString(),
         },
       },
     });

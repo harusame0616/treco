@@ -1,11 +1,11 @@
 'use client';
 
-import { createDate } from '@/lib/date';
+import { createTZDate } from '@/lib/date';
 import { useSearchParams } from 'next/navigation';
 
 export function Title() {
   const searchParams = useSearchParams();
-  const selectDate = createDate(searchParams.get('date') ?? undefined);
+  const selectDate = createTZDate(searchParams.get('date'));
 
   return (
     <div className=" flex justify-center gap-1 text-xl font-bold">
