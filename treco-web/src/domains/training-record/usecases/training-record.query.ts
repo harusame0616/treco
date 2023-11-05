@@ -11,6 +11,18 @@ export interface TrainingRecordQuery {
     }
   >;
 
+  queryTrainingMarksPerMonthForCalendar(props: {
+    date: Date;
+    traineeId: string;
+  }): Promise<
+    {
+      color: string;
+      trainingCategoryId: string;
+      trainingDate: Date;
+      trainingRecordId: string;
+    }[]
+  >;
+
   queryTrainingRecordForHome(
     traineeId: string,
     date: Date,

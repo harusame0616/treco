@@ -1,10 +1,11 @@
 'use client';
 
 import dayjs from 'dayjs';
-import { memo, useCallback } from 'react';
+import React, { ReactNode, memo, useCallback } from 'react';
 
 type Props = {
   active?: boolean;
+  children: ReactNode;
   date: Date;
   highlight?: boolean;
   mute?: boolean;
@@ -12,6 +13,7 @@ type Props = {
 };
 export const Day = memo(function Day({
   active,
+  children,
   date,
   highlight,
   mute,
@@ -20,7 +22,7 @@ export const Day = memo(function Day({
   const dateDayjs = dayjs(date);
 
   const style = [
-    'text-center rounded-md h-10 transition',
+    'rounded-md h-14 transition flex flex-col px-1',
     highlight ? 'bg-muted-foreground' : '',
     mute ? 'opacity-40' : '',
     active ? 'font-black text-yellow-300' : '',
@@ -31,8 +33,9 @@ export const Day = memo(function Day({
   }, [date, onSelectDate]);
 
   return (
-    <button onClick={onClickHandler}>
-      <div className={style}>{dateDayjs.format('D')}</div>
+    <button className={style} onClick={onClickHandler}>
+      <div className="w-full">{dateDayjs.format('D')}</div>
+      <div className="w-full">{children}</div>
     </button>
   );
 });
