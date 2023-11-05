@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import useSWR from 'swr';
 
 import { Day } from './day';
+import { getOrigin } from '@/lib/url';
 
 type Props = {
   month: number;
@@ -40,11 +41,10 @@ export function CalendarMonth({
     .fill(0)
     .map((_, index) => calendarStart.add(index, 'day'));
 
+  console.log(getOrigin());
   const apiUrl = new URL(
     '/api/query-training-marks-per-month-for-calendar',
-    process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000/',
+    getOrigin(),
   );
   apiUrl.searchParams.set('start', days.at(0)!.toISOString());
   apiUrl.searchParams.set('end', days.at(-1)!.toISOString());
