@@ -30,7 +30,7 @@ export function MainMenu() {
   return (
     <nav
       aria-label="メインメニュー"
-      className="border-t border-t-accent bg-background px-4 py-2"
+      className="border-t border-t-accent bg-background px-4 py-1"
     >
       <ul aria-label="メニュー" className="flex justify-evenly">
         {menus.map((menu) => (

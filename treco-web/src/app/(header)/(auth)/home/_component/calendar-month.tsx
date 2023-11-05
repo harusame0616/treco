@@ -1,5 +1,6 @@
 'use client';
-import { Skeleton } from '@/components/ui/skeleton';
+
+import { TrainingMark } from '@/components/training-mark';
 import { TrainingRecordQueryTrainingMarksForCalendar } from '@/domains/training-record/usecases/query-training-marks-for-calendar.usecase';
 import dayjs from 'dayjs';
 import useSWR from 'swr';
@@ -41,7 +42,9 @@ export function CalendarMonth({
 
   const apiUrl = new URL(
     '/api/query-training-marks-per-month-for-calendar',
-    `${window.location.protocol}//${window.location.host}`,
+    process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000/',
   );
   apiUrl.searchParams.set('start', days.at(0)!.toISOString());
   apiUrl.searchParams.set('end', days.at(-1)!.toISOString());
@@ -70,9 +73,12 @@ export function CalendarMonth({
 
   return (
     <div className="grid grid-cols-7 bg-muted">
+      <div className="col-span-7 mb-1 text-center text-xs font-bold text-muted-foreground">
+        {firstDate.format('YYYY 年 M 月')}
+      </div>
       {daysOfWeek.map((day) => (
         <div
-          className={`${day.color} mb-1 text-center text-xs`}
+          className={`${day.color} mb-4 text-center text-xs font-bold`}
           key={day.label}
         >
           {day.label}
@@ -92,13 +98,13 @@ export function CalendarMonth({
               <ul className="grid grid-cols-5 gap-y-1">
                 {isLoading ? (
                   <>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
-                    <Skeleton className="h-2 w-2 rounded-full"></Skeleton>
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
+                    <TrainingMark isSkeleton size="x-small" />
                   </>
                 ) : (
                   Object.entries(
@@ -109,10 +115,7 @@ export function CalendarMonth({
                       key={mark.trainingRecordId}
                       style={{ color: mark.color }}
                     >
-                      <div
-                        className="h-2 w-2 rounded-full"
-                        style={{ backgroundColor: mark.color }}
-                      />
+                      <TrainingMark color={mark.color} size="x-small" />
                     </ol>
                   ))
                 )}
