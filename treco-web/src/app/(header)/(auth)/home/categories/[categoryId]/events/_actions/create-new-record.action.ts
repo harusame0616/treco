@@ -2,7 +2,6 @@
 
 import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordCreateUsecase } from '@/domains/training-record/usecases/create.usecase';
-import { createTZDate } from '@/lib/date';
 import dayjs from 'dayjs';
 import { redirect } from 'next/navigation';
 import { ValiError, object, parse, string, uuid } from 'valibot';
@@ -41,7 +40,7 @@ export async function createNewRecordAction(formData: FormData) {
 
   const newRecord = await createUsecase.execute({
     ...input,
-    trainingDate: createTZDate(input.trainingDate).toDate(),
+    trainingDate: new Date(input.trainingDate),
   });
 
   redirect(
