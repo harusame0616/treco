@@ -2,8 +2,8 @@ import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrast
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
+import { createDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import dayjs from 'dayjs';
 import { notFound } from 'next/navigation';
 
 import { createNewRecordAction } from './_actions';
@@ -49,7 +49,7 @@ export default async function TrainingEventPage({
   const category = await queryCategory(params.categoryId);
   const trainingEvents = await queryTrainingEvents(params.categoryId);
 
-  const selectDate = dayjs(searchParams.date);
+  const selectDate = createDate(searchParams.date).toDate();
 
   if (!category) {
     return notFound();
@@ -83,7 +83,7 @@ export default async function TrainingEventPage({
                   <input
                     name="trainingDate"
                     type="hidden"
-                    value={selectDate.format('YYYY-MM-DD')}
+                    value={selectDate.toISOString()}
                   />
                   <input
                     name="trainingCategoryId"

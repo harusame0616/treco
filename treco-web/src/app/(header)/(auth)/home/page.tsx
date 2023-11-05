@@ -1,5 +1,6 @@
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
+import { createDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
 
 import { Calendar } from './_component/calendar';
@@ -19,9 +20,7 @@ type Props = {
 };
 export default async function HomePage({ searchParams }: Props) {
   const traineeId = await getSignedInTraineeId();
-  const selectedDate = searchParams.date
-    ? new Date(searchParams.date)
-    : new Date();
+  const selectedDate = createDate(searchParams.date).startOf('day').toDate();
 
   return (
     <div className="flex h-full flex-col">

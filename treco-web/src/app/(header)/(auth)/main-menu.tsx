@@ -1,13 +1,13 @@
 'use client';
 
+import { createDate } from '@/lib/date';
 import { FilePlusIcon, HomeIcon, PersonIcon } from '@radix-ui/react-icons';
-import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export function MainMenu() {
   const searchParams = useSearchParams();
-  const selectedDate = dayjs(searchParams.get('date') || new Date());
+  const selectedDate = createDate(searchParams.get('date'));
 
   const menus = [
     {
