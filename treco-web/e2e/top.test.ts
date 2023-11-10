@@ -12,7 +12,6 @@ test.describe('トップページ', () => {
 
   test('ログイン済みだとホーム画面にリダイレクトする', async ({ page }) => {
     await page.goto(path);
-    await page.waitForURL('/home');
 
     await expect(page).toHaveURL('/home');
   });

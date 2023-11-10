@@ -1,8 +1,10 @@
 import { test as setup } from '@playwright/test';
 
 import { authUserFixtures } from '../fixtures/auth-user.fixture';
+import { traineeFixtures } from '../fixtures/trainee.fixture';
 
-const defaultTrainee = authUserFixtures[0];
+const defaultAuthUser = authUserFixtures[0];
+const defaultTrainee = traineeFixtures[0];
 
 setup('デフォルトユーザーのログインセッション設定', async ({ page }) => {
   page.context().addCookies([
@@ -14,8 +16,9 @@ setup('デフォルトユーザーのログインセッション設定', async (
       sameSite: 'Lax',
       secure: false,
       value: JSON.stringify({
-        email: defaultTrainee.email,
-        sub: defaultTrainee.sub,
+        email: defaultAuthUser.email,
+        name: defaultTrainee.name,
+        sub: defaultAuthUser.sub,
       }),
     },
   ]);

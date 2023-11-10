@@ -1,0 +1,2 @@
+# CI 上で supabase を使用するため作業用フォルダを除外する
+supabase
