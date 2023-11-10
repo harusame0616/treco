@@ -102,6 +102,17 @@ export const authOptions = {
       return session;
     },
   },
+  jwt:
+    process.env.NODE_ENV != 'production'
+      ? {
+          async decode(params) {
+            return JSON.parse(params.token!.toString());
+          },
+          async encode(params) {
+            return JSON.stringify(params.token);
+          },
+        }
+      : undefined,
   providers: [
     GoogleProvider({
       clientId: getRequiredEnv('GOOGLE_CLIENT_ID'),
