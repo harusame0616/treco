@@ -4,7 +4,6 @@ import { authUserFixtures } from '../fixtures/auth-user.fixture';
 
 const defaultTrainee = authUserFixtures[0];
 
-export const defaultUserState = 'playwright/.auth/defaultTrainee.json';
 setup('デフォルトユーザーのログインセッション設定', async ({ page }) => {
   page.context().addCookies([
     {
@@ -21,5 +20,7 @@ setup('デフォルトユーザーのログインセッション設定', async (
     },
   ]);
 
-  await page.context().storageState({ path: defaultUserState });
+  await page
+    .context()
+    .storageState({ path: 'playwright/.auth/defaultTrainee.json' });
 });

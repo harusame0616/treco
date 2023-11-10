@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// import { defaultUserState } from './auth.setup';
-
 test.describe('トップページ', () => {
   const path = '/';
 

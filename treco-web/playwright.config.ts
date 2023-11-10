@@ -10,6 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 
+const defaultUserStorageState = './playwright/.auth/defaultTrainee.json';
 const setupProjectName = 'setup';
 export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -27,7 +28,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: './playwright/.auth/defaultTrainee.json',
+        storageState: defaultUserStorageState,
       },
     },
 
@@ -36,7 +37,7 @@ export default defineConfig({
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        storageState: './playwright/.auth/defaultTrainee.json',
+        storageState: defaultUserStorageState,
       },
     },
 
@@ -45,7 +46,7 @@ export default defineConfig({
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
-        storageState: './playwright/.auth/defaultTrainee.json',
+        storageState: defaultUserStorageState,
       },
     },
 
