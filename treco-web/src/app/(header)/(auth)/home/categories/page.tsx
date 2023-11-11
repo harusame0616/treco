@@ -35,7 +35,7 @@ export default async function CategoryPage({ searchParams }: Props) {
       </p>
 
       <ul
-        aria-label="トレーニングカテゴリー"
+        aria-label="トレーニングカテゴリーリスト"
         className="flex w-full flex-col gap-2"
       >
         {categories.length ? (

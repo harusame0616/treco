@@ -1,12 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// test('未ログインの場合ホームにリダイレクトする', async ({ page }) => {
-//   await page.context().clearCookies();
-//   await page.goto(path);
-
-//   await expect(page).toHaveURL('/');
-// });
-
 test('トレーニングセットを記録できる', async ({ page }) => {
   // トレーニング記録ページへ移動
   await page.goto('/home');
