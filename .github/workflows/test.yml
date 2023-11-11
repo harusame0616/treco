@@ -11,11 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
-      - run: supabase init
-      - run: supabase start
       - uses: actions/setup-node@v4.0.0
         with:
           node-version: 18
@@ -30,6 +25,11 @@ jobs:
           GOOGLE_CLIENT_SECRET: "secret"
           NEXT_AUTH_SECRET: "secret"
           NEXT_AUTH_JWT_NO_ENCRYPTION: "true"
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase init
+      - run: supabase start
       - run: npx playwright install --with-deps
       - run: npx playwright test
       - uses: actions/upload-artifact@v3
