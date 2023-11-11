@@ -50,7 +50,8 @@ export function SetDelete({
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">
+        <Button size="icon" variant="destructive">
+          <span className="sr-only">削除</span>
           <TrashIcon aria-hidden="true" className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>

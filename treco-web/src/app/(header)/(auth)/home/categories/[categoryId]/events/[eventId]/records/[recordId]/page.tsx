@@ -4,10 +4,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
-import Link from 'next/link';
+import clsx from 'clsx';
 
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
+import { EditButton } from './edit-button';
 import { SetDelete } from './set-delete';
 import { SubmitButton } from './submit-button';
 
@@ -53,7 +54,7 @@ export default async function TrainingRecordEditPage({
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex w-full shrink-0 items-center px-4 gap-2">
+      <div className="flex w-full shrink-0 items-center gap-2 px-4">
         <TrainingMark color={trainingCategory.color} size="small" />
         <span>{trainingCategory.name}</span>
         <span>&gt;</span>
@@ -67,42 +68,57 @@ export default async function TrainingRecordEditPage({
       </div>
       <div className="h-full overflow-y-auto bg-muted p-4">
         {sets.length ? (
-          <ul className="">
+          <ul aria-label="トレーニングセット">
             {sets.map(({ load, note, value }, index) => (
               <li
-                className="flex h-16 border-b border-solid border-b-muted-foreground last:border-b-0"
+                aria-labelledby={`set-label${index}`}
+                className={clsx(
+                  'flex h-16 border-solid px-1',
+                  activeSetIndex === index
+                    ? 'rounded-md border border-primary'
+                    : 'border-b border-b-muted-foreground last:border-b-0',
+                )}
                 key={index}
               >
-                <Link
-                  className={`flex w-full text-foreground no-underline ${
-                    activeSetIndex === index
-                      ? 'rounded-sm font-bold text-primary'
-                      : ''
-                  }`}
-                  href={`/home/categories/${params.categoryId}/events/${params.eventId}/records/${params.recordId}?edit=${index}`}
+                <div
+                  aria-hidden
+                  className={`mr-1 flex w-4 items-center justify-end  text-xs text-muted-foreground`}
+                  id={`set-label${index}`}
                 >
-                  <div
-                    className={`mr-1 flex w-4 items-center justify-end  text-xs ${
-                      activeSetIndex === index
-                        ? 'font-bold text-primary'
-                        : 'text-muted-foreground'
-                    }`}
-                  >
-                    {index + 1}
+                  {index + 1}
+                  <span className="sr-only">セット目</span>
+                </div>
+                <div
+                  aria-label="負荷"
+                  className="mr-1 flex w-12 items-center justify-end"
+                >
+                  {load}
+                  <span className="sr-only ml-1 text-xs">
+                    {trainingEvent.loadUnit}
+                  </span>
+                </div>
+                <div
+                  aria-label="値"
+                  className="mr-8 flex w-12 items-center justify-end"
+                >
+                  {value}
+                  <span className="sr-only ml-1 text-xs">
+                    {trainingEvent.valueUnit}
+                  </span>
+                </div>
+                <div aria-label="備考" className="flex grow items-center">
+                  <div className="max-h-10 w-12 grow overflow-y-auto whitespace-pre p-3 text-xs">
+                    {note || (
+                      <>
+                        <span aria-hidden>-</span>
+                        <span className="sr-only">なし</span>
+                      </>
+                    )}
                   </div>
-                  <div className="mr-1 flex w-12 items-center justify-end">
-                    {load}
-                  </div>
-                  <div className="mr-8 flex w-12 items-center justify-end">
-                    {value}
-                  </div>
-                  <div className="flex grow items-center">
-                    <div className="max-h-10 w-12 grow overflow-y-auto whitespace-pre p-3 text-xs">
-                      {note || '-'}
-                    </div>
-                  </div>
-                </Link>
-                <div className="flex items-center">
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <EditButton index={index} />
                   <SetDelete
                     trainingCategoryId={params.categoryId}
                     trainingEventId={params.eventId}
@@ -124,7 +140,9 @@ export default async function TrainingRecordEditPage({
       </div>
       <form
         action={isEditing ? editSetAction : addSetAction}
+        aria-label="トレーニングセットの追加・変更フォーム"
         className="flex shrink-0 flex-col gap-1 p-4"
+        key={`${activeSetIndex}`}
       >
         <input
           name="trainingCategoryId"

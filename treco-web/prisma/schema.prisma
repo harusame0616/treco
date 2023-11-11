@@ -94,8 +94,8 @@ model TrainingSet {
   trainingRecordId String @db.Uuid
   order            Int
 
-  value     Int
-  load      Int
+  value     Float
+  load      Float
   note      String   @db.VarChar(255)
 
   createdAt DateTime @default(now())

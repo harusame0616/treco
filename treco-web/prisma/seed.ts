@@ -2,6 +2,9 @@ import { PrismaClient } from '@prisma/client';
 
 import { authUserFixtures } from '../fixtures/auth-user.fixture';
 import { traineeFixtures } from '../fixtures/trainee.fixture';
+import { getDefaultCategories } from '../src/domains/training-category/lib/default-categories';
+import { getDefaultEvents } from '../src/domains/training-event/lib/default-events';
+import { generateId } from '../src/lib/id';
 
 const prisma = new PrismaClient();
 
@@ -26,8 +29,37 @@ main()
           ...authUserFixtures[index],
         };
       }),
-    }),
-      await prisma.$disconnect();
+    });
+
+    await Promise.all(
+      traineeFixtures.map(async (trainee) =>
+        getDefaultCategories().map(async (category, order) => {
+          const trainingCategoryId = generateId();
+          await prisma.trainingCategory.createMany({
+            data: {
+              ...category,
+              order,
+              traineeId: trainee.traineeId,
+              trainingCategoryId,
+            },
+          });
+
+          await prisma.trainingEvent.createMany({
+            data: getDefaultEvents(category.name).map(
+              ({ categoryName: _, ...event }, order) => ({
+                ...event,
+                order,
+                traineeId: trainee.traineeId,
+                trainingCategoryId,
+                trainingEventId: generateId(),
+              }),
+            ),
+          });
+        }),
+      ),
+    );
+
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
     console.error(e);
