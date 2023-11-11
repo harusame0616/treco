@@ -86,14 +86,23 @@ export function CategoryEdit(props: Props) {
         </DialogHeader>
         <div className="grid gap-2">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">名前</Label>
-            <Input className="col-span-3" {...form.register('name')} />
+            <Label className="text-right" id="name">
+              名前
+            </Label>
+            <Input
+              className="col-span-3"
+              {...form.register('name')}
+              aria-labelledby="name"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">カラー</Label>
+            <Label className="text-right" id="color">
+              カラー
+            </Label>
             <Input
               className="col-span-3"
               {...form.register('color')}
+              aria-labelledby="color"
               type="color"
             />
           </div>
