@@ -10,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 
-const defaultUserStorageState = './playwright/.auth/defaultTrainee.json';
+const defaultUserStorageState = 'playwright/.auth/defaultTrainee.json';
 const setupProjectName = 'setup';
 export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -85,13 +85,25 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
+  /* Run your local dev server before starting the tests */
+  webServer: process.env.CI
+    ? {
+        command: 'npm run start',
+        env: {
+          DATABASE_URL:
+            'postgresql://postgres:postgres@localhost:54322/postgres?schema=public',
+          DATABASE_URL_NON_POLING:
+            'postgresql://postgres:postgres@localhost:54322/postgres?schema=public',
+          GOOGLE_CLIENT_ID: 'client_id',
+          GOOGLE_CLIENT_SECRET: 'secret',
+          NEXT_AUTH_JWT_NO_ENCRYPTION: 'true',
+          NEXT_AUTH_SECRET: 'secret',
+        },
+        reuseExistingServer: !process.env.CI,
+        url: 'http://127.0.0.1:3000',
+      }
+    : undefined,
+
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
