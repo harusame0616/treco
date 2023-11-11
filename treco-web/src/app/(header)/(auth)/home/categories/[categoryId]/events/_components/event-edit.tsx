@@ -88,7 +88,9 @@ export function EventEdit(props: Props) {
   const trigger = isNew ? (
     <Button className="w-full">トレーニング種目を作成する</Button>
   ) : (
-    <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
+    <Button aria-label="トレーニング種目編集" type="button" variant={'ghost'}>
+      <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
+    </Button>
   );
 
   return (
@@ -100,16 +102,34 @@ export function EventEdit(props: Props) {
         </DialogHeader>
         <div className="grid gap-2">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">名前</Label>
-            <Input className="col-span-3" {...form.register('name')} />
+            <Label className="text-right" id="name">
+              名前
+            </Label>
+            <Input
+              className="col-span-3"
+              {...form.register('name')}
+              aria-labelledby="name"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">負荷の単位</Label>
-            <Input className="col-span-3" {...form.register('loadUnit')} />
+            <Label className="text-right" id="loadUnit">
+              負荷の単位
+            </Label>
+            <Input
+              className="col-span-3"
+              {...form.register('loadUnit')}
+              aria-labelledby="loadUnit"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">値の単位</Label>
-            <Input className="col-span-3" {...form.register('valueUnit')} />
+            <Label className="text-right" id="valueUnit">
+              値の単位
+            </Label>
+            <Input
+              className="col-span-3"
+              {...form.register('valueUnit')}
+              aria-labelledby="valueUnit"
+            />
           </div>
         </div>
         <DialogFooter>

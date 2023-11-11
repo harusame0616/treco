@@ -1,4 +1,5 @@
 import { TrainingMark } from '@/components/training-mark';
+import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
@@ -66,7 +67,7 @@ export default async function TrainingEventPage({
       </div>
 
       <ul
-        aria-label={`${category.name}のトレーニング種目`}
+        aria-label={`${category.name}のトレーニング種目リスト`}
         className="mb-2 flex w-full flex-col gap-2"
       >
         {trainingEvents.length ? (
@@ -104,6 +105,7 @@ export default async function TrainingEventPage({
                   <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
                     <span className="grow text-xl ">{name}</span>
                   </button>
+
                   <EventEdit
                     loadUnit={loadUnit}
                     name={name}
