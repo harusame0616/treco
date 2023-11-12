@@ -21,7 +21,7 @@ export class TrainingEventPage {
     loadUnit: string;
     valueUnit: string;
   }) {
-    this.page
+    await this.page
       .getByRole('button', { name: 'トレーニング種目を作成する' })
       .click();
     await this.inputTrainingEvent(trainingEvent);
