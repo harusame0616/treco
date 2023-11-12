@@ -43,7 +43,7 @@ const test = base.extend<{
     const trainingEventPage = new TrainingEventPage(page);
     // カテゴリを作成
     const categoryName = randomUUID();
-    await trainingEventPage.goToInNewCategories(categoryName);
+    await trainingEventPage.goToNewCategory(categoryName);
 
     // トレーニング種目を作成
     for (const event of events) {

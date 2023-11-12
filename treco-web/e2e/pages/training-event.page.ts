@@ -49,7 +49,7 @@ export class TrainingEventPage {
     await this.page.getByRole('button', { name: '保存する' }).click();
   }
 
-  async goToInNewCategories(categoryName: string) {
+  async goToNewCategory(categoryName: string) {
     await this.page.goto('/home');
     await this.page
       .getByRole('link', { name: 'トレーニング記録へのリンク' })
