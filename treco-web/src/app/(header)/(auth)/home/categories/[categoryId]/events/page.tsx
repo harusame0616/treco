@@ -66,7 +66,7 @@ export default async function TrainingEventPage({
       </div>
 
       <ul
-        aria-label={`${category.name}のトレーニング種目`}
+        aria-label={`${category.name}のトレーニング種目リスト`}
         className="mb-2 flex w-full flex-col gap-2"
       >
         {trainingEvents.length ? (
@@ -104,6 +104,7 @@ export default async function TrainingEventPage({
                   <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
                     <span className="grow text-xl ">{name}</span>
                   </button>
+
                   <EventEdit
                     loadUnit={loadUnit}
                     name={name}

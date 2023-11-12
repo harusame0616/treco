@@ -38,6 +38,7 @@ export function EventDelete({ trainingCategoryId, trainingEventId }: Props) {
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
         <Button className="h-full" variant="destructive">
+          <span className="sr-only">削除</span>
           <TrashIcon aria-hidden="true" className="h-12 w-14" />
         </Button>
       </AlertDialogTrigger>
