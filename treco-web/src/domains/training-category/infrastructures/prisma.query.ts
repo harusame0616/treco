@@ -6,6 +6,9 @@ import { TrainingCategoryQuery } from '../usecases/training-category.query';
 export class PrismaTrainingCategoryQuery implements TrainingCategoryQuery {
   queryListByTraineeId(traineeId: string): Promise<TrainingCategoryDto[]> {
     return prisma.trainingCategory.findMany({
+      orderBy: {
+        order: 'asc',
+      },
       where: {
         traineeId,
       },

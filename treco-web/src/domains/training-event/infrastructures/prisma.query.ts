@@ -8,6 +8,9 @@ export class PrismaTrainingEventQuery implements TrainingEventQuery {
     trainingCategoryId: string,
   ): Promise<TrainingEventDto[]> {
     return prisma.trainingEvent.findMany({
+      orderBy: {
+        order: 'asc',
+      },
       where: {
         trainingCategoryId,
       },
