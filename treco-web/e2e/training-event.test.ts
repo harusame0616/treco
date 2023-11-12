@@ -1,80 +1,68 @@
-import { expect, test } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 import { randomUUID } from 'crypto';
 
-test('トレーニング種目を作成・編集・編集できる', async ({ page }) => {
-  await page.goto('/home');
-  await page.getByRole('link', { name: 'トレーニング記録へのリンク' }).click();
+import { TrainingEventPage } from './pages/training-event.page';
 
-  // トレーニングカテゴリー作成
-  await page
-    .getByRole('button', { name: 'トレーニングカテゴリーを作成する' })
-    .click();
-  const categoryName = randomUUID();
-  await page.getByRole('textbox', { name: '名前' }).fill(categoryName);
-  await page.getByRole('button', { name: '保存する' }).click();
-  await page.getByRole('listitem', { name: categoryName }).click();
-
-  // トレーニング種目1つ目作成
-  await page
-    .getByRole('button', { name: 'トレーニング種目を作成する' })
-    .click();
-  const event1 = {
+const events = [
+  {
     eventName: randomUUID(),
     loadUnit: randomUUID(),
     valueUnit: randomUUID(),
-  };
-  await page.getByRole('textbox', { name: '名前' }).fill(event1.eventName);
-  await page.getByRole('textbox', { name: '負荷の単位' }).fill(event1.loadUnit);
-  await page.getByRole('textbox', { name: '値の単位' }).fill(event1.valueUnit);
-  await page.getByRole('button', { name: '保存する' }).click();
-
-  // ２つ目作成
-  await page
-    .getByRole('button', { name: 'トレーニング種目を作成する' })
-    .click();
-  const event2 = {
+  },
+  {
     eventName: randomUUID(),
     loadUnit: randomUUID(),
     valueUnit: randomUUID(),
-  };
-  await page.getByRole('textbox', { name: '名前' }).fill(event2.eventName);
-  await page.getByRole('textbox', { name: '負荷の単位' }).fill(event2.loadUnit);
-  await page.getByRole('textbox', { name: '値の単位' }).fill(event2.valueUnit);
-  await page.getByRole('button', { name: '保存する' }).click();
+  },
+];
 
+const test = base.extend<{
+  trainingEventPage: TrainingEventPage;
+}>({
+  trainingEventPage: async ({ page }, use) => {
+    const trainingEventPage = new TrainingEventPage(page);
+
+    const categoryName = randomUUID();
+    await trainingEventPage.goToInNewCategories(categoryName);
+
+    await trainingEventPage.addNewTrainingEvent(events[0]);
+    await trainingEventPage.addNewTrainingEvent(events[1]);
+
+    await use(trainingEventPage);
+  },
+});
+
+test('トレーニング種目が作成順に表示する', async ({ trainingEventPage }) => {
   // 作成順に表示されていることを確認
-  const eventListItems = await page
-    .getByRole('list', {
-      name: `${categoryName}のトレーニング種目リスト`,
-    })
-    .getByRole('listitem');
-  await expect(eventListItems).toHaveCount(2);
-  await expect(eventListItems.first()).toContainText(event1.eventName);
-  await expect(eventListItems.last()).toContainText(event2.eventName);
+  await expect(trainingEventPage.trainingEventItems).toHaveCount(2);
+  await expect(trainingEventPage.trainingEventItems.nth(0)).toContainText(
+    events[0].eventName,
+  );
+  await expect(trainingEventPage.trainingEventItems.nth(1)).toContainText(
+    events[1].eventName,
+  );
+  // TODO: 単位の確認
+});
 
-  // １つ目を編集
-  await eventListItems.first().getByRole('button', { name: '編集' }).click();
-  const event1edit = {
+test('トレーニング種目を編集できる', async ({ trainingEventPage }) => {
+  const editEvent = {
     eventName: randomUUID(),
     loadUnit: randomUUID(),
     valueUnit: randomUUID(),
   };
-  await page.getByRole('textbox', { name: '名前' }).fill(event1edit.eventName);
-  await page
-    .getByRole('textbox', { name: '負荷の単位' })
-    .fill(event1edit.loadUnit);
-  await page
-    .getByRole('textbox', { name: '値の単位' })
-    .fill(event1edit.valueUnit);
-  await page.getByRole('button', { name: '保存する' }).click();
+  await trainingEventPage.editTrainingEvent(0, editEvent);
 
   // 編集されていることを確認
-  await expect(eventListItems.first()).toContainText(event1edit.eventName);
+  await expect(trainingEventPage.trainingEventItems.nth(0)).toContainText(
+    editEvent.eventName,
+  );
+});
 
-  await eventListItems.first().getByRole('button', { name: '削除' }).click();
-  await page
-    .getByRole('button', { name: 'トレーニング種目を削除する' })
-    .click();
+test('トレーニング種目を削除できる', async ({ trainingEventPage }) => {
+  await trainingEventPage.removeTrainingEvent(0);
 
-  await expect(eventListItems.first()).not.toContainText(event1edit.eventName);
+  await expect(trainingEventPage.trainingEventItems).toHaveCount(1);
+  await expect(trainingEventPage.trainingEventItems.nth(0)).toContainText(
+    events[1].eventName,
+  );
 });
