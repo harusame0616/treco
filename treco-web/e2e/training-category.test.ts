@@ -1,49 +1,70 @@
-import { expect, test } from '@playwright/test';
-import { randomUUID } from 'crypto';
+import { test as base, expect } from '@playwright/test';
 
-test('トレーニングカテゴリーを作成・編集・編集できる', async ({ page }) => {
-  await page.goto('/home');
-  await page.getByRole('link', { name: 'トレーニング記録へのリンク' }).click();
+import { TrainingCategoryPage } from './pages/training-category.page';
 
-  // トレーニングカテゴリー作成
-  await page
-    .getByRole('button', { name: 'トレーニングカテゴリーを作成する' })
-    .click();
-  const oldName = randomUUID();
-  const oldColor = '#555555';
-  await page.getByRole('textbox', { name: '名前' }).fill(oldName);
-  await page.getByLabel('カラー').fill(oldColor);
-  await page.getByRole('button', { name: '保存する' }).click();
+const categories = [
+  {
+    categoryName: 'カテゴリー1',
+    color: '#111111',
+  },
+  {
+    categoryName: 'カテゴリー2',
+    color: '#222222',
+  },
+  {
+    categoryName: 'カテゴリー3',
+    color: '#333333',
+  },
+] as const;
 
-  // 末尾に追加されていることを確認
-  const lastCategoryItem = page
-    .getByRole('list', { name: 'カテゴリーリスト' })
-    .getByRole('listitem')
-    .last();
-  await expect(lastCategoryItem).toContainText(oldName);
+const test = base.extend<{ trainingCategoryPage: TrainingCategoryPage }>({
+  trainingCategoryPage: async ({ page }, use) => {
+    const trainingCategoryPage = new TrainingCategoryPage(page);
+    // カテゴリを作成
+    trainingCategoryPage.goTo();
+
+    for (const category of categories) {
+      await trainingCategoryPage.addTrainingCategory(category);
+    }
+
+    await use(trainingCategoryPage);
+  },
+});
+
+test('トレーニングカテゴリーが最後に追加されている', async ({
+  trainingCategoryPage,
+}) => {
+  await expect(
+    trainingCategoryPage.trainingCategoryItems.nth(-3),
+  ).toContainText(categories.at(-3)!.categoryName);
+  await expect(
+    trainingCategoryPage.trainingCategoryItems.nth(-2),
+  ).toContainText(categories.at(-2)!.categoryName);
+  await expect(
+    trainingCategoryPage.trainingCategoryItems.nth(-1),
+  ).toContainText(categories.at(-1)!.categoryName);
+
   // TODO: 色のテスト
+});
 
-  // トレーニングカテゴリー編集
-  await lastCategoryItem
-    .getByRole('button', { name: 'カテゴリ名編集' })
-    .click();
-  const newName = randomUUID();
-  const newColor = '#333333';
-  await page.getByRole('textbox', { name: '名前' }).fill(newName);
-  await page.getByLabel('カラー').fill(newColor);
-  await page.getByRole('button', { name: '保存する' }).click();
+test('トレーニングカテゴリーを編集できる', async ({ trainingCategoryPage }) => {
+  const editCategory = {
+    categoryName: '編集済みカテゴリー',
+    color: '#444444',
+  };
+  await trainingCategoryPage.editTrainingCategory(0, editCategory);
 
   // 編集されていることを確認
-  await expect(lastCategoryItem).toContainText(newName);
+  await expect(trainingCategoryPage.trainingCategoryItems.nth(0)).toContainText(
+    editCategory.categoryName,
+  );
+
   // TODO: 色のテスト
+});
 
-  // TODO: swipe したら削除ボタンが表示されるテスト
-
-  // 削除
-  await lastCategoryItem.getByRole('button', { name: '削除' }).click();
-  await page
-    .getByRole('button', { name: 'トレーニングカテゴリーを削除する' })
-    .click();
-
-  await expect(lastCategoryItem).not.toContainText(newName);
+test('トレーニングカテゴリーを削除できる', async ({ trainingCategoryPage }) => {
+  await trainingCategoryPage.removeTrainingCategory(-2);
+  await expect(
+    trainingCategoryPage.trainingCategoryItems.nth(-2),
+  ).not.toContainText(categories.at(1)!.categoryName);
 });
