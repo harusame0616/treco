@@ -103,7 +103,7 @@ export const authOptions = {
     },
   },
   jwt:
-    process.env.NODE_ENV != 'production' ||
+    process.env.NODE_ENV !== 'production' ||
     process.env.NEXT_AUTH_JWT_NO_ENCRYPTION === 'true'
       ? {
           async decode(params) {
