@@ -11,6 +11,8 @@ const prisma = new PrismaClient();
 async function main() {}
 main()
   .then(async () => {
+    await prisma.$connect();
+
     await prisma.trainingSet.deleteMany();
     await prisma.trainingRecord.deleteMany();
     await prisma.trainingEvent.deleteMany();
