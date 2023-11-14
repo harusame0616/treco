@@ -16,7 +16,9 @@
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "test:browser:medium": "playwright test",
+    "test:browser:update-snapshot": "playwright test -g '\\[ss\\]' --update-snapshots"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
