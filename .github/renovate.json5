@@ -1,0 +1,20 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  timezone: "Asia/Tokyo",
+  schedule: ["every weekend"],
+  packageRules: [
+    {
+      major: {
+        stabilityDays: 7,
+      },
+      minor: {
+        stabilityDays: 3,
+      },
+      patch: {
+        stabilityDays: 2,
+        automerge: true,
+      },
+    },
+  ],
+}
