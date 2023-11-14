@@ -6,30 +6,37 @@ defaults:
   run:
     working-directory: ./treco-web
 
+env:
+  DATABASE_URL: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
+  DATABASE_URL_NON_POLING: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
+  GOOGLE_CLIENT_ID: "client_id"
+  GOOGLE_CLIENT_SECRET: "secret"
+  NEXT_AUTH_SECRET: "secret"
+  NEXT_AUTH_JWT_NO_ENCRYPTION: "true"
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # supabase
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase init
-      - run: supabase start
+      - run: supabase start -x studio,realtime,storage-api,imgproxy,edge-runtime,logflare,vector,gotrue
+
+      # node
       - uses: actions/setup-node@v4.0.0
         with:
           node-version: 18
           cache: npm
           cache-dependency-path: ./treco-web/package-lock.json
       - run: npm ci
-      - run: npm run build
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
-          DATABASE_URL_NON_POLING: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
-          GOOGLE_CLIENT_ID: "client_id"
-          GOOGLE_CLIENT_SECRET: "secret"
-          NEXT_AUTH_SECRET: "secret"
-          NEXT_AUTH_JWT_NO_ENCRYPTION: "true"
+      - run: npx prisma migrate reset --force
+      - run: npx next build
+
+      # test
       - run: npx playwright install --with-deps
       - run: npx playwright test
       - uses: actions/upload-artifact@v3

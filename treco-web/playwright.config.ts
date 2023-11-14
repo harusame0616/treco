@@ -89,16 +89,6 @@ export default defineConfig({
   webServer: process.env.CI
     ? {
         command: 'npm run start',
-        env: {
-          DATABASE_URL:
-            'postgresql://postgres:postgres@localhost:54322/postgres?schema=public',
-          DATABASE_URL_NON_POLING:
-            'postgresql://postgres:postgres@localhost:54322/postgres?schema=public',
-          GOOGLE_CLIENT_ID: 'client_id',
-          GOOGLE_CLIENT_SECRET: 'secret',
-          NEXT_AUTH_JWT_NO_ENCRYPTION: 'true',
-          NEXT_AUTH_SECRET: 'secret',
-        },
         reuseExistingServer: !process.env.CI,
         url: 'http://127.0.0.1:3000',
       }

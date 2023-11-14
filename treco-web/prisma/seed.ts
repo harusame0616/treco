@@ -8,9 +8,10 @@ import { generateId } from '../src/lib/id';
 
 const prisma = new PrismaClient();
 
-async function main() {}
-main()
-  .then(async () => {
+(async function main() {
+  try {
+    await prisma.$connect();
+
     await prisma.trainingSet.deleteMany();
     await prisma.trainingRecord.deleteMany();
     await prisma.trainingEvent.deleteMany();
@@ -58,11 +59,9 @@ main()
         }),
       ),
     );
-
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
+  } catch (e) {
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);
-  });
+  }
+})();
