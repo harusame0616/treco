@@ -31,44 +31,14 @@ export default defineConfig({
         storageState: defaultUserStorageState,
       },
     },
-
-    {
-      dependencies: [setupProjectName],
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        storageState: defaultUserStorageState,
-      },
-    },
-
-    {
-      dependencies: [setupProjectName],
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        storageState: defaultUserStorageState,
-      },
-    },
-
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    {
+      name: 'Mobile Chrome',
+      use: {
+        ...devices['Pixel 5'],
+        storageState: defaultUserStorageState,
+      },
+    },
   ],
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
