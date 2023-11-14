@@ -1,6 +1,11 @@
 name: test
 
-on: push
+on:
+  push:
+    paths:
+      - "!.github/renovate.json5"
+      - "!.vscode"
+      - "!README.md"
 
 defaults:
   run:
