@@ -1,7 +1,12 @@
 import type { NextAuthOptions } from 'next-auth';
 
-import { getDefaultCategories } from '@/domains/training-category/lib/default-categories';
-import { getDefaultEvents } from '@/domains/training-event/lib/default-events';
+import { DomainEventPublisher } from '@/domains/lib/domain-event-publisher';
+import { TraineePrismaRepository } from '@/domains/trainee/infrastructures/prisma.repository';
+import { TraineeCreateUsecase } from '@/domains/trainee/usecases/create.usecase';
+import { TrainingCategoryPrismaRepository } from '@/domains/training-category/infrastructures/prisma.repository';
+import { TrainingCategoryEventListener } from '@/domains/training-category/usecases/event-listener';
+import { TrainingEventPrismaRepository } from '@/domains/training-event/infrastructures/prisma.repository';
+import { TrainingEventEventListener } from '@/domains/training-event/usecases/event-listener';
 import { getRequiredEnv } from '@/lib/environment';
 import { generateId } from '@/lib/id';
 import { prisma } from '@/lib/prisma';
@@ -9,9 +14,6 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
 declare module 'next-auth' {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `Provider` React Context
-   */
   interface Session {
     user: {
       sub: string;
@@ -20,54 +22,30 @@ declare module 'next-auth' {
   }
 }
 
+const trainingCategoryEventListener = new TrainingCategoryEventListener(
+  new TrainingCategoryPrismaRepository(new DomainEventPublisher()),
+);
+trainingCategoryEventListener.listen();
+const trainingEventEventListener = new TrainingEventEventListener(
+  new TrainingEventPrismaRepository(),
+);
+trainingEventEventListener.listen();
+
 async function createTrainee(sub: string, email: string, name: string) {
-  const traineeId = generateId();
-  await prisma.$transaction(async (tx) => {
-    await tx.trainee.create({
-      data: {
-        authUser: {
-          create: {
-            authUserId: generateId(),
-            email,
-            sub,
-          },
-        },
-        name,
-        traineeId,
-      },
-    });
-
-    const categories = getDefaultCategories().map((category, order) => ({
-      ...category,
-      order,
-      traineeId,
-      trainingCategoryId: generateId(),
-    }));
-
-    await tx.trainingCategory.createMany({
-      data: categories,
-    });
-
-    const events = categories.flatMap((category) =>
-      getDefaultEvents(category.name).map(
-        ({ categoryName: _, ...event }, order) => ({
-          ...event,
-          order,
-          traineeId,
-          trainingCategoryId: category.trainingCategoryId,
-          trainingEventId: generateId(),
-        }),
-      ),
-    );
-
-    await tx.trainingEvent.createMany({
-      data: events,
-    });
+  const authUserId = generateId();
+  // TODO: ドメインイベントで対応する
+  await prisma.authUser.create({
+    data: {
+      authUserId,
+      email,
+      sub,
+    },
   });
 
-  return {
-    traineeId,
-  };
+  const usecase = new TraineeCreateUsecase(
+    new TraineePrismaRepository(new DomainEventPublisher()),
+  );
+  return await usecase.execute({ authUserId, name });
 }
 
 export const authOptions = {
@@ -86,18 +64,9 @@ export const authOptions = {
         },
       });
 
-      let traineeId;
-      if (authUser) {
-        traineeId = authUser.traineeId;
-      } else {
-        const trainee = await createTrainee(token.sub, token.email, token.name);
-        traineeId = trainee.traineeId;
-      }
-      if (authUser?.traineeId) {
-        traineeId = authUser.traineeId;
-      }
-
-      session.user.traineeId = traineeId;
+      session.user.traineeId =
+        authUser?.trainee?.traineeId ??
+        (await createTrainee(token.sub, token.email, token.name)).traineeId;
       session.user.sub = token.sub;
       return session;
     },

@@ -3,9 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { TrainingCategory } from '../models/training-category';
 import { TrainingCategoryRepository } from '../usecases/repository';
 
-export class TrainingCategoryPrismaRepository
-  implements TrainingCategoryRepository
-{
+export class TrainingCategoryPrismaRepository extends TrainingCategoryRepository {
   async delete(trainingCategoryId: string): Promise<void> {
     await prisma.trainingCategory.delete({
       where: {
@@ -39,7 +37,7 @@ export class TrainingCategoryPrismaRepository
     return TrainingCategory.fromDto(trainingCategory);
   }
 
-  async save(trainingCategory: TrainingCategory): Promise<void> {
+  async saveImpl(trainingCategory: TrainingCategory): Promise<void> {
     const dto = trainingCategory.toDto();
     await prisma.trainingCategory.upsert({
       create: dto,

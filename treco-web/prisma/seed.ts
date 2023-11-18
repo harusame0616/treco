@@ -16,20 +16,18 @@ const prisma = new PrismaClient();
     await prisma.trainingRecord.deleteMany();
     await prisma.trainingEvent.deleteMany();
     await prisma.trainingCategory.deleteMany();
-    await prisma.authUser.deleteMany();
     await prisma.trainee.deleteMany();
-
-    await prisma.trainee.createMany({
-      data: traineeFixtures,
-    });
+    await prisma.authUser.deleteMany();
 
     await prisma.authUser.createMany({
-      data: traineeFixtures.map((trainee, index) => {
-        return {
-          traineeId: trainee.traineeId,
-          ...authUserFixtures[index],
-        };
-      }),
+      data: authUserFixtures,
+    });
+
+    await prisma.trainee.createMany({
+      data: authUserFixtures.map(({ authUserId }, index) => ({
+        ...traineeFixtures[index],
+        authUserId,
+      })),
     });
 
     await Promise.all(

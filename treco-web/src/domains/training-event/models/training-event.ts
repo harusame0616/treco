@@ -1,5 +1,7 @@
 import { generateId } from '@/lib/id';
 
+import { getDefaultEvents } from '../lib/default-events';
+
 export type TrainingEventDto = {
   loadUnit: string;
   name: string;
@@ -27,6 +29,25 @@ export class TrainingEvent {
     });
   }
 
+  static createDefaultTrainingEvents(props: {
+    traineeId: string;
+    trainingCategoryId: string;
+    trainingCategoryName: string;
+  }) {
+    return getDefaultEvents(props.trainingCategoryName).map(
+      (trainingCategoryDto, order) =>
+        new TrainingEvent({
+          loadUnit: trainingCategoryDto.loadUnit,
+          name: trainingCategoryDto.name,
+          order,
+          traineeId: props.traineeId,
+          trainingCategoryId: props.trainingCategoryId,
+          trainingEventId: generateId(),
+          valueUnit: trainingCategoryDto.valueUnit,
+        }),
+    );
+  }
+
   static fromDto(dto: TrainingEventDto) {
     return new TrainingEvent(dto);
   }
@@ -34,7 +55,6 @@ export class TrainingEvent {
   changeLoadUnit(loadUnit: string) {
     this.dto.loadUnit = loadUnit;
   }
-
   changeName(name: string) {
     this.dto.name = name;
   }

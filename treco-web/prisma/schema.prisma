@@ -13,15 +13,15 @@ datasource db {
 
 model AuthUser {
   authUserId String @id @db.Uuid
-  traineeId String @unique @db.Uuid
   sub String @unique @db.VarChar(255)
   email String @unique @db.VarChar(1024)
 
-  trainee   Trainee @relation(fields: [traineeId], references: [traineeId])
+  trainee Trainee?
 }
 
 model Trainee {
   traineeId String @id @db.Uuid
+  authUserId String @unique @db.Uuid
 
   name   String
 
@@ -32,7 +32,7 @@ model Trainee {
   trainingEvents     TrainingEvent[]
   trainingRecords    TrainingRecord[]
 
-  authUser AuthUser?
+  authUser AuthUser @relation(fields: [authUserId], references: [authUserId])
 }
 
 model TrainingCategory {
