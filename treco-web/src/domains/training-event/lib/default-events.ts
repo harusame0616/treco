@@ -150,6 +150,25 @@ const defaultEvents = [
     valueUnit: '回 ',
   },
   {
+    categoryName: '腕',
+    loadUnit: 'kg',
+    name: 'ダンベルカール',
+    valueUnit: '回 ',
+  },
+  {
+    categoryName: '腕',
+    loadUnit: 'kg',
+    name: 'ダンベルフレンチプレス',
+    valueUnit: '回 ',
+  },
+  {
+    categoryName: '腕',
+    loadUnit: 'kg',
+    name: 'トライセプスキックバック',
+    valueUnit: '回 ',
+  },
+
+  {
     categoryName: '背中',
     loadUnit: 'kg',
     name: 'デッドリフト',
