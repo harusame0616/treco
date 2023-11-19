@@ -1,5 +1,6 @@
 'use server';
 
+import { DomainEventPublisher } from '@/domains/lib/domain-event-publisher';
 import { TraineePrismaRepository } from '@/domains/trainee/infrastructures/prisma.repository';
 import { TrainingCategoryPrismaRepository } from '@/domains/training-category/infrastructures/prisma.repository';
 import { TrainingCategoryCreateUsecase } from '@/domains/training-category/usecases/create.usecase';
@@ -15,8 +16,8 @@ export async function createTrainingCategoryAction(props: Props) {
   const traineeId = await getSignedInTraineeId();
 
   await new TrainingCategoryCreateUsecase(
-    new TraineePrismaRepository(),
-    new TrainingCategoryPrismaRepository(),
+    new TraineePrismaRepository(new DomainEventPublisher()),
+    new TrainingCategoryPrismaRepository(new DomainEventPublisher()),
   ).execute({
     traineeId,
     ...props,

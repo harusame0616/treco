@@ -1,5 +1,6 @@
 'use server';
 
+import { DomainEventPublisher } from '@/domains/lib/domain-event-publisher';
 import { TraineePrismaRepository } from '@/domains/trainee/infrastructures/prisma.repository';
 import { TrainingCategoryPrismaRepository } from '@/domains/training-category/infrastructures/prisma.repository';
 import { TrainingEventPrismaRepository } from '@/domains/training-event/infrastructures/prisma.repository';
@@ -20,8 +21,8 @@ export async function createTrainingEventAction(
   const traineeId = await getSignedInTraineeId();
 
   await new TrainingEventCreateUsecase(
-    new TraineePrismaRepository(),
-    new TrainingCategoryPrismaRepository(),
+    new TraineePrismaRepository(new DomainEventPublisher()),
+    new TrainingCategoryPrismaRepository(new DomainEventPublisher()),
     new TrainingEventPrismaRepository(),
   ).execute({
     traineeId,
