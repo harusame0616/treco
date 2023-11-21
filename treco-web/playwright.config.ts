@@ -40,6 +40,9 @@ export default defineConfig({
   webServer: process.env.CI
     ? {
         command: 'npm run start',
+        env: {
+          NEXT_AUTH_JWT_NO_ENCRYPTION: 'true',
+        },
         reuseExistingServer: !process.env.CI,
         url: 'http://127.0.0.1:3000',
       }

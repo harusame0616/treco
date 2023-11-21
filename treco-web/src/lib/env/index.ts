@@ -1,11 +1,11 @@
 import { boolean, coerce, enumType, object, safeParse, string } from 'valibot';
 
 const envSchema = object({
-  CI: coerce(boolean(), Boolean),
+  CI: coerce(boolean(), (v) => v === 'true'),
   GOOGLE_CLIENT_ID: string(),
   GOOGLE_CLIENT_SECRET: string(),
   LOG_LEVEL: enumType(['debug', 'info', 'warn', 'error', 'fatal']),
-  NEXT_AUTH_JWT_NO_ENCRYPTION: coerce(boolean(), Boolean),
+  NEXT_AUTH_JWT_NO_ENCRYPTION: coerce(boolean(), (v) => v === 'true'),
   NEXT_AUTH_SECRET: string(),
   NODE_ENV: enumType(['development', 'production', 'test']),
 });
