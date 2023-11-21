@@ -37,15 +37,13 @@ export default defineConfig({
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
   },
-  webServer: process.env.CI
-    ? {
-        command: 'npm run start',
-        env: {
-          NEXT_AUTH_JWT_NO_ENCRYPTION: 'true',
-        },
-        reuseExistingServer: !process.env.CI,
-        url: 'http://127.0.0.1:3000',
-      }
-    : undefined,
+  webServer: {
+    command: 'npm run start',
+    env: {
+      NEXT_AUTH_JWT_NO_ENCRYPTION: 'true',
+    },
+    reuseExistingServer: !process.env.CI,
+    url: 'http://127.0.0.1:3000',
+  },
   workers: process.env.CI ? 1 : undefined,
 });

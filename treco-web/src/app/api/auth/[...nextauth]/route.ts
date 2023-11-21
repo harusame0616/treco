@@ -71,17 +71,16 @@ export const authOptions = {
       return session;
     },
   },
-  jwt:
-    env.NODE_ENV !== 'production' && env.NEXT_AUTH_JWT_NO_ENCRYPTION
-      ? {
-          async decode(params) {
-            return JSON.parse(params.token!.toString());
-          },
-          async encode(params) {
-            return JSON.stringify(params.token);
-          },
-        }
-      : undefined,
+  jwt: env.NEXT_AUTH_JWT_NO_ENCRYPTION
+    ? {
+        async decode(params) {
+          return JSON.parse(params.token!.toString());
+        },
+        async encode(params) {
+          return JSON.stringify(params.token);
+        },
+      }
+    : undefined,
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
