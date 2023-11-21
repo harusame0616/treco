@@ -63,6 +63,7 @@
     "eslint": "latest",
     "eslint-config-next": "latest",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-perfectionist": "^2.2.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
     "postcss": "latest",
