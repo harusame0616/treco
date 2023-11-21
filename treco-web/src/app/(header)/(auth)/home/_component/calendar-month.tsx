@@ -40,18 +40,15 @@ export function CalendarMonth({
     .fill(0)
     .map((_, index) => calendarStart.add(index, 'day'));
 
-  const apiUrl = new URL(
-    '/api/query-training-marks-per-month-for-calendar',
-    process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000/',
-  );
-  apiUrl.searchParams.set('start', days.at(0)!.toISOString());
-  apiUrl.searchParams.set('end', days.at(-1)!.toISOString());
+  const apiUrl = '/api/query-training-marks-per-month-for-calendar';
+  const searchParams = new URLSearchParams({
+    end: days.at(-1)!.toISOString(),
+    start: days.at(0)!.toISOString(),
+  });
 
   const { data, isLoading } = useSWR<
     Awaited<ReturnType<TrainingRecordQueryTrainingMarksForCalendar['execute']>>
-  >(apiUrl.href, (url: string) =>
+  >(`${apiUrl}?${searchParams.toString()}`, (url: string) =>
     fetch(url).then(async (data) => await data.json()),
   );
 
