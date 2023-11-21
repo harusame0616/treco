@@ -4,11 +4,7 @@ import { headers } from 'next/headers';
 import pino from 'pino';
 
 import { EventType, ServerLogger, eventTypeEnum } from '.';
-
-const licenseKey = process.env.NEW_RELIC_LICENSE_KEY;
-if (!licenseKey) {
-  throw new Error('error');
-}
+import { env } from '../env';
 
 export function createServerLogger() {
   return new VercelServerLogger(headers());
@@ -19,15 +15,7 @@ export function createMiddlewareLogger(_headers: ReturnType<typeof headers>) {
 }
 
 function getLevel() {
-  if (process.env.NODE_ENV === 'development') {
-    return 'debug';
-  }
-
-  if (process.env.LOG_LEVEL) {
-    return process.env.LOG_LEVEL;
-  }
-
-  return 'info';
+  return env.NODE_ENV === 'development' ? 'debug' : env.LOG_LEVEL;
 }
 
 const level = getLevel();

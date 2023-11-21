@@ -7,7 +7,7 @@ import { TrainingCategoryPrismaRepository } from '@/domains/training-category/in
 import { TrainingCategoryEventListener } from '@/domains/training-category/usecases/event-listener';
 import { TrainingEventPrismaRepository } from '@/domains/training-event/infrastructures/prisma.repository';
 import { TrainingEventEventListener } from '@/domains/training-event/usecases/event-listener';
-import { getRequiredEnv } from '@/lib/environment';
+import { env } from '@/lib/env';
 import { generateId } from '@/lib/id';
 import { prisma } from '@/lib/prisma';
 import NextAuth from 'next-auth';
@@ -72,8 +72,7 @@ export const authOptions = {
     },
   },
   jwt:
-    process.env.NODE_ENV !== 'production' ||
-    process.env.NEXT_AUTH_JWT_NO_ENCRYPTION === 'true'
+    env.NODE_ENV !== 'production' && env.NEXT_AUTH_JWT_NO_ENCRYPTION
       ? {
           async decode(params) {
             return JSON.parse(params.token!.toString());
@@ -85,11 +84,11 @@ export const authOptions = {
       : undefined,
   providers: [
     GoogleProvider({
-      clientId: getRequiredEnv('GOOGLE_CLIENT_ID'),
-      clientSecret: getRequiredEnv('GOOGLE_CLIENT_SECRET'),
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  secret: getRequiredEnv('NEXT_AUTH_SECRET'),
+  secret: env.NEXT_AUTH_SECRET,
 } satisfies NextAuthOptions;
 
 const handler = NextAuth(authOptions);
