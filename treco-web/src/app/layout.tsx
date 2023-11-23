@@ -14,7 +14,10 @@ const baseFont = M_PLUS_Rounded_1c({
 export const metadata: Metadata = {
   description:
     'トレーニングをもっと楽しくするシンプルなトレーニング記録サービス',
-  title: 'TRECo - BESIDE YOUR WORKOUT',
+  title: {
+    default: 'TRECo -BESIDE YOUR WORKOUT-',
+    template: '%s | TRECo',
+  },
   viewport: {
     initialScale: 1,
     maximumScale: 1,
