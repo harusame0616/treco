@@ -156,11 +156,11 @@ export default async function TrainingRecordEditPage({
           <input name="index" type="hidden" value={activeSetIndex} />
         )}
         <div className="flex gap-4">
-          <label className="flex items-center">
+          <label className="flex items-center" htmlFor="load">
             <div className="mr-2 shrink-0">負荷</div>
             <Input
-              autoFocus
               defaultValue={loadDefaultValue}
+              id="load"
               inputMode="decimal"
               name="load"
               required
@@ -168,10 +168,11 @@ export default async function TrainingRecordEditPage({
               type="number"
             />
           </label>
-          <label className="flex items-center">
+          <label className="flex items-center" htmlFor="value">
             <div className="mr-2 shrink-0">値</div>
             <Input
               defaultValue={valueDefaultValue}
+              id="value"
               inputMode="decimal"
               name="value"
               required
@@ -180,11 +181,12 @@ export default async function TrainingRecordEditPage({
             />
           </label>
         </div>
-        <label className="flex">
+        <label className="flex" htmlFor="note">
           <div className="mr-2 shrink-0">備考</div>
           <Textarea
             className="h-1 grow"
             defaultValue={noteDefaultValue}
+            id="note"
             name="note"
           />
         </label>
