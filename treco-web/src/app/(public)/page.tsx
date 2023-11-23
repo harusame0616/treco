@@ -7,7 +7,7 @@ import { LoginButtonList } from '../login-button-list';
 import QRCode from './qr.png';
 import SplashImage from './splash.svg';
 
-export default async function Home() {
+export default async function Top() {
   if (await isAuthenticated()) {
     redirect('/home');
   }

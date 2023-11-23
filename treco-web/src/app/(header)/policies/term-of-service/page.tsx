@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { PolicyContainer } from '../PolicyContainer';
 
 export const metadata: Metadata = {
-  title: '利用規約 | TRECo',
+  title: '利用規約',
 };
 
 const text = `本規約は、根本将治（以下「当社」といいます。）が提供する「TRECo」（以下「本サービス」といいます。）を利用される際に適用されます。ご利用にあたっては、本規約をお読みいただき、内容をご承諾の上でご利用ください。

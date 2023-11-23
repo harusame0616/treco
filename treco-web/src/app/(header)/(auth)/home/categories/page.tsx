@@ -4,11 +4,15 @@ import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrast
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
+import { Metadata } from 'next';
 import Link from 'next/link';
 
 import { CategoryDelete } from './_components/category-delete';
 import { CategoryEdit } from './_components/category-edit';
 
+export const metadata: Metadata = {
+  title: 'トレーニングカテゴリー一覧',
+};
 async function queryCategories(props: { traineeId: string }) {
   const queryByTraineeIdUsecase = new TrainingCategoryQueryByTraineeIdUsecase(
     new PrismaTrainingCategoryQuery(),

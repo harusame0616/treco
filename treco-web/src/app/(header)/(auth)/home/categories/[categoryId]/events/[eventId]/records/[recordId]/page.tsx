@@ -3,8 +3,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
+import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import clsx from 'clsx';
+import React from 'react';
 
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
@@ -20,6 +22,8 @@ async function queryTrainingRecordEdit(trainingRecordId: string) {
   return await queryUsecase.execute(trainingRecordId);
 }
 
+const cachedQueryTrainingRecordEdit = React.cache(queryTrainingRecordEdit);
+
 type Props = {
   params: {
     categoryId: string;
@@ -27,9 +31,24 @@ type Props = {
     recordId: string;
   };
   searchParams: {
+    date: string;
     edit?: string;
   };
 };
+
+export async function generateMetadata({ params, searchParams }: Props) {
+  const selectDate = createTZDate(searchParams['date']);
+  const { trainingEvent } = await cachedQueryTrainingRecordEdit(
+    params.recordId,
+  );
+
+  searchParams;
+  return {
+    title: `${trainingEvent.name}の記録（${selectDate.format(
+      'YYYY月MM月DD日',
+    )}）`,
+  };
+}
 
 export default async function TrainingRecordEditPage({
   params,

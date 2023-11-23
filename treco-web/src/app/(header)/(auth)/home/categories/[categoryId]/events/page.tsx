@@ -6,10 +6,20 @@ import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event
 import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { notFound } from 'next/navigation';
+import React from 'react';
 
 import { createNewRecordAction } from './_actions';
 import { EventDelete } from './_components/event-delete';
 import { EventEdit } from './_components/event-edit';
+
+type Props = {
+  params: {
+    categoryId: string;
+  };
+  searchParams: {
+    date: string;
+  };
+};
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const query = new TrainingEventQueryByTrainingCategoryId(
@@ -33,21 +43,23 @@ async function queryCategory(trainingCategoryId: string) {
   return category;
 }
 
-type Props = {
-  params: {
-    categoryId: string;
+const cachedQueryCategory = React.cache(queryCategory);
+
+export async function generateMetadata({ params }: Props) {
+  const category = await cachedQueryCategory(params.categoryId);
+
+  return {
+    title: `${category?.name}のトレーニング種目一覧`,
   };
-  searchParams: {
-    date: string;
-  };
-};
+}
+
 export default async function TrainingEventPage({
   params,
   searchParams,
 }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
 
-  const category = await queryCategory(params.categoryId);
+  const category = await cachedQueryCategory(params.categoryId);
   const trainingEvents = await queryTrainingEvents(params.categoryId);
 
   const selectDate = createTZDate(searchParams.date).toDate();

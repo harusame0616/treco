@@ -4,9 +4,14 @@ import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastruct
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
 import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import { Calendar } from './_component/calendar';
+
+export const metadata: Metadata = {
+  title: 'ホーム',
+};
 
 async function queryTrainingRecord(date: Date) {
   const traineeId = await getSignedInTraineeId();
