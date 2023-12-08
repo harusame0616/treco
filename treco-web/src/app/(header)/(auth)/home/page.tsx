@@ -4,7 +4,9 @@ import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastruct
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
 import { createTZDate } from '@/lib/date';
 import { getSignedInTraineeId } from '@/lib/trainee';
+import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { Calendar } from './_component/calendar';
@@ -57,7 +59,17 @@ async function TrainingRecords({ date }: { date: Date }) {
         <li key={record.trainingRecordId}>
           <div className="mb-2 flex items-center gap-2">
             <TrainingMark color={record.trainingCategory.color} size="small" />
-            {`${record.trainingCategory.name} - ${record.trainingEvent.name}`}
+            <span>{`${record.trainingCategory.name} - ${record.trainingEvent.name}`}</span>
+            <Link
+              className="block p-2"
+              href={`/home/categories/${record.trainingCategory.trainingCategoryId}/events/${record.trainingEvent.trainingEventId}/records/${record.trainingRecordId}`}
+            >
+              <span className="sr-only">トレーニング記録編集</span>
+              <Pencil2Icon
+                aria-hidden
+                className="h-4 w-4 text-muted-foreground"
+              />
+            </Link>
           </div>
           <ul className="rounded-md bg-muted p-4">
             {record.sets.map((set, index) => (
