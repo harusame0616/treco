@@ -3,20 +3,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
-import { formatDate } from '@/lib/date';
 import { WithParams, WithSearchParams } from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import clsx from 'clsx';
 import React from 'react';
-import {
-  isoTimestamp,
-  object,
-  optional,
-  parse,
-  regex,
-  string,
-  transform,
-} from 'valibot';
+import { object, optional, parse, regex, string, transform } from 'valibot';
 
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
