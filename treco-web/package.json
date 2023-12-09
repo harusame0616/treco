@@ -36,8 +36,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
-    "firebase": "^10.4.0",
-    "firebase-admin": "^11.11.0",
     "newrelic": "^11.5.0",
     "next": "latest",
     "next-auth": "^4.23.2",
