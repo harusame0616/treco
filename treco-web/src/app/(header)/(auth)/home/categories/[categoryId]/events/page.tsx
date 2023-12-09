@@ -3,23 +3,25 @@ import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrast
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
 import { PrismaTrainingEventQuery } from '@/domains/training-event/infrastructures/prisma.query';
 import { TrainingEventQueryByTrainingCategoryId } from '@/domains/training-event/usecases/query-by-training-category-id.usecase';
-import { createTZDate } from '@/lib/date';
+import {
+  SearchParamsDateSchema,
+  WithParams,
+  WithSearchParams,
+} from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { notFound } from 'next/navigation';
 import React from 'react';
+import { object, parse } from 'valibot';
 
 import { createNewRecordAction } from './_actions';
 import { EventDelete } from './_components/event-delete';
 import { EventEdit } from './_components/event-edit';
 
-type Props = {
-  params: {
-    categoryId: string;
-  };
-  searchParams: {
-    date: string;
-  };
-};
+type Props = WithSearchParams<WithParams<'categoryId'>>;
+
+const SearchParamsSchema = object({
+  date: SearchParamsDateSchema,
+});
 
 async function queryTrainingEvents(trainingCategoryId: string) {
   const query = new TrainingEventQueryByTrainingCategoryId(
@@ -62,7 +64,7 @@ export default async function TrainingEventPage({
   const category = await cachedQueryCategory(params.categoryId);
   const trainingEvents = await queryTrainingEvents(params.categoryId);
 
-  const selectDate = createTZDate(searchParams.date).toDate();
+  const { date: selectedDate } = parse(SearchParamsSchema, searchParams);
 
   if (!category) {
     return notFound();
@@ -96,7 +98,7 @@ export default async function TrainingEventPage({
                   <input
                     name="trainingDate"
                     type="hidden"
-                    value={selectDate.toISOString()}
+                    value={selectedDate.toISOString()}
                   />
                   <input
                     name="trainingCategoryId"

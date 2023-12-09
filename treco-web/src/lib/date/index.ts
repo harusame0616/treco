@@ -6,8 +6,11 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Tokyo');
 
-export { dayjs as date };
+export function utcDate(config?: dayjs.ConfigType) {
+  return dayjs.utc(config);
+}
 
-export function createTZDate(date?: null | string) {
-  return dayjs.tz(date ?? undefined);
+// TODO: クライアントの timezone を考慮する
+export function formatDate(date: Date, formatString: string) {
+  return dayjs(date).add(9, 'h').format(formatString);
 }

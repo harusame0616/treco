@@ -3,10 +3,20 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryOneForTrainingRecordEditUsecase } from '@/domains/training-record/usecases/query-one-for-training-record-edit.usecase';
-import { createTZDate } from '@/lib/date';
+import { formatDate } from '@/lib/date';
+import { WithParams, WithSearchParams } from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import clsx from 'clsx';
 import React from 'react';
+import {
+  isoTimestamp,
+  object,
+  optional,
+  parse,
+  regex,
+  string,
+  transform,
+} from 'valibot';
 
 import { addSetAction, editSetAction } from './actions';
 import { CancelButton } from './cancel-button';
@@ -24,27 +34,25 @@ async function queryTrainingRecordEdit(trainingRecordId: string) {
 
 const cachedQueryTrainingRecordEdit = React.cache(queryTrainingRecordEdit);
 
-type Props = {
-  params: {
-    categoryId: string;
-    eventId: string;
-    recordId: string;
-  };
-  searchParams: {
-    date: string;
-    edit?: string;
-  };
-};
+type Props = WithParams<
+  'categoryId' | 'eventId' | 'recordId',
+  WithSearchParams
+>;
+
+const SearchParamsSchema = object({
+  date: transform(string([isoTimestamp()]), (value) => new Date(value)),
+  edit: optional(transform(string([regex(/[0-9]+/)]), Number)),
+});
 
 export async function generateMetadata({ params, searchParams }: Props) {
-  const selectDate = createTZDate(searchParams['date']);
+  const { date: selectedDate } = parse(SearchParamsSchema, searchParams);
   const { trainingEvent } = await cachedQueryTrainingRecordEdit(
     params.recordId,
   );
 
-  searchParams;
   return {
-    title: `${trainingEvent.name}の記録（${selectDate.format(
+    title: `${trainingEvent.name}の記録（${formatDate(
+      selectedDate,
       'YYYY月MM月DD日',
     )}）`,
   };
@@ -54,12 +62,11 @@ export default async function TrainingRecordEditPage({
   params,
   searchParams,
 }: Props) {
+  const { edit: activeSetIndex } = parse(SearchParamsSchema, searchParams);
+
   const signedInTraineeId = await getSignedInTraineeId();
   const { sets, trainingCategory, trainingEvent } =
     await queryTrainingRecordEdit(params.recordId);
-  const activeSetIndex = searchParams.edit
-    ? parseInt(searchParams.edit, 10)
-    : null;
 
   const {
     load: loadDefaultValue,

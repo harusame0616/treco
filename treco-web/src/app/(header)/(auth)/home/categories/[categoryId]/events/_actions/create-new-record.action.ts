@@ -48,6 +48,6 @@ export async function createNewRecordAction(formData: FormData) {
       input.trainingEventId
     }/records/${newRecord.trainingRecordId}?date=${dayjs(
       newRecord.trainingDate,
-    ).format('YYYY-MM-DD')}`,
+    ).toISOString()}`,
   );
 }

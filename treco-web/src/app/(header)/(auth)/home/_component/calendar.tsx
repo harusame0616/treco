@@ -36,9 +36,9 @@ export function Calendar() {
     (date: Date) => {
       setSelectDate(dayjs(date));
       const searchParams = new URLSearchParams({
-        date: dayjs(date).format('YYYY-MM-DD'),
+        date: dayjs(date).toISOString(),
       });
-      router.push(`/home?${searchParams.toString()}`, {});
+      router.push(`/home?${searchParams.toString()}`);
     },
     [router],
   );

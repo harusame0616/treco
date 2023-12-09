@@ -2,12 +2,13 @@ import { TrainingMark } from '@/components/training-mark';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
-import { createTZDate } from '@/lib/date';
+import { SearchParamsDateSchema, WithSearchParams } from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { object, optional, parse } from 'valibot';
 
 import { Calendar } from './_component/calendar';
 
@@ -25,13 +26,16 @@ async function queryTrainingRecord(date: Date) {
   return await query.execute(traineeId, date);
 }
 
-type Props = {
-  searchParams: {
-    date?: string;
-  };
-};
+type Props = WithSearchParams;
+
+const SearchParamsSchema = object({
+  date: optional(SearchParamsDateSchema),
+});
+
 export default async function HomePage({ searchParams }: Props) {
-  const selectedDate = createTZDate(searchParams.date).startOf('day').toDate();
+  const { date } = parse(SearchParamsSchema, searchParams);
+
+  const selectedDate = date ?? new Date();
 
   return (
     <div className="flex h-full flex-col">

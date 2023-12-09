@@ -4,15 +4,7 @@ import { PropsWithChildren } from 'react';
 
 import { MainMenu } from './main-menu';
 
-type Props = {
-  searchParams: {
-    selectedDate?: string;
-  };
-};
-
-export default async function AuthLayout({
-  children,
-}: PropsWithChildren<Props>) {
+export default async function AuthLayout({ children }: PropsWithChildren) {
   if (!(await isAuthenticated())) {
     redirect('/');
   }
@@ -20,7 +12,7 @@ export default async function AuthLayout({
   return (
     <div className="flex h-full flex-col">
       <main className="grow overflow-auto">{children}</main>
-      <MainMenu />
+      <MainMenu currentDate={new Date()} />
     </div>
   );
 }
