@@ -40,21 +40,16 @@ type Props = WithParams<
 >;
 
 const SearchParamsSchema = object({
-  date: transform(string([isoTimestamp()]), (value) => new Date(value)),
   edit: optional(transform(string([regex(/[0-9]+/)]), Number)),
 });
 
-export async function generateMetadata({ params, searchParams }: Props) {
-  const { date: selectedDate } = parse(SearchParamsSchema, searchParams);
+export async function generateMetadata({ params }: Props) {
   const { trainingEvent } = await cachedQueryTrainingRecordEdit(
     params.recordId,
   );
 
   return {
-    title: `${trainingEvent.name}の記録（${formatDate(
-      selectedDate,
-      'YYYY月MM月DD日',
-    )}）`,
+    title: `${trainingEvent.name} の記録`,
   };
 }
 
@@ -62,7 +57,14 @@ export default async function TrainingRecordEditPage({
   params,
   searchParams,
 }: Props) {
-  const { edit: activeSetIndex } = parse(SearchParamsSchema, searchParams);
+  let activeSetIndex: number | undefined;
+  try {
+    const { edit } = parse(SearchParamsSchema, searchParams);
+    activeSetIndex = edit;
+  } catch (e) {
+    console.log(JSON.stringify(e, null, 4));
+    throw e;
+  }
 
   const signedInTraineeId = await getSignedInTraineeId();
   const { sets, trainingCategory, trainingEvent } =
