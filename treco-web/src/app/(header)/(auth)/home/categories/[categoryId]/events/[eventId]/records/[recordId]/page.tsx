@@ -48,14 +48,7 @@ export default async function TrainingRecordEditPage({
   params,
   searchParams,
 }: Props) {
-  let activeSetIndex: number | undefined;
-  try {
-    const { edit } = parse(SearchParamsSchema, searchParams);
-    activeSetIndex = edit;
-  } catch (e) {
-    console.log(JSON.stringify(e, null, 4));
-    throw e;
-  }
+  const { edit: activeSetIndex } = parse(SearchParamsSchema, searchParams);
 
   const signedInTraineeId = await getSignedInTraineeId();
   const { sets, trainingCategory, trainingEvent } =
