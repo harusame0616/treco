@@ -1,6 +1,14 @@
-import { boolean, coerce, object, picklist, safeParse, string } from 'valibot';
+import {
+  ObjectEntries,
+  boolean,
+  coerce,
+  object,
+  picklist,
+  safeParse,
+  string,
+} from 'valibot';
 
-const envSchema = object({
+const EnvSchema = object({
   CI: coerce(boolean(), (v) => v === 'true'),
   GOOGLE_CLIENT_ID: string(),
   GOOGLE_CLIENT_SECRET: string(),
@@ -10,14 +18,14 @@ const envSchema = object({
   NODE_ENV: picklist(['development', 'production', 'test']),
 });
 
-type EnvKey = keyof (typeof envSchema)['entries'];
+type EnvKey = keyof (typeof EnvSchema)['entries'];
 
-const maskKey = [
+const maskKeys = [
   'GOOGLE_CLIENT_SECRET',
   'NEXT_AUTH_SECRET',
-] as const satisfies EnvKey[];
+] as const satisfies readonly EnvKey[];
 
-type MaskKey = (typeof maskKey)[number];
+type MaskKey = (typeof maskKeys)[number];
 
 type EnvSchemaErrorIssue = {
   [key in EnvKey]?: unknown;
@@ -38,13 +46,13 @@ export class EnvSchemaError extends Error {
 
 process.env.LOG_LEVEL = process.env.LOG_LEVEL ?? 'info';
 
-const parsedEnv = safeParse(envSchema, process.env);
+const parsedEnv = safeParse(EnvSchema, process.env);
 
 if (!parsedEnv.success) {
   const issue: EnvSchemaErrorIssue = Object.fromEntries(
     parsedEnv.issues.map((issue) => [
       issue.path?.[0].key,
-      maskKey.includes(issue.path?.[0].key as MaskKey) ? '***' : issue.input,
+      maskKeys.includes(issue.path?.[0].key as MaskKey) ? '***' : issue.input,
     ]),
   );
 
