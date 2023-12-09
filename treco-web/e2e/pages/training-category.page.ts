@@ -39,9 +39,7 @@ export class TrainingCategoryPage {
 
   async goTo() {
     await this.page.goto('/home');
-    await this.page
-      .getByRole('link', { name: 'トレーニング記録へのリンク' })
-      .click();
+    await this.page.getByRole('link', { name: 'トレーニング記録' }).click();
   }
 
   async inputTrainingCategory({

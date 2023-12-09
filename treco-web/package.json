@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='-r newrelic' next dev",
+    "dev": "TZ=Etc/UTC NODE_OPTIONS='-r newrelic' next dev",
     "dev:no-auth-emulator": "next dev",
     "prebuild": "npm run format:check && prisma generate && prisma migrate deploy",
     "build": "next build",
-    "start": "GOOGLE_CLIENT_ID=id GOOGLE_CLIENT_SECRET=secret NEXT_AUTH_SECRET=secret NODE_OPTIONS='-r @newrelic/next' next start",
+    "start": "TZ=Etc/UTC GOOGLE_CLIENT_ID=id GOOGLE_CLIENT_SECRET=secret NEXT_AUTH_SECRET=secret NODE_OPTIONS='-r @newrelic/next' next start",
     "start:auth-jwt-no-encryption": "NEXT_AUTH_JWT_NO_ENCRYPTION=true GOOGLE_CLIENT_ID=id GOOGLE_CLIENT_SECRET=secret NEXT_AUTH_SECRET=secret NODE_OPTIONS='-r @newrelic/next' next start",
     "lint:check": "next lint",
     "lint:write": "next lint --fix",

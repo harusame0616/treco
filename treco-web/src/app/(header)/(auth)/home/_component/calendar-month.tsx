@@ -2,7 +2,7 @@
 
 import { TrainingMark } from '@/components/training-mark';
 import { TrainingRecordQueryTrainingMarksForCalendar } from '@/domains/training-record/usecases/query-training-marks-for-calendar.usecase';
-import dayjs from 'dayjs';
+import { utcDate } from '@/lib/date';
 import useSWR from 'swr';
 
 import { Day } from './day';
@@ -33,7 +33,9 @@ export function CalendarMonth({
     { color: 'text-blue-500', label: '土' },
   ];
 
-  const firstDate = dayjs(`${year}-${month}-01`).startOf('month');
+  const firstDate = utcDate(`${year}-${month}-01`)
+    .tz('Asia/Tokyo')
+    .startOf('month');
   const dayOfFirstDate = firstDate.day();
   const calendarStart = firstDate.subtract(dayOfFirstDate, 'day');
   const days = new Array(7 * 6)
@@ -56,7 +58,7 @@ export function CalendarMonth({
   const trainingMarks = data
     ? data.reduce(
         (group, record) => {
-          const date = dayjs(record.trainingDate).utc().toISOString();
+          const date = utcDate(record.trainingDate).toISOString();
           if (!group[date]) {
             group[date] = {};
           }
@@ -84,10 +86,10 @@ export function CalendarMonth({
       {days.map((day) => {
         return (
           <Day
-            active={dayjs().isSame(day, 'day')}
+            active={utcDate().isSame(day, 'day')}
             date={day.toDate()}
             highlight={day.isSame(selectDate, 'day')}
-            key={day.format('YYYY-MM-DD')}
+            key={day.toISOString()}
             mute={!day.isSame(firstDate, 'month')}
             onSelectDate={onSelectDate}
           >
@@ -104,17 +106,17 @@ export function CalendarMonth({
                     <TrainingMark isSkeleton size="x-small" />
                   </>
                 ) : (
-                  Object.entries(
-                    trainingMarks[day.utc().toISOString()] ?? {},
-                  ).map(([_, mark]) => (
-                    <ol
-                      className="flex justify-center"
-                      key={mark.trainingRecordId}
-                      style={{ color: mark.color }}
-                    >
-                      <TrainingMark color={mark.color} size="x-small" />
-                    </ol>
-                  ))
+                  Object.entries(trainingMarks[day.toISOString()] ?? {}).map(
+                    ([_, mark]) => (
+                      <ol
+                        className="flex justify-center"
+                        key={mark.trainingRecordId}
+                        style={{ color: mark.color }}
+                      >
+                        <TrainingMark color={mark.color} size="x-small" />
+                      </ol>
+                    ),
+                  )
                 )}
               </ul>
             }

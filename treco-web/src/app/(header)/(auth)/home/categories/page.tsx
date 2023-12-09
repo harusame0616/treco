@@ -2,10 +2,11 @@ import { TrainingMark } from '@/components/training-mark';
 import { Button } from '@/components/ui/button';
 import { PrismaTrainingCategoryQuery } from '@/domains/training-category/infrastructures/prisma.query';
 import { TrainingCategoryQueryByTraineeIdUsecase } from '@/domains/training-category/usecases/query-by-trainee-id.usecase';
-import { createTZDate } from '@/lib/date';
+import { SearchParamsDateSchema, WithSearchParams } from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { object, parse } from 'valibot';
 
 import { CategoryDelete } from './_components/category-delete';
 import { CategoryEdit } from './_components/category-edit';
@@ -21,16 +22,18 @@ async function queryCategories(props: { traineeId: string }) {
   return await queryByTraineeIdUsecase.execute(props);
 }
 
-type Props = {
-  searchParams: {
-    date: string;
-  };
-};
+type Props = WithSearchParams;
+
+const SearchParamsSchema = object({
+  date: SearchParamsDateSchema,
+});
+
 export default async function CategoryPage({ searchParams }: Props) {
   const signedInTraineeId = await getSignedInTraineeId();
 
   const categories = await queryCategories({ traineeId: signedInTraineeId });
-  const selectDate = createTZDate(searchParams.date);
+
+  const { date: selectedDate } = parse(SearchParamsSchema, searchParams);
 
   return (
     <div className="p-2">
@@ -52,9 +55,12 @@ export default async function CategoryPage({ searchParams }: Props) {
               <div className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4">
                 <Link
                   className="flex w-full items-center gap-4 text-foreground no-underline"
-                  href={`/home/categories/${trainingCategoryId}/events?date=${selectDate.format(
-                    'YYYY-MM-DD',
-                  )}`}
+                  href={{
+                    pathname: `/home/categories/${trainingCategoryId}/events`,
+                    query: {
+                      date: selectedDate.toISOString(),
+                    },
+                  }}
                 >
                   <TrainingMark color={color} size="small" />
                   <span className="grow text-3xl">{name}</span>

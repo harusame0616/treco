@@ -1,16 +1,16 @@
 'use client';
 
-import dayjs from 'dayjs';
-import React, { ReactNode, memo, useCallback } from 'react';
+import { utcDate } from '@/lib/date';
+import React, { PropsWithChildren, memo, useCallback } from 'react';
 
-type Props = {
+type Props = PropsWithChildren<{
   active?: boolean;
-  children: ReactNode;
   date: Date;
   highlight?: boolean;
   mute?: boolean;
   onSelectDate: (date: Date) => void;
-};
+}>;
+
 export const Day = memo(function Day({
   active,
   children,
@@ -19,7 +19,7 @@ export const Day = memo(function Day({
   mute,
   onSelectDate,
 }: Props) {
-  const dateDayjs = dayjs(date);
+  const localDate = utcDate(date).tz('Asia/Tokyo');
 
   const style = [
     'rounded-md h-12 transition flex flex-col px-1',
@@ -34,7 +34,7 @@ export const Day = memo(function Day({
 
   return (
     <button className={style} onClick={onClickHandler}>
-      <div className="w-full">{dateDayjs.format('D')}</div>
+      <div className="w-full">{localDate.format('D')}</div>
       <div className="w-full">{children}</div>
     </button>
   );
