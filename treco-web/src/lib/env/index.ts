@@ -1,12 +1,4 @@
-import {
-  ObjectEntries,
-  boolean,
-  coerce,
-  object,
-  picklist,
-  safeParse,
-  string,
-} from 'valibot';
+import { boolean, coerce, object, picklist, safeParse, string } from 'valibot';
 
 const EnvSchema = object({
   CI: coerce(boolean(), (v) => v === 'true'),
