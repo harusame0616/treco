@@ -1,3 +1,5 @@
+'use server';
+
 import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordEditSetUsecase } from '@/domains/training-record/usecases/edit-set.usecase';
 import { revalidatePath } from 'next/cache';
@@ -28,8 +30,6 @@ const editSetUsecase = new TrainingRecordEditSetUsecase(
 );
 
 export async function editSetAction(formData: FormData) {
-  'use server';
-
   let input;
   try {
     input = parse(inputSchema, {
