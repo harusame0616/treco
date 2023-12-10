@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { M_PLUS_Rounded_1c } from 'next/font/google';
 import { PropsWithChildren } from 'react';
@@ -18,11 +18,12 @@ export const metadata: Metadata = {
     default: 'TRECo -BESIDE YOUR WORKOUT-',
     template: '%s | TRECo',
   },
-  viewport: {
-    initialScale: 1,
-    maximumScale: 1,
-    width: 'device-width',
-  },
+};
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  maximumScale: 1,
+  width: 'device-width',
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
