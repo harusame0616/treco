@@ -86,7 +86,7 @@ export function CalendarMonth({
       {days.map((day) => {
         return (
           <Day
-            active={utcDate().isSame(day, 'day')}
+            active={utcDate().tz('Asia/Tokyo').isSame(day, 'day')}
             date={day.toDate()}
             highlight={day.isSame(selectDate, 'day')}
             key={day.toISOString()}
