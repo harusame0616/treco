@@ -20,7 +20,7 @@ function MainHeader() {
       <Link href="/">
         <Image alt="TRECo" height="32" src={Icon} width="32" />
       </Link>
-      <Title />
+      <Title today={new Date()} />
       <div></div>
     </header>
   );
