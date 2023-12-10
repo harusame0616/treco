@@ -43,7 +43,7 @@
     "next-auth": "^4.23.2",
     "pino": "^8.16.1",
     "prisma": "^5.4.2",
-    "react": "latest",
+    "react": "18.2.0",
     "react-dom": "latest",
     "react-hook-form": "^7.47.0",
     "react-slick": "^0.29.0",
