@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { TrashIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 
-import { deleteSetAction } from './actions/delete-set.action';
+import { deleteSetAction } from './actions';
 
 type Props = {
   trainingCategoryId: string;
