@@ -19,8 +19,6 @@ const inputSchema = object({
   load: coerce(number(), Number),
   note: string([maxLength(255)]),
   traineeId: string(),
-  trainingCategoryId: string([uuid()]),
-  trainingEventId: string([uuid()]),
   trainingRecordId: string([uuid()]),
   value: coerce(number(), Number),
 });
@@ -51,10 +49,6 @@ export async function editSetAction(formData: FormData) {
 
   const trainingRecord = await editSetUsecase.execute(input);
 
-  revalidatePath(
-    `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${trainingRecord.trainingRecordId}`,
-  );
-  redirect(
-    `/home/categories/${input.trainingCategoryId}/events/${input.trainingEventId}/records/${trainingRecord.trainingRecordId}`,
-  );
+  revalidatePath(`/home/records/${trainingRecord.trainingRecordId}`);
+  redirect(`/home/records/${trainingRecord.trainingRecordId}`);
 }

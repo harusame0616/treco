@@ -18,26 +18,17 @@ import { useState } from 'react';
 import { deleteSetAction } from './actions';
 
 type Props = {
-  trainingCategoryId: string;
-  trainingEventId: string;
   trainingRecordId: string;
   trainingSetIndex: number;
 };
 
-export function SetDelete({
-  trainingCategoryId,
-  trainingEventId,
-  trainingRecordId,
-  trainingSetIndex,
-}: Props) {
+export function SetDelete({ trainingRecordId, trainingSetIndex }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   async function deleteTrainingEvent() {
     setIsProcessing(true);
     try {
       await deleteSetAction({
-        trainingCategoryId,
-        trainingEventId,
         trainingRecordId,
         trainingSetIndex,
       });

@@ -2,7 +2,6 @@
 
 import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordCreateUsecase } from '@/domains/training-record/usecases/create.usecase';
-import dayjs from 'dayjs';
 import { redirect } from 'next/navigation';
 import { ValiError, object, parse, string, uuid } from 'valibot';
 
@@ -43,11 +42,5 @@ export async function createNewRecordAction(formData: FormData) {
     trainingDate: new Date(input.trainingDate),
   });
 
-  redirect(
-    `/home/categories/${input.trainingCategoryId}/events/${
-      input.trainingEventId
-    }/records/${newRecord.trainingRecordId}?date=${dayjs(
-      newRecord.trainingDate,
-    ).toISOString()}`,
-  );
+  redirect(`/home/records/${newRecord.trainingRecordId}`);
 }
