@@ -58,7 +58,10 @@ export function CalendarMonth({
   const trainingMarks = data
     ? data.reduce(
         (group, record) => {
-          const date = utcDate(record.trainingDate).toISOString();
+          const date = utcDate(record.trainingDate)
+            .tz('Asia/Tokyo')
+            .startOf('day')
+            .toISOString();
           if (!group[date]) {
             group[date] = {};
           }
