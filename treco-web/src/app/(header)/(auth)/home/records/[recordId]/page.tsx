@@ -25,10 +25,7 @@ async function queryTrainingRecordEdit(trainingRecordId: string) {
 
 const cachedQueryTrainingRecordEdit = React.cache(queryTrainingRecordEdit);
 
-type Props = WithParams<
-  'categoryId' | 'eventId' | 'recordId',
-  WithSearchParams
->;
+type Props = WithParams<'recordId', WithSearchParams>;
 
 const SearchParamsSchema = object({
   edit: optional(transform(string([regex(/[0-9]+/)]), Number)),
@@ -52,7 +49,7 @@ export default async function TrainingRecordEditPage({
 
   const signedInTraineeId = await getSignedInTraineeId();
   const { sets, trainingCategory, trainingEvent } =
-    await queryTrainingRecordEdit(params.recordId);
+    await cachedQueryTrainingRecordEdit(params.recordId);
 
   const {
     load: loadDefaultValue,
@@ -132,8 +129,6 @@ export default async function TrainingRecordEditPage({
                 <div className="flex items-center gap-2">
                   <EditButton index={index} />
                   <SetDelete
-                    trainingCategoryId={params.categoryId}
-                    trainingEventId={params.eventId}
                     trainingRecordId={params.recordId}
                     trainingSetIndex={index}
                   />
@@ -156,12 +151,6 @@ export default async function TrainingRecordEditPage({
         className="flex shrink-0 flex-col gap-1 p-4"
         key={`${activeSetIndex}`}
       >
-        <input
-          name="trainingCategoryId"
-          type="hidden"
-          value={params.categoryId}
-        />
-        <input name="trainingEventId" type="hidden" value={params.eventId} />
         <input name="trainingRecordId" type="hidden" value={params.recordId} />
         <input name="traineeId" type="hidden" value={signedInTraineeId} />
         {isEditing && (

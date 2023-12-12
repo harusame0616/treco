@@ -11,15 +11,11 @@ const deleteSetUsecase = new TrainingRecordDeleteSetUsecase(
 );
 
 type Props = {
-  trainingCategoryId: string;
-  trainingEventId: string;
   trainingRecordId: string;
   trainingSetIndex: number;
 };
 
 export async function deleteSetAction({
-  trainingCategoryId,
-  trainingEventId,
   trainingRecordId,
   trainingSetIndex,
 }: Props) {
@@ -30,10 +26,6 @@ export async function deleteSetAction({
     trainingSetIndex,
   });
 
-  revalidatePath(
-    `/home/categories/${trainingCategoryId}/events/${trainingEventId}/records/${trainingRecordId}`,
-  );
-  redirect(
-    `/home/categories/${trainingCategoryId}/events/${trainingEventId}/records/${trainingRecordId}`,
-  );
+  revalidatePath(`/home/records/${trainingRecordId}`);
+  redirect(`/home/records/${trainingRecordId}`);
 }

@@ -66,7 +66,7 @@ async function TrainingRecords({ date }: { date: Date }) {
             <span>{`${record.trainingCategory.name} - ${record.trainingEvent.name}`}</span>
             <Link
               className="block p-2"
-              href={`/home/categories/${record.trainingCategory.trainingCategoryId}/events/${record.trainingEvent.trainingEventId}/records/${record.trainingRecordId}`}
+              href={`/home/records/${record.trainingRecordId}`}
             >
               <span className="sr-only">トレーニング記録編集</span>
               <Pencil2Icon
