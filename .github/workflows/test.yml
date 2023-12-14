@@ -7,6 +7,10 @@ defaults:
   run:
     working-directory: ./treco-web
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   DATABASE_URL: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
   DATABASE_URL_NON_POLING: "postgresql://postgres:postgres@localhost:54322/postgres?schema=public"
