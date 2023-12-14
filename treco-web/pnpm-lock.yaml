@@ -90,8 +90,8 @@ dependencies:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.3.6)
   valibot:
-    specifier: ^0.23.0
-    version: 0.23.0
+    specifier: ^0.24.0
+    version: 0.24.1
 
 devDependencies:
   '@playwright/test':
@@ -5632,8 +5632,8 @@ packages:
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
-  /valibot@0.23.0:
-    resolution: {integrity: sha512-3draqnQrhygou2FUtVSfdzgCE4icqj6d4+Qg5ercN9WI/JI4hEMqvX2yQXyq7btlaobCGRgZAWMr7kWr3Dtxkw==}
+  /valibot@0.24.1:
+    resolution: {integrity: sha512-Toclbuy20XsECZiueh2dkQ63he2AGaBIj/FJRDAFti2kueFldm9bjJzSYvPaL5CE1HXDMRhq7olak8at7xCz5A==}
     dev: false
 
   /watchpack@2.4.0:
