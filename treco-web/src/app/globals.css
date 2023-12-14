@@ -54,7 +54,7 @@
     @apply border-border;
   }
   html {
-    @apply h-full;
+    @apply h-full overflow-hidden;
   }
   body {
     @apply bg-background text-foreground h-full;
