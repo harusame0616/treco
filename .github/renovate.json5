@@ -3,18 +3,20 @@
   extends: ["config:recommended"],
   timezone: "Asia/Tokyo",
   schedule: ["every weekend"],
+  labels: ["renovate"],
   packageRules: [
     {
-      major: {
-        stabilityDays: 7,
-      },
-      minor: {
-        stabilityDays: 3,
-      },
-      patch: {
-        stabilityDays: 2,
-        automerge: true,
-      },
+      matchUpdateTypes: ["minor", "patch", "pin"],
+      matchDepTypes: ["devDependencies"],
+      groupName: "メジャー以外の devDependencies の自動マージ",
+      addLabels: ["devDependencies", "minor", "patch", "pin", "automerge"],
+      automerge: true,
+    },
+    {
+      matchUpdateTypes: ["patch", "pin"],
+      groupName: "patch, pin の自動マージ",
+      addLabels: ["allDependencies", "patch", "pin", "automerge"],
+      automerge: true,
     },
   ],
 }
