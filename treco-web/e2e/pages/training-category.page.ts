@@ -6,7 +6,7 @@ export class TrainingCategoryPage {
   constructor(private page: Page) {
     this.trainingCategoryItems = page
       .getByRole('list', {
-        name: 'トレーニングカテゴリーリスト',
+        name: 'トレーニングカテゴリー',
       })
       .getByRole('listitem');
   }

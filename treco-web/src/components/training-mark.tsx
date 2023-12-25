@@ -12,6 +12,7 @@ const sizeMap = {
 type Size = keyof typeof sizeMap;
 
 type SkeletonProps = {
+  color?: undefined;
   isSkeleton: true;
 };
 
