@@ -78,7 +78,7 @@ async function TrainingCategoriesPresenter({
   if (isSkeleton || trainingCategories.length) {
     return (
       <ul
-        aria-label="トレーニングカテゴリーリスト"
+        aria-label="トレーニングカテゴリー"
         className="flex w-full flex-col gap-2"
       >
         {isSkeleton

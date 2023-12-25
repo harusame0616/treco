@@ -58,7 +58,7 @@ export class TrainingEventPage {
       .click();
     await this.page.getByRole('textbox', { name: '名前' }).fill(categoryName);
     await this.page.getByRole('button', { name: '保存する' }).click();
-    await this.page.getByRole('listitem', { name: categoryName }).click();
+    await this.page.getByRole('link', { name: categoryName }).click();
   }
 
   async inputTrainingEvent({
