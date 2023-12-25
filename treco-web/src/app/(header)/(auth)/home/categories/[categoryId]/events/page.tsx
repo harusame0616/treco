@@ -76,7 +76,7 @@ export default async function TrainingEventPage({
         トレーニング種目を選択してください
       </p>
       <div className="mb-4 flex items-center gap-2">
-        <TrainingMark color={category.color} size="small" /> 胸
+        <TrainingMark color={category.color} size="small" /> {category.name}
       </div>
 
       <ul
