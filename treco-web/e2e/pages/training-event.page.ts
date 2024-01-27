@@ -4,8 +4,8 @@ export class TrainingEventPage {
   private readonly loadUnitInputBox: Locator;
   private readonly nameInputBox: Locator;
   private readonly valueUnitInputBox: Locator;
+  readonly categoryNameGroup: Locator;
   readonly trainingEventItems: Locator;
-
   constructor(private page: Page) {
     this.trainingEventItems = page
       .getByRole('list', {
@@ -15,7 +15,9 @@ export class TrainingEventPage {
     this.nameInputBox = page.getByRole('textbox', { name: '名前' });
     this.loadUnitInputBox = page.getByRole('textbox', { name: '負荷の単位' });
     this.valueUnitInputBox = page.getByRole('textbox', { name: '値の単位' });
+    this.categoryNameGroup = page.getByTestId('category-name');
   }
+
   async addNewTrainingEvent(trainingEvent: {
     eventName: string;
     loadUnit: string;
