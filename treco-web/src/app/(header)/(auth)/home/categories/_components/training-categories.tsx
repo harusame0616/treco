@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { TrainingCategoryDto } from '@/domains/training-category/models/training-category';
 import Link from 'next/link';
 
+import { queryMyCategories } from '../queries';
 import { CategoryDelete } from './category-delete';
 import { CategoryEdit } from './category-edit';
-import { queryMyCategories } from '../queries';
 
 export async function TrainingCategoriesContainer({ date }: { date: Date }) {
   const trainingCategories = await queryMyCategories();
