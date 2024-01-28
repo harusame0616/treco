@@ -11,29 +11,28 @@ const sizeMap = {
 
 type Size = keyof typeof sizeMap;
 
-type SkeletonProps = {
-  color?: undefined;
-  isSkeleton: true;
-};
-
 type NormalProps = {
   color: string;
   isSkeleton?: false;
-};
-
-type Props = (NormalProps | SkeletonProps) & {
   size: Size;
 };
 
-export function TrainingMark(props: Props) {
-  const size = sizeMap[props.size];
+type SkeletonProps = Pick<NormalProps, 'size'> & {
+  color?: string;
+  isSkeleton: true;
+};
 
-  return props.isSkeleton ? (
-    <Skeleton className={clsx(size, 'rounded-full')} />
+type Props = NormalProps | SkeletonProps;
+
+export function TrainingMark({ color, isSkeleton, size }: Props) {
+  const sizeClass = sizeMap[size];
+
+  return isSkeleton ? (
+    <Skeleton className={clsx(sizeClass, 'rounded-full')} />
   ) : (
     <div
-      className={clsx(size, 'rounded-full')}
-      style={{ backgroundColor: props.color }}
+      className={clsx(sizeClass, 'rounded-full')}
+      style={{ backgroundColor: color }}
     />
   );
 }

@@ -1,6 +1,14 @@
-import { TrainingEventLabelContainer } from './training-event-label';
-import { TrainingRecordEditFormContainer } from './training-record-edit-form';
-import { TrainingSetsContainer } from './training-sets';
+import { Suspense } from 'react';
+
+import {
+  TrainingEventLabelContainer,
+  TrainingEventLabelPresenter,
+} from './training-event-label';
+import {
+  TrainingRecordEditFormContainer,
+  TrainingRecordEditFormPresenter,
+} from './training-record-edit-form';
+import { TrainingSetsContainer, TrainingSetsPresenter } from './training-sets';
 
 type TrainingRecordEditPageProps = {
   selectedSetIndex?: number;
@@ -12,15 +20,21 @@ export default async function TrainingRecordEditPage({
 }: TrainingRecordEditPageProps) {
   return (
     <div className="flex h-full w-full flex-col">
-      <TrainingEventLabelContainer trainingRecordId={trainingRecordId} />
-      <TrainingSetsContainer
-        selectedIndex={selectedSetIndex}
-        trainingRecordId={trainingRecordId}
-      />
-      <TrainingRecordEditFormContainer
-        selectedSetIndex={selectedSetIndex}
-        trainingRecordId={trainingRecordId}
-      />
+      <Suspense fallback={<TrainingEventLabelPresenter isSkeleton />}>
+        <TrainingEventLabelContainer trainingRecordId={trainingRecordId} />
+      </Suspense>
+      <Suspense fallback={<TrainingSetsPresenter isSkeleton />}>
+        <TrainingSetsContainer
+          selectedIndex={selectedSetIndex}
+          trainingRecordId={trainingRecordId}
+        />
+      </Suspense>
+      <Suspense fallback={<TrainingRecordEditFormPresenter isSkeleton />}>
+        <TrainingRecordEditFormContainer
+          selectedSetIndex={selectedSetIndex}
+          trainingRecordId={trainingRecordId}
+        />
+      </Suspense>
     </div>
   );
 }
