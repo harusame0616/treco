@@ -16,5 +16,5 @@ const SearchParamsSchema = object({
 export default function Page({ searchParams }: Props) {
   const { date } = parse(SearchParamsSchema, searchParams);
 
-  <CategoriesPage date={date} />;
+  return <CategoriesPage date={date} />;
 }
