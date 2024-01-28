@@ -44,7 +44,7 @@
     "react": "18.2.0",
     "react-dom": "latest",
     "react-hook-form": "^7.47.0",
-    "react-slick": "^0.29.0",
+    "react-slick": "^0.30.0",
     "sharp": "^0.33.0",
     "slick-carousel": "^1.8.1",
     "swr": "^2.2.4",
