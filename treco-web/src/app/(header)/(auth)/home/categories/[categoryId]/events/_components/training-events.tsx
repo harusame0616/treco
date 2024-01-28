@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import { getSignedInTraineeId } from '@/lib/trainee';
 
 import { createNewRecordAction } from '../_actions';
@@ -33,6 +34,7 @@ type TrainingEventsPresenterProps = {
     trainingCategoryId: string;
   };
   date: Date;
+  isSkeleton?: false;
   traineeId: string;
   trainingEvents: {
     loadUnit: string;
@@ -41,69 +43,127 @@ type TrainingEventsPresenterProps = {
     valueUnit: string;
   }[];
 };
-function TrainingEventsPresenter({
+
+type TrainingEventsPresenterSkeletonProps = Partial<
+  Omit<TrainingEventsPresenterProps, 'isSkeleton'>
+> & {
+  isSkeleton: true;
+};
+export function TrainingEventsPresenter({
   category,
   date,
+  isSkeleton,
   traineeId,
   trainingEvents,
-}: TrainingEventsPresenterProps) {
-  return (
-    <ul
-      aria-label={`${category.name}のトレーニング種目リスト`}
-      className="mb-2 flex w-full flex-col gap-2"
-    >
-      {trainingEvents.length ? (
-        trainingEvents.map(({ loadUnit, name, trainingEventId, valueUnit }) => (
-          <li
-            aria-label={name}
-            className={`flex snap-x snap-mandatory flex-nowrap overflow-x-scroll`}
-            key={trainingEventId}
-          >
-            <form
-              action={createNewRecordAction}
-              className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4"
-            >
-              <input
-                name="trainingDate"
-                type="hidden"
-                value={date.toISOString()}
+}: TrainingEventsPresenterProps | TrainingEventsPresenterSkeletonProps) {
+  if (isSkeleton || trainingEvents.length) {
+    return (
+      <ul
+        aria-label={
+          isSkeleton ? 'トレーニング種目' : `${category.name}のトレーニング種目`
+        }
+        className="mb-2 flex w-full flex-col gap-2"
+      >
+        {isSkeleton
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <TrainingEventItem isSkeleton key={i} />
+            ))
+          : trainingEvents.map((trainingEvent) => (
+              <TrainingEventItem
+                category={category}
+                date={date}
+                key={trainingEvent.trainingEventId}
+                traineeId={traineeId}
+                {...trainingEvent}
               />
-              <input
-                name="trainingCategoryId"
-                type="hidden"
-                value={category.trainingCategoryId}
-              />
-              <input
-                name="trainingEventId"
-                type="hidden"
-                value={trainingEventId}
-              />
-              <input name="traineeId" type="hidden" value={traineeId} />
-              <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
-                <span className="grow text-xl ">{name}</span>
-              </button>
+            ))}
+      </ul>
+    );
+  }
 
-              <EventEdit
-                loadUnit={loadUnit}
-                name={name}
-                trainingCategoryId={category.trainingCategoryId}
-                trainingEventId={trainingEventId}
-                valueUnit={valueUnit}
-              />
-            </form>
-            <div className="ml-4 h-16 w-16 snap-start">
-              <EventDelete
-                trainingCategoryId={category.trainingCategoryId}
-                trainingEventId={trainingEventId}
-              />
-            </div>
-          </li>
-        ))
+  return (
+    <p className="p-4 text-center">トレーニング種目が登録されていません。</p>
+  );
+}
+
+type TrainingEventItemProps = {
+  category: {
+    trainingCategoryId: string;
+  };
+  date: Date;
+  isSkeleton?: false;
+  loadUnit: string;
+  name: string;
+  traineeId: string;
+  trainingEventId: string;
+  valueUnit: string;
+};
+
+type TrainingEventItemSkeletonProps = Partial<
+  Omit<TrainingEventItemProps, 'isSkeleton'>
+> & { isSkeleton: true };
+
+function TrainingEventItem({
+  category,
+  date,
+  isSkeleton,
+  loadUnit,
+  name,
+  traineeId,
+  trainingEventId,
+  valueUnit,
+}: TrainingEventItemProps | TrainingEventItemSkeletonProps) {
+  return (
+    <li
+      aria-label={name}
+      className={`flex snap-x snap-mandatory flex-nowrap overflow-x-auto`}
+    >
+      {isSkeleton ? (
+        <div className="flex h-16 min-w-full grow snap-start items-center rounded-md bg-muted p-4">
+          <Skeleton className="h-5 w-32" />
+        </div>
       ) : (
-        <p className="p-4 text-center">
-          トレーニング種目が登録されていません。
-        </p>
+        <>
+          <form
+            action={createNewRecordAction}
+            className="flex h-16 min-w-full grow snap-start items-center rounded-md bg-muted p-4"
+          >
+            <input
+              name="trainingDate"
+              type="hidden"
+              value={date.toISOString()}
+            />
+            <input
+              name="trainingCategoryId"
+              type="hidden"
+              value={category.trainingCategoryId}
+            />
+            <input
+              name="trainingEventId"
+              type="hidden"
+              value={trainingEventId}
+            />
+            <input name="traineeId" type="hidden" value={traineeId} />
+            <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
+              <span className="grow text-xl ">{name}</span>
+            </button>
+
+            <EventEdit
+              loadUnit={loadUnit}
+              name={name}
+              trainingCategoryId={category.trainingCategoryId}
+              trainingEventId={trainingEventId}
+              valueUnit={valueUnit}
+            />
+          </form>
+          <div className="ml-4 h-16 w-16 snap-start">
+            <EventDelete
+              trainingCategoryId={category.trainingCategoryId}
+              trainingEventId={trainingEventId}
+            />
+          </div>
+        </>
       )}
-    </ul>
+    </li>
   );
 }

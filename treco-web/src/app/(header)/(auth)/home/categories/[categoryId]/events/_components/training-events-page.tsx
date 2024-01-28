@@ -1,6 +1,11 @@
+import { Suspense } from 'react';
+
 import { EventEdit } from './event-edit';
 import { TrainingCategoryLabelContainer } from './training-category-label';
-import { TrainingEventsContainer } from './training-events';
+import {
+  TrainingEventsContainer,
+  TrainingEventsPresenter,
+} from './training-events';
 
 type TrainingEventsPageProps = {
   categoryId: string;
@@ -16,8 +21,9 @@ export function TrainingEventsPage({
         トレーニング種目を選択してください
       </p>
       <TrainingCategoryLabelContainer categoryId={categoryId} />
-      <TrainingEventsContainer categoryId={categoryId} date={date} />
-
+      <Suspense fallback={<TrainingEventsPresenter isSkeleton />}>
+        <TrainingEventsContainer categoryId={categoryId} date={date} />
+      </Suspense>
       <EventEdit trainingCategoryId={categoryId} />
     </div>
   );
