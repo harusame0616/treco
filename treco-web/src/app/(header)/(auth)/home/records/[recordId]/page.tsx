@@ -4,9 +4,9 @@ import { object, optional, parse, regex, string, transform } from 'valibot';
 import TrainingRecordEditPage from './_components/training-record-edit-page';
 import { cachedQueryTrainingRecordEdit } from './queries';
 
-export type Props = WithParams<'recordId', WithSearchParams>;
+type Props = WithParams<'recordId', WithSearchParams>;
 
-export const SearchParamsSchema = object({
+const SearchParamsSchema = object({
   edit: optional(transform(string([regex(/[0-9]+/)]), Number)),
 });
 
