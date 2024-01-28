@@ -7,7 +7,7 @@ import { CategoryEdit } from './_components/category-edit';
 import {
   TrainingCategoriesContainer,
   TrainingCategoriesPresenter,
-} from './training-categories';
+} from './_components/training-categories';
 
 export const metadata: Metadata = {
   title: 'トレーニングカテゴリー一覧',
