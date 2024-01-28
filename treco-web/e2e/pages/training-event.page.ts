@@ -8,9 +8,7 @@ export class TrainingEventPage {
   readonly trainingEventItems: Locator;
   constructor(private page: Page) {
     this.trainingEventItems = page
-      .getByRole('list', {
-        name: 'トレーニング種目リスト',
-      })
+      .getByRole('list', { name: 'トレーニング種目' })
       .getByRole('listitem');
     this.nameInputBox = page.getByRole('textbox', { name: '名前' });
     this.loadUnitInputBox = page.getByRole('textbox', { name: '負荷の単位' });
