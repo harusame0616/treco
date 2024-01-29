@@ -1,6 +1,5 @@
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { getSignedInTraineeId } from '@/lib/trainee';
 
 import { addSetAction, editSetAction } from '../_actions';
 import { cachedQueryTrainingRecordEdit } from '../queries';
@@ -15,10 +14,7 @@ export async function TrainingRecordEditFormContainer({
   selectedSetIndex,
   trainingRecordId,
 }: TrainingRecordEditFormContainerProps) {
-  const [{ sets }, traineeId] = await Promise.all([
-    cachedQueryTrainingRecordEdit(trainingRecordId),
-    await getSignedInTraineeId(),
-  ]);
+  const { sets } = await cachedQueryTrainingRecordEdit(trainingRecordId);
 
   const {
     load: loadDefaultValue,
@@ -36,7 +32,6 @@ export async function TrainingRecordEditFormContainer({
       load={loadDefaultValue}
       note={noteDefaultValue}
       selectedSetIndex={selectedSetIndex}
-      traineeId={traineeId}
       trainingRecordId={trainingRecordId}
       value={valueDefaultValue}
     />
@@ -49,7 +44,6 @@ type TrainingRecordEditFormPresenterProps = {
   load: number | string;
   note: string;
   selectedSetIndex: number | undefined;
-  traineeId: string;
   trainingRecordId: string;
   value: number | string;
 };
@@ -64,24 +58,27 @@ export function TrainingRecordEditFormPresenter({
   load,
   note,
   selectedSetIndex,
-  traineeId,
   trainingRecordId,
   value,
 }:
   | TrainingRecordEditFormPresenterProps
   | TrainingRecordEditFormPresenterSkeletonProps) {
+  const action = isSkeleton
+    ? undefined
+    : isEditing && selectedSetIndex != null
+    ? editSetAction.bind(null, {
+        index: selectedSetIndex,
+        trainingRecordId,
+      })
+    : addSetAction.bind(null, { trainingRecordId });
+
   return (
     <form
-      action={isEditing ? editSetAction : addSetAction}
+      action={action}
       aria-label="トレーニングセットの追加・変更フォーム"
       className="flex shrink-0 flex-col gap-1 p-4"
       key={`${selectedSetIndex}`} // 編集後フォームを再描画するため key を設定
     >
-      <input name="trainingRecordId" type="hidden" value={trainingRecordId} />
-      <input name="traineeId" type="hidden" value={traineeId} />
-      {isEditing && (
-        <input name="index" type="hidden" value={selectedSetIndex} />
-      )}
       <div className="flex gap-4">
         <div className="flex items-center">
           <label className="mr-2 shrink-0" htmlFor="load">

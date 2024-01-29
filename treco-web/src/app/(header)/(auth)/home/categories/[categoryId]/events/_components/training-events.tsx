@@ -1,5 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import { getSignedInTraineeId } from '@/lib/trainee';
 
 import { createNewRecordAction } from '../_actions';
 import { cachedQueryCategory, queryTrainingEvents } from '../_queries/queries';
@@ -14,8 +13,6 @@ export async function TrainingEventsContainer({
   categoryId,
   date,
 }: TrainingEventsContainerProps) {
-  const signedInTraineeId = await getSignedInTraineeId();
-
   const category = await cachedQueryCategory(categoryId);
   const trainingEvents = await queryTrainingEvents(categoryId);
 
@@ -23,7 +20,6 @@ export async function TrainingEventsContainer({
     <TrainingEventsPresenter
       category={category}
       date={date}
-      traineeId={signedInTraineeId}
       trainingEvents={trainingEvents}
     />
   );
@@ -35,7 +31,6 @@ type TrainingEventsPresenterProps = {
   };
   date: Date;
   isSkeleton?: false;
-  traineeId: string;
   trainingEvents: {
     loadUnit: string;
     name: string;
@@ -53,7 +48,6 @@ export function TrainingEventsPresenter({
   category,
   date,
   isSkeleton,
-  traineeId,
   trainingEvents,
 }: TrainingEventsPresenterProps | TrainingEventsPresenterSkeletonProps) {
   if (isSkeleton || trainingEvents.length) {
@@ -73,7 +67,6 @@ export function TrainingEventsPresenter({
                 category={category}
                 date={date}
                 key={trainingEvent.trainingEventId}
-                traineeId={traineeId}
                 {...trainingEvent}
               />
             ))}
@@ -94,7 +87,6 @@ type TrainingEventItemProps = {
   isSkeleton?: false;
   loadUnit: string;
   name: string;
-  traineeId: string;
   trainingEventId: string;
   valueUnit: string;
 };
@@ -109,7 +101,6 @@ function TrainingEventItem({
   isSkeleton,
   loadUnit,
   name,
-  traineeId,
   trainingEventId,
   valueUnit,
 }: TrainingEventItemProps | TrainingEventItemSkeletonProps) {
@@ -125,25 +116,13 @@ function TrainingEventItem({
       ) : (
         <>
           <form
-            action={createNewRecordAction}
+            action={createNewRecordAction.bind(null, {
+              trainingCategoryId: category.trainingCategoryId,
+              trainingDate: date,
+              trainingEventId,
+            })}
             className="flex h-16 min-w-full grow snap-start items-center rounded-md bg-muted p-4"
           >
-            <input
-              name="trainingDate"
-              type="hidden"
-              value={date.toISOString()}
-            />
-            <input
-              name="trainingCategoryId"
-              type="hidden"
-              value={category.trainingCategoryId}
-            />
-            <input
-              name="trainingEventId"
-              type="hidden"
-              value={trainingEventId}
-            />
-            <input name="traineeId" type="hidden" value={traineeId} />
             <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
               <span className="grow text-xl ">{name}</span>
             </button>
