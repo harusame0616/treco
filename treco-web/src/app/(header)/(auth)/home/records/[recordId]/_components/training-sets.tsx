@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import { TrainingEventDto } from '@/domains/training-event/models/training-event';
 import { TrainingSet } from '@/domains/training-record/models/training-record';
 import clsx from 'clsx';
@@ -28,17 +29,24 @@ export async function TrainingSetsContainer({
 }
 
 type TrainingSetsPresenterProps = {
+  isSkeleton?: false;
   selectedIndex?: number;
   sets: TrainingSet[];
   trainingEvent: TrainingEventDto;
   trainingRecordId: string;
 };
+type TrainingSetsPresenterSkeletonProps = Partial<
+  Omit<TrainingSetsPresenterProps, 'isSkeleton'>
+> & {
+  isSkeleton: true;
+};
 export function TrainingSetsPresenter({
+  isSkeleton,
   selectedIndex,
   sets,
   trainingEvent,
   trainingRecordId,
-}: TrainingSetsPresenterProps) {
+}: TrainingSetsPresenterProps | TrainingSetsPresenterSkeletonProps) {
   return (
     <>
       <div className="top-11 flex shrink-0 p-2 text-xs text-muted-foreground">
@@ -48,7 +56,11 @@ export function TrainingSetsPresenter({
         <div className="grow">備考</div>
       </div>
       <div className="h-full overflow-y-auto bg-muted p-4">
-        {sets.length ? (
+        {isSkeleton ? (
+          Array.from({ length: 6 }, (_, index) => (
+            <TrainingSetItem index={index} isSkeleton key={index} />
+          ))
+        ) : sets.length ? (
           <ul aria-label="トレーニングセット">
             {sets.map((set, index) => (
               <TrainingSetItem
@@ -76,17 +88,25 @@ export function TrainingSetsPresenter({
 type TrainingSetItemProps = {
   index: number;
   isSelected: boolean;
+  isSkeleton?: false;
   set: TrainingSet;
   trainingEvent: TrainingEventDto;
   trainingRecordId: string;
 };
+type TrainingSetItemSkeletonProps = Partial<
+  Omit<TrainingSetItemProps, 'index' | 'isSkeleton'>
+> &
+  Pick<TrainingSetItemProps, 'index'> & {
+    isSkeleton: true;
+  };
 function TrainingSetItem({
   index,
   isSelected,
-  set: { load, note, value },
+  isSkeleton,
+  set,
   trainingEvent,
   trainingRecordId,
-}: TrainingSetItemProps) {
+}: TrainingSetItemProps | TrainingSetItemSkeletonProps) {
   return (
     <li
       aria-labelledby={`set-label${index}`}
@@ -109,31 +129,55 @@ function TrainingSetItem({
         aria-label="負荷"
         className="mr-1 flex w-12 items-center justify-end"
       >
-        {load}
-        <span className="sr-only ml-1 text-xs">{trainingEvent.loadUnit}</span>
+        {isSkeleton ? (
+          <Skeleton className="h-5 w-4" />
+        ) : (
+          <>
+            {set.load}
+            <span className="sr-only ml-1 text-xs">
+              {trainingEvent.loadUnit}
+            </span>
+          </>
+        )}
       </div>
       <div aria-label="値" className="mr-8 flex w-12 items-center justify-end">
-        {value}
-        <span className="sr-only ml-1 text-xs">{trainingEvent.valueUnit}</span>
+        {isSkeleton ? (
+          <Skeleton className="h-5 w-4" />
+        ) : (
+          <>
+            {set.value}
+            <span className="sr-only ml-1 text-xs">
+              {trainingEvent.valueUnit}
+            </span>
+          </>
+        )}
       </div>
       <div aria-label="備考" className="flex grow items-center">
         <div className="max-h-10 w-12 grow overflow-y-auto whitespace-pre p-3 text-xs">
-          {note || (
+          {isSkeleton ? (
+            <Skeleton className="h-5 w-12" />
+          ) : (
             <>
-              <span aria-hidden>-</span>
-              <span className="sr-only">なし</span>
+              {set.note || (
+                <>
+                  <span aria-hidden>-</span>
+                  <span className="sr-only">なし</span>
+                </>
+              )}
             </>
           )}
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <EditButton index={index} />
-        <SetDelete
-          trainingRecordId={trainingRecordId}
-          trainingSetIndex={index}
-        />
-      </div>
+      {!isSkeleton && (
+        <div className="flex items-center gap-2">
+          <EditButton index={index} />
+          <SetDelete
+            trainingRecordId={trainingRecordId}
+            trainingSetIndex={index}
+          />
+        </div>
+      )}
     </li>
   );
 }

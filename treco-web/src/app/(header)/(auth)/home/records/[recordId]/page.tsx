@@ -2,7 +2,6 @@ import { WithParams, WithSearchParams } from '@/lib/searchParams';
 import { object, optional, parse, regex, string, transform } from 'valibot';
 
 import TrainingRecordEditPage from './_components/training-record-edit-page';
-import { cachedQueryTrainingRecordEdit } from './queries';
 
 type Props = WithParams<'recordId', WithSearchParams>;
 
@@ -10,13 +9,9 @@ const SearchParamsSchema = object({
   edit: optional(transform(string([regex(/[0-9]+/)]), Number)),
 });
 
-export async function generateMetadata({ params }: Props) {
-  const { trainingEvent } = await cachedQueryTrainingRecordEdit(
-    params.recordId,
-  );
-
+export async function generateMetadata() {
   return {
-    title: `${trainingEvent.name} の記録`,
+    title: 'トレーニングを記録',
   };
 }
 

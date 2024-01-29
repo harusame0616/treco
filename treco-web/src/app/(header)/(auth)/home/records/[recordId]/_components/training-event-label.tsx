@@ -1,4 +1,5 @@
 import { TrainingMark } from '@/components/training-mark';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { cachedQueryTrainingRecordEdit } from '../queries';
 
@@ -19,22 +20,42 @@ export async function TrainingEventLabelContainer({
     />
   );
 }
+
 type TrainingEventLabelPresenterProps = {
+  isSkeleton?: false;
   trainingCategoryColor: string;
   trainingCategoryName: string;
   trainingEventName: string;
 };
-function TrainingEventLabelPresenter({
+type TrainingEventLabelPresenterSkeletonProps = Partial<
+  Omit<TrainingEventLabelPresenterProps, 'isSkeleton'>
+> & { isSkeleton: true };
+
+export function TrainingEventLabelPresenter({
+  isSkeleton,
   trainingCategoryColor,
   trainingCategoryName,
   trainingEventName,
-}: TrainingEventLabelPresenterProps) {
+}:
+  | TrainingEventLabelPresenterProps
+  | TrainingEventLabelPresenterSkeletonProps) {
   return (
     <div className="flex w-full shrink-0 items-center gap-2 px-4">
-      <TrainingMark color={trainingCategoryColor} size="small" />
-      <span>{trainingCategoryName}</span>
+      <TrainingMark
+        size="small"
+        {...(isSkeleton
+          ? { isSkeleton: true }
+          : {
+              color: trainingCategoryColor,
+            })}
+      />
+      <span>
+        {isSkeleton ? <Skeleton className="h-5 w-32" /> : trainingCategoryName}
+      </span>
       <span>&gt;</span>
-      <span>{trainingEventName}</span>
+      <span>
+        {isSkeleton ? <Skeleton className="h-5 w-32" /> : trainingEventName}
+      </span>
     </div>
   );
 }

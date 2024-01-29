@@ -45,6 +45,7 @@ export async function TrainingRecordEditFormContainer({
 
 type TrainingRecordEditFormPresenterProps = {
   isEditing: boolean;
+  isSkeleton?: false;
   load: number | string;
   note: string;
   selectedSetIndex: number | undefined;
@@ -52,15 +53,23 @@ type TrainingRecordEditFormPresenterProps = {
   trainingRecordId: string;
   value: number | string;
 };
+
+type TrainingRecordEditFormPresenterSkeletonProps = Partial<
+  Omit<TrainingRecordEditFormPresenterProps, 'isSkeleton'>
+> & { isSkeleton: true };
+
 export function TrainingRecordEditFormPresenter({
   isEditing,
+  isSkeleton,
   load,
   note,
   selectedSetIndex,
   traineeId,
   trainingRecordId,
   value,
-}: TrainingRecordEditFormPresenterProps) {
+}:
+  | TrainingRecordEditFormPresenterProps
+  | TrainingRecordEditFormPresenterSkeletonProps) {
   return (
     <form
       action={isEditing ? editSetAction : addSetAction}
@@ -80,6 +89,7 @@ export function TrainingRecordEditFormPresenter({
           </label>
           <Input
             defaultValue={load}
+            disabled={isSkeleton}
             id="load"
             inputMode="decimal"
             name="load"
@@ -94,6 +104,7 @@ export function TrainingRecordEditFormPresenter({
           </label>
           <Input
             defaultValue={value}
+            disabled={isSkeleton}
             id="value"
             inputMode="decimal"
             name="value"
@@ -110,13 +121,16 @@ export function TrainingRecordEditFormPresenter({
         <Textarea
           className="h-1 grow"
           defaultValue={note}
+          disabled={isSkeleton}
           id="note"
           name="note"
         />
       </div>
       <div className="flex justify-end gap-2">
         {isEditing && <CancelButton />}
-        <SubmitButton>{isEditing ? '変更する' : '追加する'}</SubmitButton>
+        <SubmitButton disabled={isSkeleton}>
+          {isEditing ? '変更する' : '追加する'}
+        </SubmitButton>
       </div>
     </form>
   );
