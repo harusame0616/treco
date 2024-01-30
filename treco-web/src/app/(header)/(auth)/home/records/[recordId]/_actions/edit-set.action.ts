@@ -2,24 +2,14 @@
 
 import { PrismaTrainingRecordRepository } from '@/domains/training-record/infrastructures/prisma.repository';
 import { TrainingRecordEditSetUsecase } from '@/domains/training-record/usecases/edit-set.usecase';
+import { getSignedInTraineeId } from '@/lib/trainee';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import {
-  coerce,
-  maxLength,
-  number,
-  object,
-  parse,
-  string,
-  uuid,
-} from 'valibot';
+import { coerce, maxLength, number, object, parse, string } from 'valibot';
 
 const inputSchema = object({
-  index: coerce(number(), Number),
   load: coerce(number(), Number),
   note: string([maxLength(255)]),
-  traineeId: string(),
-  trainingRecordId: string([uuid()]),
   value: coerce(number(), Number),
 });
 
@@ -27,28 +17,20 @@ const editSetUsecase = new TrainingRecordEditSetUsecase(
   new PrismaTrainingRecordRepository(),
 );
 
-export async function editSetAction(formData: FormData) {
-  let input;
-  try {
-    input = parse(inputSchema, {
-      ...Object.fromEntries(formData.entries()),
-      index: formData.get('index') || undefined,
-      load: formData.get('load') || undefined,
-      value: formData.get('value') || undefined,
-    });
-    // TODO
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    console.error('validation error', {
-      issue: JSON.stringify(e, null, 4),
-      message: e.message,
-      stack: e.stack,
-    });
-    throw new Error('validation error');
-  }
+type EditSetActionProps = {
+  index: number;
+  trainingRecordId: string;
+};
+export async function editSetAction(
+  props: EditSetActionProps,
+  formData: FormData,
+) {
+  await editSetUsecase.execute({
+    ...props,
+    ...parse(inputSchema, Object.fromEntries(formData.entries())),
+    traineeId: await getSignedInTraineeId(),
+  });
 
-  const trainingRecord = await editSetUsecase.execute(input);
-
-  revalidatePath(`/home/records/${trainingRecord.trainingRecordId}`);
-  redirect(`/home/records/${trainingRecord.trainingRecordId}`);
+  revalidatePath(`/home/records/${props.trainingRecordId}`);
+  redirect(`/home/records/${props.trainingRecordId}`);
 }
