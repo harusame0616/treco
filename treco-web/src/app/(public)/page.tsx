@@ -1,17 +1,11 @@
-import { isAuthenticated } from '@/lib/auth/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import { LoginButtonList } from '../login-button-list';
 import QRCode from './qr.png';
 import SplashImage from './splash.svg';
 
 export default async function Top() {
-  if (await isAuthenticated()) {
-    redirect('/home');
-  }
-
   return (
     <main className="flex w-full flex-col items-center gap-10 px-4 py-14">
       <Image
