@@ -1,67 +1,29 @@
 'use client';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { TrashIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { DeleteButton } from '@/components/delete-button';
 
 import { deleteTrainingCategoryAction } from '../_actions/delete-training-category.action';
+
+function Description() {
+  return (
+    <>
+      この操作は取り消せません。また、関連する以下のデータも一緒に削除されます。
+      <span className="mt-8 block">・トレーニング種目</span>
+      <span className="block">・トレーニング記録</span>
+    </>
+  );
+}
 
 type Props = {
   trainingCategoryId: string;
 };
-export function CategoryDelete({ trainingCategoryId }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  async function deleteTrainingCategory() {
-    setIsProcessing(true);
-    try {
-      await deleteTrainingCategoryAction({ trainingCategoryId });
-    } finally {
-      setIsProcessing(false);
-    }
-    setIsOpen(false);
-  }
-
+export function CategoryDelete(props: Props) {
   return (
-    <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
-      <AlertDialogTrigger asChild>
-        <Button className="h-full" variant="destructive">
-          <span className="sr-only">削除</span>
-          <TrashIcon aria-hidden="true" className="h-12 w-14" />
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            本当にトレーニングカテゴリーを削除しますか？
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            この操作は取り消せません。また、関連する以下のデータも一緒に削除されます。
-            <span className="mt-8 block">・トレーニング種目</span>
-            <span className="block">・トレーニング記録</span>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>やめる</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isProcessing}
-            onClick={deleteTrainingCategory}
-          >
-            トレーニングカテゴリーを削除する
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <DeleteButton
+      action={() => deleteTrainingCategoryAction(props)}
+      description={<Description />}
+      submitLabel="トレーニングカテゴリーを削除する"
+      title="本当にトレーニングカテゴリーを削除しますか？"
+    />
   );
 }
