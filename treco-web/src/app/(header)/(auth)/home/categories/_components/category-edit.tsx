@@ -74,7 +74,9 @@ export function CategoryEdit(props: Props) {
   const trigger = isNew ? (
     <Button className="w-full">トレーニングカテゴリーを作成する</Button>
   ) : (
-    <Pencil2Icon className="h-6 w-6" />
+    <Button variant="ghost">
+      <Pencil2Icon aria-label="編集" className="h-6 w-6" />
+    </Button>
   );
 
   return (

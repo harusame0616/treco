@@ -10,7 +10,6 @@ const createUsecase = new TrainingRecordCreateUsecase(
 );
 
 type CreateNewRecordActionProps = {
-  trainingCategoryId: string;
   trainingDate: Date;
   trainingEventId: string;
 };
