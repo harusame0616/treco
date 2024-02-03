@@ -11,6 +11,7 @@ import { Suspense } from 'react';
 import { object, optional, parse } from 'valibot';
 
 import { Calendar } from './_component/calendar';
+import { RecordDeleteButton } from './record-delete-button';
 
 export const metadata: Metadata = {
   title: 'ホーム',
@@ -74,6 +75,11 @@ async function TrainingRecords({ date }: { date: Date }) {
                 className="h-4 w-4 text-muted-foreground"
               />
             </Link>
+            <RecordDeleteButton
+              trainingCategoryName={record.trainingCategory.name}
+              trainingEventName={record.trainingEvent.name}
+              trainingRecordId={record.trainingRecordId}
+            />
           </div>
           <ul className="rounded-md bg-muted p-4">
             {record.sets.map((set, index) => (

@@ -6,6 +6,14 @@ import { TrainingRecordRepository } from '../usecases/training-record.repository
 export class PrismaTrainingRecordRepository
   implements TrainingRecordRepository
 {
+  async delete(trainingRecordId: string): Promise<void> {
+    await prisma.trainingRecord.delete({
+      where: {
+        trainingRecordId,
+      },
+    });
+  }
+
   async findOneById(trainingRecordId: string): Promise<TrainingRecord> {
     const trainingRecord = await prisma.trainingRecord.findUnique({
       include: {
