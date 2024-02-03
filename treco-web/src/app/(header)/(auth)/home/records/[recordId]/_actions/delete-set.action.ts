@@ -4,7 +4,6 @@ import { PrismaTrainingRecordRepository } from '@/domains/training-record/infras
 import { TrainingRecordDeleteSetUsecase } from '@/domains/training-record/usecases/delete-set.usecase';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 const deleteSetUsecase = new TrainingRecordDeleteSetUsecase(
   new PrismaTrainingRecordRepository(),
@@ -27,5 +26,4 @@ export async function deleteSetAction({
   });
 
   revalidatePath(`/home/records/${trainingRecordId}`);
-  redirect(`/home/records/${trainingRecordId}`);
 }

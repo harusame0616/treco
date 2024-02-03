@@ -8,7 +8,6 @@ type Props = {
   trainingCategoryId: string;
   trainingEventId: string;
 };
-
 export async function deleteTrainingEventAction(props: Props) {
   await new TrainingEventDeleteUsecase(
     new TrainingEventPrismaRepository(),

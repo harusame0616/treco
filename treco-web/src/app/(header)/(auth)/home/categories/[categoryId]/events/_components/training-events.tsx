@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { createNewRecordAction } from '../_actions';
 import { cachedQueryCategory, queryTrainingEvents } from '../_queries/queries';
-import { EventDelete } from './event-delete';
+import { EventDeleteButton } from './event-delete-button';
 import { EventEdit } from './event-edit';
 
 type TrainingEventsContainerProps = {
@@ -105,43 +105,37 @@ function TrainingEventItem({
   valueUnit,
 }: TrainingEventItemProps | TrainingEventItemSkeletonProps) {
   return (
-    <li
-      aria-label={name}
-      className={`flex snap-x snap-mandatory flex-nowrap overflow-x-auto`}
-    >
+    <li aria-label={name} className="flex flex-nowrap">
       {isSkeleton ? (
-        <div className="flex h-16 min-w-full grow snap-start items-center rounded-md bg-muted p-4">
+        <div className="flex h-16 min-w-full items-center rounded-md bg-muted p-4">
           <Skeleton className="h-5 w-32" />
         </div>
       ) : (
-        <>
-          <form
-            action={createNewRecordAction.bind(null, {
-              trainingCategoryId: category.trainingCategoryId,
-              trainingDate: date,
-              trainingEventId,
-            })}
-            className="flex h-16 min-w-full grow snap-start items-center rounded-md bg-muted p-4"
-          >
-            <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
-              <span className="grow text-xl ">{name}</span>
-            </button>
+        <form
+          action={createNewRecordAction.bind(null, {
+            trainingCategoryId: category.trainingCategoryId,
+            trainingDate: date,
+            trainingEventId,
+          })}
+          className="flex h-16 min-w-full grow items-center rounded-md bg-muted p-4"
+        >
+          <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
+            <span className="grow text-xl ">{name}</span>
+          </button>
 
-            <EventEdit
-              loadUnit={loadUnit}
-              name={name}
-              trainingCategoryId={category.trainingCategoryId}
-              trainingEventId={trainingEventId}
-              valueUnit={valueUnit}
-            />
-          </form>
-          <div className="ml-4 h-16 w-16 snap-start">
-            <EventDelete
-              trainingCategoryId={category.trainingCategoryId}
-              trainingEventId={trainingEventId}
-            />
-          </div>
-        </>
+          <EventEdit
+            loadUnit={loadUnit}
+            name={name}
+            trainingCategoryId={category.trainingCategoryId}
+            trainingEventId={trainingEventId}
+            valueUnit={valueUnit}
+          />
+          <EventDeleteButton
+            trainingCategoryId={category.trainingCategoryId}
+            trainingEventId={trainingEventId}
+            trainingEventName={name}
+          />
+        </form>
       )}
     </li>
   );
