@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import { cachedQueryTrainingRecordEdit } from '../queries';
 import { EditButton } from './edit-button';
-import { SetDelete } from './set-delete';
+import { SetDeleteButton } from './set-delete-button';
 
 type TrainingSetsContainerProps = {
   selectedIndex?: number;
@@ -172,7 +172,7 @@ function TrainingSetItem({
       {!isSkeleton && (
         <div className="flex items-center gap-2">
           <EditButton index={index} />
-          <SetDelete
+          <SetDeleteButton
             trainingRecordId={trainingRecordId}
             trainingSetIndex={index}
           />

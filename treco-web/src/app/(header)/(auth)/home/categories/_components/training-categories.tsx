@@ -5,7 +5,7 @@ import { TrainingCategoryDto } from '@/domains/training-category/models/training
 import Link from 'next/link';
 
 import { queryMyCategories } from '../queries';
-import { CategoryDelete } from './category-delete';
+import { CategoryDeleteButton } from './category-delete-button';
 import { CategoryEdit } from './category-edit';
 
 export async function TrainingCategoriesContainer({ date }: { date: Date }) {
@@ -75,8 +75,8 @@ function TrainingCategoryItem({
   trainingCategory,
 }: TrainingCategoryItemProps | TrainingCategoryItemSkeletonProps) {
   return (
-    <li className="flex snap-x snap-mandatory flex-nowrap overflow-x-scroll text-lg">
-      <div className="flex h-16 w-full min-w-full grow snap-start items-center rounded-md bg-muted p-4">
+    <li className="flex flex-nowrap text-lg">
+      <div className="flex h-16 w-full items-center rounded-md bg-muted p-4">
         <Link
           className="flex w-full items-center gap-4 text-foreground no-underline"
           href={{
@@ -107,14 +107,13 @@ function TrainingCategoryItem({
             />
           </Button>
         )}
-      </div>
-      {!isSkeleton && (
-        <div className="ml-4 h-16 w-16 snap-start">
-          <CategoryDelete
-            trainingCategoryId={trainingCategory?.trainingCategoryId}
+        {!isSkeleton && (
+          <CategoryDeleteButton
+            trainingCategoryId={trainingCategory.trainingCategoryId}
+            trainingCategoryName={trainingCategory.name}
           />
-        </div>
-      )}
+        )}
+      </div>
     </li>
   );
 }

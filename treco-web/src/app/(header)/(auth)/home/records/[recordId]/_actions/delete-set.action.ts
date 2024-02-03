@@ -27,5 +27,4 @@ export async function deleteSetAction({
   });
 
   revalidatePath(`/home/records/${trainingRecordId}`);
-  redirect(`/home/records/${trainingRecordId}`);
 }

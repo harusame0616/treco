@@ -5,14 +5,10 @@ import { TrainingCategoryPrismaRepository } from '@/domains/training-category/in
 import { TrainingCategoryDeleteUsecase } from '@/domains/training-category/usecases/delete.usecase';
 import { revalidatePath } from 'next/cache';
 
-type Props = {
-  trainingCategoryId: string;
-};
-
-export async function deleteTrainingCategoryAction(props: Props) {
+export async function deleteTrainingCategoryAction(trainingCategoryId: string) {
   await new TrainingCategoryDeleteUsecase(
     new TrainingCategoryPrismaRepository(new DomainEventPublisher()),
-  ).execute(props);
+  ).execute({ trainingCategoryId });
 
   revalidatePath('(header)/(auth)/home/categories');
 }
