@@ -88,7 +88,7 @@ export function EventEdit(props: Props) {
   const trigger = isNew ? (
     <Button className="w-full">トレーニング種目を作成する</Button>
   ) : (
-    <Button aria-label="トレーニング種目編集" type="button" variant={'ghost'}>
+    <Button aria-label="トレーニング種目編集" type="button" variant="ghost">
       <Pencil2Icon aria-hidden="true" className="h-6 w-6" />
     </Button>
   );

@@ -13,7 +13,7 @@ export function CategoriesPage({ date }: CategoriesPageProps) {
   return (
     <div className="space-y-4 p-2">
       <p className="mb-4 text-sm text-muted-foreground">
-        トレーニングカテゴリーを選択してください。左にスワイプすると削除できます。
+        トレーニングカテゴリーを選択してください。
       </p>
       <Suspense fallback={<TrainingCategoriesPresenter isSkeleton />}>
         <TrainingCategoriesContainer date={date} />

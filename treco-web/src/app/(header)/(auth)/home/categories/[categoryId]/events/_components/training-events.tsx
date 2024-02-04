@@ -1,9 +1,10 @@
+import { ListItemWithAction } from '@/components/list-item';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { createNewRecordAction } from '../_actions';
 import { cachedQueryCategory, queryTrainingEvents } from '../_queries/queries';
 import { EventDeleteButton } from './event-delete-button';
 import { EventEdit } from './event-edit';
+import { NewRecordButton } from './new-record-button';
 
 type TrainingEventsContainerProps = {
   categoryId: string;
@@ -104,25 +105,10 @@ function TrainingEventItem({
   trainingEventId,
   valueUnit,
 }: TrainingEventItemProps | TrainingEventItemSkeletonProps) {
-  return (
-    <li aria-label={name} className="flex flex-nowrap">
-      {isSkeleton ? (
-        <div className="flex h-16 min-w-full items-center rounded-md bg-muted p-4">
-          <Skeleton className="h-5 w-32" />
-        </div>
-      ) : (
-        <form
-          action={createNewRecordAction.bind(null, {
-            trainingCategoryId: category.trainingCategoryId,
-            trainingDate: date,
-            trainingEventId,
-          })}
-          className="flex h-16 min-w-full grow items-center rounded-md bg-muted p-4"
-        >
-          <button className="block w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-left text-foreground no-underline">
-            <span className="grow text-xl ">{name}</span>
-          </button>
-
+  function Action() {
+    return (
+      !isSkeleton && (
+        <>
           <EventEdit
             loadUnit={loadUnit}
             name={name}
@@ -135,8 +121,20 @@ function TrainingEventItem({
             trainingEventId={trainingEventId}
             trainingEventName={name}
           />
-        </form>
+        </>
+      )
+    );
+  }
+
+  return (
+    <ListItemWithAction action={<Action />} aria-label={name}>
+      {isSkeleton ? (
+        <Skeleton className="h-5 w-32" />
+      ) : (
+        <NewRecordButton trainingDate={date} trainingEventId={trainingEventId}>
+          {name}
+        </NewRecordButton>
       )}
-    </li>
+    </ListItemWithAction>
   );
 }
