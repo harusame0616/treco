@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { LoginButtonList } from '../login-button-list';
 import QRCode from './qr.png';
+import { RedirectHome } from './redirect-home';
 import SplashImage from './splash.svg';
 
 export default async function Top() {
@@ -42,6 +43,7 @@ export default async function Top() {
           src={QRCode}
         />
       </section>
+      <RedirectHome />
     </main>
   );
 }
