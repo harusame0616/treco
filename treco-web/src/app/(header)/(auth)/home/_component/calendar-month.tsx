@@ -1,8 +1,8 @@
 'use client';
 
-import { TrainingMark } from '@/components/training-mark';
 import { TrainingRecordQueryTrainingMarksForCalendar } from '@/domains/training-record/usecases/query-training-marks-for-calendar.usecase';
 import { utcDate } from '@/lib/date';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { Day } from './day';
@@ -55,23 +55,34 @@ export function CalendarMonth({
   );
 
   // 日毎でグループ化し、更に同一カテゴリは統合する
-  const trainingMarks = data
-    ? data.reduce(
-        (group, record) => {
-          const date = utcDate(record.trainingDate)
-            .tz('Asia/Tokyo')
-            .startOf('day')
-            .toISOString();
-          if (!group[date]) {
-            group[date] = {};
-          }
-          group[date][record.trainingCategoryId] = record;
+  const trainingMarks = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(
+          data
+            ? data.reduce(
+                (group, record) => {
+                  const date = utcDate(record.trainingDate)
+                    .tz('Asia/Tokyo')
+                    .startOf('day')
+                    .toISOString();
+                  if (!group[date]) {
+                    group[date] = {};
+                  }
+                  group[date][record.trainingCategoryId] = record;
 
-          return group;
-        },
-        {} as Record<string, Record<string, (typeof data)[number]>>,
-      )
-    : {};
+                  return group;
+                },
+                {} as Record<string, Record<string, (typeof data)[number]>>,
+              )
+            : {},
+        ).map(([date, marks]) => [
+          date,
+          Object.entries(marks).map(([_, mark]) => mark.color),
+        ]),
+      ),
+    [data],
+  );
 
   return (
     <div className="grid grid-cols-7 bg-muted">
@@ -90,40 +101,14 @@ export function CalendarMonth({
         return (
           <Day
             active={utcDate().tz('Asia/Tokyo').isSame(day, 'day')}
-            date={day.toDate()}
+            date={day.toDate().toISOString()}
             highlight={day.isSame(selectDate, 'day')}
+            isSkeleton={isLoading}
             key={day.toISOString()}
             mute={!day.isSame(firstDate, 'month')}
             onSelectDate={onSelectDate}
-          >
-            {
-              <ul className="grid grid-cols-5 gap-y-1">
-                {isLoading ? (
-                  <>
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                    <TrainingMark isSkeleton size="x-small" />
-                  </>
-                ) : (
-                  Object.entries(trainingMarks[day.toISOString()] ?? {}).map(
-                    ([_, mark]) => (
-                      <ol
-                        className="flex justify-center"
-                        key={mark.trainingRecordId}
-                        style={{ color: mark.color }}
-                      >
-                        <TrainingMark color={mark.color} size="x-small" />
-                      </ol>
-                    ),
-                  )
-                )}
-              </ul>
-            }
-          </Day>
+            trainingMarkColors={trainingMarks[day.toISOString()]}
+          />
         );
       })}
     </div>
