@@ -10,7 +10,7 @@ export function MainMenu() {
       aria-label="メインメニュー"
       className="border-t border-t-accent bg-background px-4"
     >
-      <ul aria-label="メニュー" className="flex justify-evenly">
+      <ul className="flex justify-evenly">
         <HomeMenuItem />
         <NewTrainingRecordMenuItem />
         <AccountMenuItem />

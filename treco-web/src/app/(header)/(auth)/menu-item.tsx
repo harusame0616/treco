@@ -15,14 +15,13 @@ type MenuItemProps = {
 };
 export function MenuItem({ icon: Icon, label, path }: MenuItemProps) {
   return (
-    <li aria-label={label} key={path}>
+    <li key={path}>
       <Link
-        aria-label={label}
         className="block p-4"
         href={path}
         prefetch={!path.includes('?')} // TODO: searchParams がある場合、 prefetch が有効だとうまく遷移しないことがあるので暫定的に無効化
       >
-        <Icon className="h-8 w-8" />
+        <Icon aria-label={label} className="h-8 w-8" />
       </Link>
     </li>
   );
