@@ -1,8 +1,8 @@
-'use client';
-
 import { TrainingMark } from '@/components/training-mark';
-import { utcDate } from '@/lib/date';
-import { PropsWithChildren, memo, useCallback } from 'react';
+import { clientDate } from '@/lib/date';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { PropsWithChildren } from 'react';
 
 type TrainingMarksProps = {
   isSkeleton?: boolean;
@@ -10,16 +10,20 @@ type TrainingMarksProps = {
 };
 function TrainingMarks({
   isSkeleton = false,
-  trainingMarkColors,
+  trainingMarkColors = [],
 }: TrainingMarksProps) {
   return (
     <ul className="grid grid-cols-5 gap-y-1">
       {isSkeleton
         ? Array.from({ length: 4 }).map((_, index) => (
-            <TrainingMark isSkeleton key={index} size="x-small" />
+            <li key={index}>
+              <TrainingMark isSkeleton size="x-small" />
+            </li>
           ))
-        : trainingMarkColors?.map((color) => (
-            <TrainingMark color={color} key={color} size="x-small" />
+        : trainingMarkColors.map((color) => (
+            <li key={color}>
+              <TrainingMark color={color} key={color} size="x-small" />
+            </li>
           ))}
     </ul>
   );
@@ -31,41 +35,41 @@ type Props = PropsWithChildren<{
   highlight?: boolean;
   isSkeleton?: boolean;
   mute?: boolean;
-  onSelectDate: (date: Date) => void;
   trainingMarkColors?: string[];
+  viewMonth: number;
+  viewYear: number;
 }>;
 
-export const Day = memo(function Day({
+export function Day({
   active,
   date,
   highlight,
   isSkeleton = false,
   mute,
-  onSelectDate,
   trainingMarkColors,
+  viewMonth,
+  viewYear,
 }: Props) {
-  const localDate = utcDate(date).tz('Asia/Tokyo');
+  const style = cn(
+    'text-white rounded-md h-12 transition flex flex-col px-1 no-underline block text-center',
+    highlight && 'bg-muted-foreground',
+    mute && 'opacity-40',
+    active && 'font-black text-yellow-300',
+  );
 
-  const style = [
-    'rounded-md h-12 transition flex flex-col px-1',
-    highlight ? 'bg-muted-foreground' : '',
-    mute ? 'opacity-40' : '',
-    active ? 'font-black text-yellow-300' : '',
-  ].join(' ');
-
-  const onClickHandler = useCallback(() => {
-    onSelectDate(new Date(date));
-  }, [date, onSelectDate]);
+  const newSearchParams = new URLSearchParams({
+    viewMonth: String(viewMonth),
+    viewYear: String(viewYear),
+  });
+  newSearchParams.set('date', date);
 
   return (
-    <button className={style} onClick={onClickHandler}>
-      <div className="w-full">{localDate.format('D')}</div>
-      <div className="w-full">
-        <TrainingMarks
-          isSkeleton={isSkeleton}
-          trainingMarkColors={trainingMarkColors}
-        />
-      </div>
-    </button>
+    <Link className={style} href={`/home?${newSearchParams.toString()}`}>
+      {clientDate(date).format('D')}
+      <TrainingMarks
+        isSkeleton={isSkeleton}
+        trainingMarkColors={trainingMarkColors}
+      />
+    </Link>
   );
-});
+}

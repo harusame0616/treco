@@ -42,7 +42,9 @@ export class TrainingRecordPage {
 
   async goToNewCategoryEvent(categoryName: string, eventName: string) {
     await this.page.goto('/home');
-    await this.page.getByRole('link', { name: 'トレーニング記録' }).click();
+    await this.page
+      .getByRole('link', { name: 'トレーニング記録を作成' })
+      .click();
 
     await this.page
       .getByRole('button', { name: 'トレーニングカテゴリーを作成する' })
