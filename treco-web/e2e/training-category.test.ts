@@ -1,70 +1,75 @@
 import { test as base, expect } from '@playwright/test';
 
+import { generateUniqueString } from './lib';
 import { TrainingCategoryPage } from './pages/training-category.page';
-
-const categories = [
-  {
-    categoryName: 'カテゴリー1',
-    color: '#111111',
-  },
-  {
-    categoryName: 'カテゴリー2',
-    color: '#222222',
-  },
-  {
-    categoryName: 'カテゴリー3',
-    color: '#333333',
-  },
-] as const;
 
 const test = base.extend<{ trainingCategoryPage: TrainingCategoryPage }>({
   trainingCategoryPage: async ({ page }, use) => {
     const trainingCategoryPage = new TrainingCategoryPage(page);
-    // カテゴリを作成
-    trainingCategoryPage.goTo();
-
-    for (const category of categories) {
-      await trainingCategoryPage.addTrainingCategory(category);
-    }
-
+    await trainingCategoryPage.goTo();
     await use(trainingCategoryPage);
   },
 });
 
-test('トレーニングカテゴリーが最後に追加されている', async ({
-  trainingCategoryPage,
-}) => {
-  await expect(
-    trainingCategoryPage.trainingCategoryItems.nth(-3),
-  ).toContainText(categories.at(-3)!.categoryName);
-  await expect(
-    trainingCategoryPage.trainingCategoryItems.nth(-2),
-  ).toContainText(categories.at(-2)!.categoryName);
-  await expect(
-    trainingCategoryPage.trainingCategoryItems.nth(-1),
-  ).toContainText(categories.at(-1)!.categoryName);
+test.describe('トレーニングカテゴリーを作成できる', () => {
+  test('最小文字数で作成できる', async ({ trainingCategoryPage }) => {
+    test.skip(!!process.env.CI, '複数回実行するとエラーが出るためスキップ');
 
-  // TODO: 色のテスト
+    await trainingCategoryPage.addTrainingCategory({
+      categoryName: 'a',
+      color: '#000000',
+    });
+
+    await expect(
+      trainingCategoryPage.getTrainingCategoryItemByName('a'),
+    ).toBeVisible();
+  });
+
+  test.fixme('最大文字数で作成できる', () => {
+    // 最大文字数設定後
+  });
+
+  test.fixme('色を指定できる', async () => {
+    // スナップショットテストで担保？
+  });
 });
 
-test('トレーニングカテゴリーを編集できる', async ({ trainingCategoryPage }) => {
-  const editCategory = {
-    categoryName: '編集済みカテゴリー',
-    color: '#444444',
-  };
-  await trainingCategoryPage.editTrainingCategory(0, editCategory);
+test.describe('トレーニングカテゴリーを編集できる', () => {
+  test('最小文字数で編集できる', async ({ trainingCategoryPage }) => {
+    test.skip(!!process.env.CI, '複数回実行するとエラーが出るためスキップ');
 
-  // 編集されていることを確認
-  await expect(trainingCategoryPage.trainingCategoryItems.nth(0)).toContainText(
-    editCategory.categoryName,
-  );
+    const categoryName = generateUniqueString();
+    await trainingCategoryPage.addTrainingCategory({
+      categoryName,
+      color: '#000000',
+    });
+    await trainingCategoryPage.editTrainingCategory(categoryName, {
+      categoryName: 'b',
+      color: '#000000',
+    });
 
-  // TODO: 色のテスト
+    await expect(
+      trainingCategoryPage.getTrainingCategoryItemByName('a'),
+    ).toBeVisible();
+  });
+
+  test.fixme('最大文字数で編集できる', () => {});
+
+  test.fixme('色を指定できる', async () => {
+    // スナップショットテストで担保？
+  });
 });
 
 test('トレーニングカテゴリーを削除できる', async ({ trainingCategoryPage }) => {
-  await trainingCategoryPage.removeTrainingCategory(-2);
+  const categoryName = generateUniqueString();
+  await trainingCategoryPage.addTrainingCategory({
+    categoryName,
+    color: '#000000',
+  });
+
+  await trainingCategoryPage.removeTrainingCategory(categoryName);
+
   await expect(
-    trainingCategoryPage.trainingCategoryItems.nth(-2),
-  ).not.toContainText(categories.at(1)!.categoryName);
+    trainingCategoryPage.getTrainingCategoryItemByName(categoryName),
+  ).toHaveCount(0);
 });

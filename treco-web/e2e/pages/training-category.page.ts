@@ -23,18 +23,23 @@ export class TrainingCategoryPage {
   }
 
   async editTrainingCategory(
-    index: number,
+    categoryName: string,
     trainingCategory: {
       categoryName: string;
       color: string;
     },
   ) {
-    await this.trainingCategoryItems
-      .nth(index)
+    await this.getTrainingCategoryItemByName(categoryName)
       .getByRole('button', { name: '編集' })
       .click();
     await this.inputTrainingCategory(trainingCategory);
     await this.page.getByRole('button', { name: '保存する' }).click();
+  }
+
+  getTrainingCategoryItemByName(categoryName: string) {
+    return this.trainingCategoryItems.filter({
+      has: this.page.getByText(categoryName, { exact: true }),
+    });
   }
 
   async goTo() {
@@ -53,11 +58,14 @@ export class TrainingCategoryPage {
     await this.page.getByLabel('カラー').fill(color);
   }
 
-  async removeTrainingCategory(index: number) {
+  async removeTrainingCategory(categoryName: string) {
     await this.trainingCategoryItems
-      .nth(index)
+      .filter({
+        has: this.page.getByText(categoryName, { exact: true }),
+      })
       .getByRole('button', { name: '削除' })
       .click();
+
     await this.page
       .getByRole('button', { name: 'トレーニングカテゴリーを削除する' })
       .click();
