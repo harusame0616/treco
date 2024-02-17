@@ -32,7 +32,7 @@ export function MainMenu({ currentDate }: Props) {
     },
     {
       icon: FilePlusIcon,
-      label: 'トレーニング記録',
+      label: 'トレーニング記録を作成',
       path: `/home/categories?date=${selectedDate.toISOString()}`,
     },
     {
@@ -68,11 +68,10 @@ function MenuItem({
   return (
     <li aria-label={label} key={path}>
       <Link
-        aria-label={label}
         href={path}
         prefetch={!path.includes('?')} // TODO: searchParams がある場合、 prefetch が有効だとうまく遷移しないことがあるので暫定的に無効化
       >
-        <Icon aria-hidden className="h-8 w-8" />
+        <Icon aria-label={label} className="h-8 w-8" />
       </Link>
     </li>
   );
