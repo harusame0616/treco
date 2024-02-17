@@ -2,13 +2,22 @@ import { TrainingMark } from '@/components/training-mark';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PrismaTrainingRecordQuery } from '@/domains/training-record/infrastructures/prisma.query';
 import { TrainingRecordQueryListForHomeUsecase } from '@/domains/training-record/usecases/query-list-for-home.usecase';
+import { clientToday } from '@/lib/date';
 import { SearchParamsDateSchema, WithSearchParams } from '@/lib/searchParams';
 import { getSignedInTraineeId } from '@/lib/trainee';
 import { Pencil2Icon } from '@radix-ui/react-icons';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { object, optional, parse } from 'valibot';
+import {
+  coerce,
+  maxValue,
+  minValue,
+  number,
+  object,
+  optional,
+  parse,
+} from 'valibot';
 
 import { Calendar } from './_component/calendar';
 import { RecordDeleteButton } from './record-delete-button';
@@ -31,18 +40,23 @@ type Props = WithSearchParams;
 
 const SearchParamsSchema = object({
   date: optional(SearchParamsDateSchema),
+  viewMonth: optional(coerce(number([minValue(1), maxValue(12)]), Number)),
+  viewYear: optional(coerce(number(), Number)),
 });
 
 export default async function HomePage({ searchParams }: Props) {
-  const { date } = parse(SearchParamsSchema, searchParams);
+  const today = clientToday();
+  const {
+    date,
+    viewMonth = today.month() + 1,
+    viewYear = today.year(),
+  } = parse(SearchParamsSchema, searchParams);
 
-  const selectedDate = date ?? new Date();
+  const selectedDate = date ?? today.toDate();
 
   return (
     <div className="flex h-full flex-col">
-      <div className="bg-muted px-2 py-1">
-        <Calendar />
-      </div>
+      <Calendar month={viewMonth} selectedDate={selectedDate} year={viewYear} />
       <div className="flex flex-col overflow-auto px-2 py-1">
         <Suspense
           fallback={<TrainingRecordsSkeleton />}
